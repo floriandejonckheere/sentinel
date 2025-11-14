@@ -24,10 +24,17 @@ sentinel/
 ### Command-line Interface (CLI)
 
 Command-line utility that accepts either a tool name or URL as input, performs security assessments, and outputs detailed trust briefs.
+Located in `cli/`.
 
-### Web API and interface
+### Application Programming Interface (API)
 
 To be developed in future iterations.
+Located in `api/`.
+
+### Web Interface
+
+To be developed in future iterations.
+Located in `web/`.
 
 ### Running the CLI
 
