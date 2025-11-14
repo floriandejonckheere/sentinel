@@ -66,6 +66,7 @@ class Assessor:
         application = Application(
             vendor=vendor,
             name=name or "Unknown Application",
+            description="Unknown application description",
             url=url or ""
         )  # TODO: Extract from web scraping/API
 

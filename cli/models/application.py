@@ -7,4 +7,5 @@ class Application(BaseModel):
     """Application information."""
     vendor: Vendor = Field(description="Vendor information associated with the application")
     name: str = Field(description="Name of the application")
+    description: str = Field(description="Brief description of the application")
     url: str = Field(description="Official URL of the application")
