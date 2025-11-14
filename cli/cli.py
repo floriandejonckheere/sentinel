@@ -2,6 +2,7 @@
 import json
 import sys
 from typing import Optional
+from urllib.parse import urlparse
 
 import typer
 
@@ -24,6 +25,17 @@ def main(
     if name is not None and url is not None:
         typer.echo("Error: Cannot provide both --name and --url", err=True)
         raise typer.Exit(code=1)
+
+    # Validate URL if provided
+    if url is not None:
+        parsed = urlparse(url)
+        if not parsed.scheme or not parsed.netloc:
+            typer.echo(f"Error: Invalid URL format: {url}", err=True)
+            typer.echo("URL must include scheme (http/https) and domain", err=True)
+            raise typer.Exit(code=1)
+        if parsed.scheme not in ["http", "https"]:
+            typer.echo(f"Error: URL scheme must be http or https, got: {parsed.scheme}", err=True)
+            raise typer.Exit(code=1)
 
     # Create the output JSON object
     output = {
