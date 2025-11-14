@@ -21,26 +21,13 @@ sentinel/
 
 ## Architecture
 
-### CLI Application (`cli/`)
+### Command-line Interface (CLI)
 
-The CLI is built with Python using the following stack:
-- **Typer**: CLI framework for building the command-line interface
-- **Pydantic**: Data validation and modeling
-- **LangChain**: AI/LLM integration framework
-- **Rich**: Terminal output formatting
-- **httpx**: HTTP client for API requests
-- **uv**: Fast Python package manager
+Command-line utility that accepts either a tool name or URL as input, performs security assessments, and outputs detailed trust briefs.
 
-### Web Application (`web/`)
+### Web API and interface
 
-Planned future development for a web-based interface and API to allow programmatic access to Sentinel's assessment capabilities.
-
-### Core Components
-
-- **Assessor**: Main class responsible for conducting assessments based on input parameters.
-- **Assessment**: Data models defining the structure of assessment results.
-
-## Development Workflow
+To be developed in future iterations.
 
 ### Running the CLI
 
@@ -65,22 +52,6 @@ cd cli
 uv add package-name
 ```
 
-1. **CISO-Ready Output**: All assessments should be presentation-ready for CISOs and security teams
-2. **Source-Grounded**: All claims and data points should be traceable to authoritative sources
-3. **Accuracy First**: Cutting-edge accuracy in risk assessment and recommendations
-4. **Speed**: Deliver comprehensive assessments in minutes, not hours or days
-5. **Defensible Decisions**: Provide enough context and evidence to defend tool adoption decisions
+## Code style
 
-## Future Enhancements
-
-- Web API for programmatic access
-- Batch assessment capabilities
-- Historical trend tracking
-- Custom compliance framework support
-- Integration with security tools (SIEM, vulnerability scanners)
-- Report generation (PDF, HTML)
-- Comparison mode (compare multiple tools side-by-side)
-
-## License
-
-Copyright (c) 2025 Trust UTU
+## Workflow
