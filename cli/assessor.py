@@ -29,11 +29,11 @@ class Assessor:
         vendor, application = self._gather_app_info(name, url)
 
         # Perform assessment components
-        risk_score = self._calculate_risk_score(app_name, app_url)
-        trust_brief = self._generate_trust_brief(app_name, app_vendor, risk_score)
-        cve_trends = self._analyze_cve_trends(app_name, app_vendor)
-        compliance_signals = self._check_compliance(app_name, app_vendor)
-        safer_alternatives = self._find_alternatives(app_name, risk_score)
+        risk_score = self._calculate_risk_score(application)
+        trust_brief = self._generate_trust_brief(application, risk_score)
+        cve_trends = self._analyze_cve_trends(application)
+        compliance_signals = self._check_compliance(application)
+        safer_alternatives = self._find_alternatives(application, risk_score)
 
         return Assessment(
             vendor=vendor,
@@ -64,13 +64,14 @@ class Assessor:
             url=""
         )  # TODO: Extract from web scraping/API
         application = Application(
+            vendor=vendor,
             name=name or "Unknown Application",
             url=url or ""
-        )
+        )  # TODO: Extract from web scraping/API
 
         return vendor, application
 
-    def _calculate_risk_score(self, name: str, url: str) -> float:
+    def _calculate_risk_score(self, application: Application) -> float:
         """
         Calculate risk score based on various factors.
 
@@ -85,7 +86,7 @@ class Assessor:
 
         return 5.0  # Placeholder
 
-    def _generate_trust_brief(self, name: str, vendor: Vendor, risk_score: float) -> str:
+    def _generate_trust_brief(self, application: Application, risk_score: float) -> str:
         """
         Generate CISO-ready trust brief.
 
@@ -99,7 +100,7 @@ class Assessor:
 
         return f"Security assessment for {name} by {vendor.name}. Risk score: {risk_score}/10. Awaiting detailed analysis."
 
-    def _analyze_cve_trends(self, name: str, vendor: Vendor) -> list[CVETrend]:
+    def _analyze_cve_trends(self, application: Application) -> list[CVETrend]:
         """
         Analyze CVE trends for the application.
 
@@ -113,7 +114,7 @@ class Assessor:
 
         return []  # Placeholder
 
-    def _check_compliance(self, name: str, vendor: Vendor) -> list[ComplianceSignal]:
+    def _check_compliance(self, application: Application) -> list[ComplianceSignal]:
         """
         Check compliance signals.
 
@@ -127,7 +128,7 @@ class Assessor:
 
         return []  # Placeholder
 
-    def _find_alternatives(self, name: str, current_risk_score: float) -> list[Alternative]:
+    def _find_alternatives(self, application: Application, current_risk_score: float) -> list[Alternative]:
         """
         Find safer alternative tools.
 
