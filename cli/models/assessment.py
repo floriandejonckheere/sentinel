@@ -1,5 +1,6 @@
 """Assessment data models."""
 from typing import List, Optional, TYPE_CHECKING
+from enum import Enum
 from sqlmodel import Field, SQLModel, Relationship
 
 if TYPE_CHECKING:
@@ -7,12 +8,17 @@ if TYPE_CHECKING:
     from .vendor import Vendor
 
 
+class Levels(str, Enum):
+    low = "low"
+    medium = "medium"
+    high = "high"
+
 class CVETrend(SQLModel, table=True):
     """CVE trend information."""
     id: Optional[int] = Field(default=None, primary_key=True)
     assessment_id: Optional[int] = Field(default=None, foreign_key="assessment.id")
     cve_id: str
-    severity: str
+    severity: Levels
     description: str
     published_date: Optional[str] = None
 
@@ -44,6 +50,31 @@ class Alternative(SQLModel, table=True):
     # Relationships
     assessment: Optional["Assessment"] = Relationship(back_populates="safer_alternatives")
     vendor: Optional["Vendor"] = Relationship()
+    
+class SecurityControls(SQLModel, table=True):
+    """Security controls information."""
+    id: Optional[int] = Field(default=None, primary_key=True)
+    assessment_id: Optional[int] = Field(default=None, foreign_key="assessment.id")
+    control_name: str
+    implemented: bool
+    details: Optional[str] = None
+
+    # Relationship
+    assessment: Optional["Assessment"] = Relationship(back_populates="security_controls")
+    
+class RiskWeaknessResidualExposure(SQLModel, table=True):
+    """Risk, Weakness, and Residual Exposure information."""
+    id: Optional[int] = Field(default=None, primary_key=True)
+    assessment_id: Optional[int] = Field(default=None, foreign_key="assessment.id")
+    risk_name: str
+    description: str
+    severity: Levels  # e.g., "Low", "Medium", "High"
+    mitigation: Optional[str] = None
+
+    # Relationship
+    assessment: Optional["Assessment"] = Relationship(back_populates="risk_weakness_residual_exposures")
+    
+
 
 
 class Assessment(SQLModel, table=True):
@@ -51,15 +82,17 @@ class Assessment(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     vendor_id: Optional[int] = Field(default=None, foreign_key="vendor.id")
     application_id: Optional[int] = Field(default=None, foreign_key="application.id")
-    risk_score: float = Field(ge=0.0, le=10.0, description="Risk score from 0 (safest) to 10 (riskiest)")
-    trust_brief: str = Field(description="CISO-ready trust brief summary")
-
+    
     # Relationships
     vendor: Optional["Vendor"] = Relationship()
     application: Optional["Application"] = Relationship()
     cve_trends: List["CVETrend"] = Relationship(back_populates="assessment")
     compliance_signals: List["ComplianceSignal"] = Relationship(back_populates="assessment")
     safer_alternatives: List["Alternative"] = Relationship(back_populates="assessment")
+    security_controls: List["SecurityControls"] = Relationship(back_populates="assessment")
+    risk_weakness_residual_exposures: List["RiskWeaknessResidualExposure"] = Relationship(back_populates="assessment")
+    trust_score: float = Field(default=0.0, description="Overall trust score of the application")
+    confidence_level: Levels = Field(default=Levels.low, description="Confidence level of the assessment")
 
     def to_json(self) -> dict:
         """Convert to JSON-serializable dict."""
