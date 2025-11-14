@@ -178,6 +178,7 @@ dependencies = [
     { name = "pydantic" },
     { name = "python-dotenv" },
     { name = "sqlalchemy" },
+    { name = "sqlmodel" },
     { name = "typer" },
 ]
 
@@ -189,6 +190,7 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.12.4" },
     { name = "python-dotenv", specifier = ">=1.2.1" },
     { name = "sqlalchemy", specifier = ">=2.0.44" },
+    { name = "sqlmodel", specifier = ">=0.0.27" },
     { name = "typer", specifier = ">=0.20.0" },
 ]
 
@@ -1392,6 +1394,19 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/ae/43/71a22aa66a1ef974f4e34982ce55d5f38d4770d2f0091eb210374e860b8e/sqlalchemy-2.0.44-cp39-cp39-win32.whl", hash = "sha256:9e9018544ab07614d591a26c1bd4293ddf40752cc435caf69196740516af7100", size = 2106888, upload-time = "2025-10-10T15:45:58.079Z" },
     { url = "https://files.pythonhosted.org/packages/08/fb/cc98eb1ab3c5ad92b51c0db17ee86d1c33379a7490da376567b902222dcf/sqlalchemy-2.0.44-cp39-cp39-win_amd64.whl", hash = "sha256:8e0e4e66fd80f277a8c3de016a81a554e76ccf6b8d881ee0b53200305a8433f6", size = 2130728, upload-time = "2025-10-10T15:45:59.7Z" },
     { url = "https://files.pythonhosted.org/packages/9c/5e/6a29fa884d9fb7ddadf6b69490a9d45fded3b38541713010dad16b77d015/sqlalchemy-2.0.44-py3-none-any.whl", hash = "sha256:19de7ca1246fbef9f9d1bff8f1ab25641569df226364a0e40457dc5457c54b05", size = 1928718, upload-time = "2025-10-10T15:29:45.32Z" },
+]
+
+[[package]]
+name = "sqlmodel"
+version = "0.0.27"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pydantic" },
+    { name = "sqlalchemy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/90/5a/693d90866233e837d182da76082a6d4c2303f54d3aaaa5c78e1238c5d863/sqlmodel-0.0.27.tar.gz", hash = "sha256:ad1227f2014a03905aef32e21428640848ac09ff793047744a73dfdd077ff620", size = 118053, upload-time = "2025-10-08T16:39:11.938Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8c/92/c35e036151fe53822893979f8a13e6f235ae8191f4164a79ae60a95d66aa/sqlmodel-0.0.27-py3-none-any.whl", hash = "sha256:667fe10aa8ff5438134668228dc7d7a08306f4c5c4c7e6ad3ad68defa0e7aa49", size = 29131, upload-time = "2025-10-08T16:39:10.917Z" },
 ]
 
 [[package]]
