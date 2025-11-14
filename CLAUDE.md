@@ -11,7 +11,7 @@ sentinel/
 ├── cli/                    # Command-line interface application
 │   ├── cli.py             # Main CLI entry point
 │   ├── assessor.py        # Core assessment logic
-│   ├── assessment.py      # Pydantic data models
+│   ├── assessment.py      # Assessment data model
 │   ├── pyproject.toml     # Python dependencies (uv-managed)
 │   └── .venv/             # Virtual environment
 ├── web/                   # Web API and interface
