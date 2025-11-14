@@ -2,6 +2,7 @@
 from typing import List, Optional
 from pydantic import BaseModel, Field
 
+from application import Application
 from vendor import Vendor
 
 
@@ -30,9 +31,8 @@ class Alternative(BaseModel):
 
 class Assessment(BaseModel):
     """Complete security assessment for a tool/application."""
-    name: str
     vendor: Vendor
-    url: str
+    application: Application
     risk_score: float = Field(ge=0.0, le=10.0, description="Risk score from 0 (safest) to 10 (riskiest)")
     trust_brief: str = Field(description="CISO-ready trust brief summary")
     cve_trends: List[CVETrend] = Field(default_factory=list)

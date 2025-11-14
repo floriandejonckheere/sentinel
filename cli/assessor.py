@@ -1,6 +1,8 @@
 """Security assessor that evaluates IT tools and applications."""
 from typing import Optional
+
 from assessment import Assessment, CVETrend, ComplianceSignal, Alternative
+from application import Application
 from vendor import Vendor
 
 
@@ -24,7 +26,7 @@ class Assessor:
             Assessment object with complete security analysis
         """
         # Determine the application details
-        app_name, app_vendor, app_url = self._gather_app_info(name, url)
+        vendor, application = self._gather_app_info(name, url)
 
         # Perform assessment components
         risk_score = self._calculate_risk_score(app_name, app_url)
@@ -34,9 +36,8 @@ class Assessor:
         safer_alternatives = self._find_alternatives(app_name, risk_score)
 
         return Assessment(
-            name=app_name,
-            vendor=app_vendor,
-            url=app_url,
+            vendor=vendor,
+            application=application,
             risk_score=risk_score,
             trust_brief=trust_brief,
             cve_trends=cve_trends,
@@ -44,28 +45,30 @@ class Assessor:
             safer_alternatives=safer_alternatives
         )
 
-    def _gather_app_info(self, name: Optional[str], url: Optional[str]) -> tuple[str, Vendor, str]:
+    def _gather_app_info(self, name: Optional[str], url: Optional[str]) -> tuple[Vendor, Application]:
         """
         Gather application information from name or URL.
 
         Returns:
-            Tuple of (name, vendor, url)
+            Tuple of (vendor, application)
         """
         # TODO: Implement AI-powered information gathering
         # - If URL provided, scrape and identify the tool
         # - If name provided, search for official URL and vendor
         # - Use LLM to extract vendor information
 
-        app_name = name or "Unknown Application"
-        app_vendor = Vendor(
+        vendor = Vendor(
             name="Unknown Vendor",
             legal_name="Unknown Vendor",
             country="Unknown",
             url=""
         )  # TODO: Extract from web scraping/API
-        app_url = url or ""
+        application = Application(
+            name=name or "Unknown Application",
+            url=url or ""
+        )
 
-        return app_name, app_vendor, app_url
+        return vendor, application
 
     def _calculate_risk_score(self, name: str, url: str) -> float:
         """
