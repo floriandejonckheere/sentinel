@@ -5,6 +5,7 @@ from urllib.parse import urlparse
 
 import typer
 
+from ai import AI
 from assessor import Assessor
 from database import Database
 
@@ -46,8 +47,11 @@ def main(
     # Create tables if they don't exist
     db.create_tables()
 
+    # Initialize AI connections
+    ai = AI()
+
     # Perform security assessment
-    assessor = Assessor(database=db)
+    assessor = Assessor(database=db, ai=ai)
     assessment = assessor.assess(name=name, url=url)
 
     # Output assessment as JSON
