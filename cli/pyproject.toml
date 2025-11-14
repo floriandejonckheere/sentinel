@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
     "httpx>=0.28.1",
+    "langchain>=0.3.27",
     "pydantic>=2.12.4",
     "python-dotenv>=1.2.1",
     "rich>=14.2.0",
