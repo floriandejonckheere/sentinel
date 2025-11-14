@@ -1,7 +1,9 @@
 """Security assessor that evaluates IT tools and applications."""
 from typing import Optional
-from assessment import Assessment, CVETrend, ComplianceSignal, Alternative
-from vendor import Vendor
+
+from models.assessment import Assessment, CVETrend, ComplianceSignal, Alternative
+from models.application import Application
+from models.vendor import Vendor
 
 
 class Assessor:
@@ -24,19 +26,18 @@ class Assessor:
             Assessment object with complete security analysis
         """
         # Determine the application details
-        app_name, app_vendor, app_url = self._gather_app_info(name, url)
+        vendor, application = self._gather_app_info(name, url)
 
         # Perform assessment components
-        risk_score = self._calculate_risk_score(app_name, app_url)
-        trust_brief = self._generate_trust_brief(app_name, app_vendor, risk_score)
-        cve_trends = self._analyze_cve_trends(app_name, app_vendor)
-        compliance_signals = self._check_compliance(app_name, app_vendor)
-        safer_alternatives = self._find_alternatives(app_name, risk_score)
+        risk_score = self._calculate_risk_score(application)
+        trust_brief = self._generate_trust_brief(application, risk_score)
+        cve_trends = self._analyze_cve_trends(application)
+        compliance_signals = self._check_compliance(application)
+        safer_alternatives = self._find_alternatives(application, risk_score)
 
         return Assessment(
-            name=app_name,
-            vendor=app_vendor,
-            url=app_url,
+            vendor=vendor,
+            application=application,
             risk_score=risk_score,
             trust_brief=trust_brief,
             cve_trends=cve_trends,
@@ -44,30 +45,36 @@ class Assessor:
             safer_alternatives=safer_alternatives
         )
 
-    def _gather_app_info(self, name: Optional[str], url: Optional[str]) -> tuple[str, Vendor, str]:
+    def _gather_app_info(self, name: Optional[str], url: Optional[str]) -> tuple[Vendor, Application]:
         """
         Gather application information from name or URL.
 
         Returns:
-            Tuple of (name, vendor, url)
+            Tuple of (vendor, application)
         """
         # TODO: Implement AI-powered information gathering
         # - If URL provided, scrape and identify the tool
         # - If name provided, search for official URL and vendor
         # - Use LLM to extract vendor information
 
-        app_name = name or "Unknown Application"
-        app_vendor = Vendor(
+        vendor = Vendor(
             name="Unknown Vendor",
             legal_name="Unknown Vendor",
             country="Unknown",
             url=""
         )  # TODO: Extract from web scraping/API
-        app_url = url or ""
+        application = Application(
+            vendor=vendor,
+            name=name or "Unknown Application",
+            description="Unknown application description",
+            url=url or "",
+            category="Unknown",
+            subcategory="Unknown"
+        )  # TODO: Extract from web scraping/API
 
-        return app_name, app_vendor, app_url
+        return vendor, application
 
-    def _calculate_risk_score(self, name: str, url: str) -> float:
+    def _calculate_risk_score(self, application: Application) -> float:
         """
         Calculate risk score based on various factors.
 
@@ -82,7 +89,7 @@ class Assessor:
 
         return 5.0  # Placeholder
 
-    def _generate_trust_brief(self, name: str, vendor: Vendor, risk_score: float) -> str:
+    def _generate_trust_brief(self, application: Application, risk_score: float) -> str:
         """
         Generate CISO-ready trust brief.
 
@@ -94,9 +101,9 @@ class Assessor:
         # - Highlight key risks and opportunities
         # - Provide actionable recommendations
 
-        return f"Security assessment for {name} by {vendor.name}. Risk score: {risk_score}/10. Awaiting detailed analysis."
+        return f"Security assessment for {application.name} by {application.vendor.name}. Risk score: {risk_score}/10. Awaiting detailed analysis."
 
-    def _analyze_cve_trends(self, name: str, vendor: Vendor) -> list[CVETrend]:
+    def _analyze_cve_trends(self, application: Application) -> list[CVETrend]:
         """
         Analyze CVE trends for the application.
 
@@ -110,7 +117,7 @@ class Assessor:
 
         return []  # Placeholder
 
-    def _check_compliance(self, name: str, vendor: Vendor) -> list[ComplianceSignal]:
+    def _check_compliance(self, application: Application) -> list[ComplianceSignal]:
         """
         Check compliance signals.
 
@@ -124,7 +131,7 @@ class Assessor:
 
         return []  # Placeholder
 
-    def _find_alternatives(self, name: str, current_risk_score: float) -> list[Alternative]:
+    def _find_alternatives(self, application: Application, current_risk_score: float) -> list[Alternative]:
         """
         Find safer alternative tools.
 
