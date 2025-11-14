@@ -1,6 +1,8 @@
 """Security assessor that evaluates IT tools and applications."""
 from typing import Optional
 
+from database import Database
+
 from models.assessment import Assessment, CVETrend, ComplianceSignal, Alternative
 from models.application import Application
 from models.vendor import Vendor
@@ -9,9 +11,10 @@ from models.vendor import Vendor
 class Assessor:
     """AI-powered security assessor for IT tools."""
 
-    def __init__(self):
+    def __init__(self, database: Database):
         """Initialize the assessor."""
         # TODO: Initialize AI components, API clients, etc.
+        self.database = database
         pass
 
     def assess(self, name: Optional[str] = None, url: Optional[str] = None) -> Assessment:

@@ -1,21 +1,22 @@
 #!/usr/bin/env python3
 import json
-import sys
 from typing import Optional
 from urllib.parse import urlparse
 
 import typer
 
 from assessor import Assessor
+from database import Database
 
 app = typer.Typer()
 
 
 @app.command()
 def main(
-    name: Optional[str] = typer.Option(None, "--name", help="Name of the application"),
-    url: Optional[str] = typer.Option(None, "--url", help="URL of the application"),
-):
+        name: Optional[str] = typer.Option(None, "--name", help="Name of the application"),
+        url: Optional[str] = typer.Option(None, "--url", help="URL of the application"),
+        database: str = typer.Option("sqlite:///sentinel.sqlite3", "--database",
+                                     help="Path to local SQLite database")):
     """
     CLI application that takes either --name or --url and outputs a JSON object.
     """
@@ -39,8 +40,14 @@ def main(
             typer.echo(f"Error: URL scheme must be http or https, got: {parsed.scheme}", err=True)
             raise typer.Exit(code=1)
 
+    # Initialize database
+    db = Database(database)
+
+    # Create tables if they don't exist
+    db.create_tables()
+
     # Perform security assessment
-    assessor = Assessor()
+    assessor = Assessor(database=db)
     assessment = assessor.assess(name=name, url=url)
 
     # Output assessment as JSON
