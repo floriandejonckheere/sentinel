@@ -1,6 +1,7 @@
 """Security assessor that evaluates IT tools and applications."""
 from typing import Optional
 from assessment import Assessment, CVETrend, ComplianceSignal, Alternative
+from vendor import Vendor
 
 
 class Assessor:
@@ -43,7 +44,7 @@ class Assessor:
             safer_alternatives=safer_alternatives
         )
 
-    def _gather_app_info(self, name: Optional[str], url: Optional[str]) -> tuple[str, str, str]:
+    def _gather_app_info(self, name: Optional[str], url: Optional[str]) -> tuple[str, Vendor, str]:
         """
         Gather application information from name or URL.
 
@@ -56,7 +57,12 @@ class Assessor:
         # - Use LLM to extract vendor information
 
         app_name = name or "Unknown Application"
-        app_vendor = "Unknown Vendor"  # TODO: Extract from web scraping/API
+        app_vendor = Vendor(
+            name="Unknown Vendor",
+            legal_name="Unknown Vendor",
+            country="Unknown",
+            url=""
+        )  # TODO: Extract from web scraping/API
         app_url = url or ""
 
         return app_name, app_vendor, app_url
@@ -76,7 +82,7 @@ class Assessor:
 
         return 5.0  # Placeholder
 
-    def _generate_trust_brief(self, name: str, vendor: str, risk_score: float) -> str:
+    def _generate_trust_brief(self, name: str, vendor: Vendor, risk_score: float) -> str:
         """
         Generate CISO-ready trust brief.
 
@@ -88,9 +94,9 @@ class Assessor:
         # - Highlight key risks and opportunities
         # - Provide actionable recommendations
 
-        return f"Security assessment for {name} by {vendor}. Risk score: {risk_score}/10. Awaiting detailed analysis."
+        return f"Security assessment for {name} by {vendor.name}. Risk score: {risk_score}/10. Awaiting detailed analysis."
 
-    def _analyze_cve_trends(self, name: str, vendor: str) -> list[CVETrend]:
+    def _analyze_cve_trends(self, name: str, vendor: Vendor) -> list[CVETrend]:
         """
         Analyze CVE trends for the application.
 
@@ -104,7 +110,7 @@ class Assessor:
 
         return []  # Placeholder
 
-    def _check_compliance(self, name: str, vendor: str) -> list[ComplianceSignal]:
+    def _check_compliance(self, name: str, vendor: Vendor) -> list[ComplianceSignal]:
         """
         Check compliance signals.
 

@@ -2,6 +2,8 @@
 from typing import List, Optional
 from pydantic import BaseModel, Field
 
+from vendor import Vendor
+
 
 class CVETrend(BaseModel):
     """CVE trend information."""
@@ -21,7 +23,7 @@ class ComplianceSignal(BaseModel):
 class Alternative(BaseModel):
     """Safer alternative tool."""
     name: str
-    vendor: str
+    vendor: Vendor
     risk_score: float
     reason: str  # Why this is a safer alternative
 
@@ -29,7 +31,7 @@ class Alternative(BaseModel):
 class Assessment(BaseModel):
     """Complete security assessment for a tool/application."""
     name: str
-    vendor: str
+    vendor: Vendor
     url: str
     risk_score: float = Field(ge=0.0, le=10.0, description="Risk score from 0 (safest) to 10 (riskiest)")
     trust_brief: str = Field(description="CISO-ready trust brief summary")
