@@ -6,6 +6,8 @@ from urllib.parse import urlparse
 
 import typer
 
+from assessor import Assessor
+
 app = typer.Typer()
 
 
@@ -37,15 +39,12 @@ def main(
             typer.echo(f"Error: URL scheme must be http or https, got: {parsed.scheme}", err=True)
             raise typer.Exit(code=1)
 
-    # Create the output JSON object
-    output = {
-        "name": name if name is not None else "",
-        "vendor": "",  # Default empty vendor
-        "url": url if url is not None else "",
-    }
+    # Perform security assessment
+    assessor = Assessor()
+    assessment = assessor.assess(name=name, url=url)
 
-    # Output as JSON
-    print(json.dumps(output, indent=2))
+    # Output assessment as JSON
+    print(json.dumps(assessment.to_json(), indent=2))
 
 
 if __name__ == "__main__":
