@@ -67,7 +67,9 @@ class Assessor:
             vendor=vendor,
             name=name or "Unknown Application",
             description="Unknown application description",
-            url=url or ""
+            url=url or "",
+            category="Unknown",
+            subcategory="Unknown"
         )  # TODO: Extract from web scraping/API
 
         return vendor, application

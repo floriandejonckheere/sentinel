@@ -9,3 +9,5 @@ class Application(BaseModel):
     name: str = Field(description="Name of the application")
     description: str = Field(description="Brief description of the application")
     url: str = Field(description="Official URL of the application")
+    category: str = Field(description="Category of the application")
+    subcategory: str = Field(description="Subcategory of the application")
