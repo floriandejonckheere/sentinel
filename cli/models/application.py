@@ -1,7 +1,7 @@
 """Assessment data models."""
 from pydantic import BaseModel, Field
 
-from vendor import Vendor
+from .vendor import Vendor
 
 class Application(BaseModel):
     """Application information."""

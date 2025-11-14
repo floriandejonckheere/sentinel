@@ -2,8 +2,8 @@
 from typing import List, Optional
 from pydantic import BaseModel, Field
 
-from application import Application
-from vendor import Vendor
+from .application import Application
+from .vendor import Vendor
 
 
 class CVETrend(BaseModel):

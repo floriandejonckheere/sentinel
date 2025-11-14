@@ -1,9 +1,9 @@
 """Security assessor that evaluates IT tools and applications."""
 from typing import Optional
 
-from assessment import Assessment, CVETrend, ComplianceSignal, Alternative
-from application import Application
-from vendor import Vendor
+from models.assessment import Assessment, CVETrend, ComplianceSignal, Alternative
+from models.application import Application
+from models.vendor import Vendor
 
 
 class Assessor:
@@ -98,7 +98,7 @@ class Assessor:
         # - Highlight key risks and opportunities
         # - Provide actionable recommendations
 
-        return f"Security assessment for {name} by {vendor.name}. Risk score: {risk_score}/10. Awaiting detailed analysis."
+        return f"Security assessment for {application.name} by {application.vendor.name}. Risk score: {risk_score}/10. Awaiting detailed analysis."
 
     def _analyze_cve_trends(self, application: Application) -> list[CVETrend]:
         """
