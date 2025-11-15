@@ -39,7 +39,7 @@ def serpapi_search(query: str, num: int = 10) -> List[dict]:
     """
     api_key = os.getenv("SERPAPI_API_KEY")
     if not api_key:
-        return []
+        raise ValueError("SERPAPI_API_KEY not set in environment variables.")
     # Import here so the module is optional at import time
     from serpapi import GoogleSearch  # provided by 'google-search-results'
     data = GoogleSearch({
