@@ -61,26 +61,6 @@ export default function TrustScoreCard({ score }: TrustScoreCardProps) {
             </div>
           </div>
         </div>
-
-        {/* Color Legend */}
-        <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 flex-wrap justify-center">
-          <span className="flex items-center gap-1">
-            <span className="w-3 h-3 bg-red-500 rounded-full"></span>
-            0-50
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="w-3 h-3 bg-orange-500 rounded-full"></span>
-            50-75
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="w-3 h-3 bg-yellow-500 rounded-full"></span>
-            75-90
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="w-3 h-3 bg-green-500 rounded-full"></span>
-            90-100
-          </span>
-        </div>
       </div>
     </div>
   )
