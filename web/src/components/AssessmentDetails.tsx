@@ -4,7 +4,6 @@ import {getAssessment, type Assessment} from '../services/api'
 import LoadingSpinner from './LoadingSpinner'
 import ApplicationVendorCard from './assessment/ApplicationVendorCard'
 import TrustScoreCard from './assessment/TrustScoreCard'
-import ConfidenceScoreCard from './assessment/ConfidenceScoreCard'
 import VulnerabilitiesCard from './assessment/VulnerabilitiesCard'
 
 export default function AssessmentDetails() {
@@ -74,14 +73,12 @@ export default function AssessmentDetails() {
                 />
             </div>
 
-            {/* Second Row - Trust Score, Confidence & Vulnerabilities Cards */}
+            {/* Second Row - Trust Score & Vulnerabilities Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <TrustScoreCard score={assessment.summary.trust_score.score}/>
-                <ConfidenceScoreCard confidence={assessment.summary.trust_score.confidence}/>
-            </div>
-
-            {/* Third Row - Vulnerabilities Card */}
-            <div className="mt-6">
+                <TrustScoreCard
+                    score={assessment.summary.trust_score.score}
+                    confidence={assessment.summary.trust_score.confidence}
+                />
                 <VulnerabilitiesCard cves={assessment.cves}/>
             </div>
         </div>

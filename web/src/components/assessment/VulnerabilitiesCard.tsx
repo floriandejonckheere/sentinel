@@ -132,9 +132,9 @@ export default function VulnerabilitiesCard({ cves }: VulnerabilitiesCardProps) 
         Vulnerabilities
       </h4>
 
-      <div className="space-y-4">
+      <div className="flex items-center justify-center gap-6">
         {/* Donut Chart with Total in Center */}
-        <div className="flex justify-center relative">
+        <div className="relative">
           <svg width="300" height="300" viewBox="0 0 300 300">
             {/* Donut Chart Rings */}
             {cves.total > 0 ? (
@@ -238,15 +238,13 @@ export default function VulnerabilitiesCard({ cves }: VulnerabilitiesCardProps) 
         </div>
 
         {/* Trend */}
-        <div className="pt-4 border-t border-gray-200 dark:border-gray-600">
-          <div className="flex items-center justify-center gap-2">
-            <span className={`text-2xl font-bold ${getTrendColor(cves.trend)}`}>
-              {getTrendIcon(cves.trend)}
-            </span>
-            <span className={`text-sm font-medium ${getTrendColor(cves.trend)}`}>
-              {getTrendText(cves.trend)}
-            </span>
-          </div>
+        <div className="flex flex-col items-center gap-2">
+          <span className={`text-4xl font-bold ${getTrendColor(cves.trend)}`}>
+            {getTrendIcon(cves.trend)}
+          </span>
+          <span className={`text-base font-medium ${getTrendColor(cves.trend)}`}>
+            {getTrendText(cves.trend)}
+          </span>
         </div>
       </div>
     </div>
