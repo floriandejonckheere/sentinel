@@ -84,6 +84,44 @@ export default function AssessmentDetails() {
     return 'text-gray-600 dark:text-gray-400'
   }
 
+  const getCountryName = (countryCode: string): string => {
+    const countryMap: Record<string, string> = {
+      'US': 'United States',
+      'GB': 'United Kingdom',
+      'UK': 'United Kingdom',
+      'CA': 'Canada',
+      'AU': 'Australia',
+      'DE': 'Germany',
+      'FR': 'France',
+      'IT': 'Italy',
+      'ES': 'Spain',
+      'NL': 'Netherlands',
+      'BE': 'Belgium',
+      'SE': 'Sweden',
+      'NO': 'Norway',
+      'DK': 'Denmark',
+      'FI': 'Finland',
+      'IE': 'Ireland',
+      'CH': 'Switzerland',
+      'AT': 'Austria',
+      'PL': 'Poland',
+      'CZ': 'Czech Republic',
+      'IN': 'India',
+      'CN': 'China',
+      'JP': 'Japan',
+      'KR': 'South Korea',
+      'SG': 'Singapore',
+      'HK': 'Hong Kong',
+      'IL': 'Israel',
+      'BR': 'Brazil',
+      'MX': 'Mexico',
+      'AR': 'Argentina',
+      'NZ': 'New Zealand',
+      'ZA': 'South Africa',
+    }
+    return countryMap[countryCode.toUpperCase()] || countryCode
+  }
+
   return (
     <div className="animate-fade-in w-full max-w-5xl px-4">
       <h2 className="text-3xl font-medium text-gray-900 dark:text-white mb-6 text-center">
@@ -97,7 +135,7 @@ export default function AssessmentDetails() {
             {assessment.application.name}
           </h3>
           <p className="text-xl text-gray-600 dark:text-gray-400 mb-6">
-            by {assessment.vendor.name}, {assessment.vendor.country}
+            By {assessment.vendor.name}, {getCountryName(assessment.vendor.country)}
           </p>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-left pt-6 border-t border-gray-200 dark:border-gray-600">
