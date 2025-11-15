@@ -62,13 +62,20 @@ export default function RoleSelection({ onSelect, onBack }: RoleSelectionProps) 
         })}
       </div>
       {allRole && (
-        <button
-          onClick={() => onSelect(allRole.id)}
-          className={`mt-6 w-full flex flex-col items-center justify-center p-8 bg-white dark:bg-gray-700 rounded-2xl border border-gray-300 dark:border-gray-600 ${borderColorClasses[allRole.color as keyof typeof borderColorClasses]} hover:shadow-lg transition-all`}
-        >
-          <allRole.icon className={`h-16 w-16 ${iconColorClasses[allRole.color as keyof typeof iconColorClasses]} mb-4`} />
-          <span className="text-xl font-medium text-gray-900 dark:text-white">{allRole.description}</span>
-        </button>
+        <>
+          <div className="relative flex items-center my-6">
+            <div className="flex-grow border-t border-gray-300 dark:border-gray-600"></div>
+            <span className="px-4 text-sm font-medium text-gray-500 dark:text-gray-400">OR</span>
+            <div className="flex-grow border-t border-gray-300 dark:border-gray-600"></div>
+          </div>
+          <button
+            onClick={() => onSelect(allRole.id)}
+            className={`w-full flex flex-col items-center justify-center p-8 bg-white dark:bg-gray-700 rounded-2xl border border-gray-300 dark:border-gray-600 ${borderColorClasses[allRole.color as keyof typeof borderColorClasses]} hover:shadow-lg transition-all`}
+          >
+            <allRole.icon className={`h-16 w-16 ${iconColorClasses[allRole.color as keyof typeof iconColorClasses]} mb-4`} />
+            <span className="text-xl font-medium text-gray-900 dark:text-white">{allRole.description}</span>
+          </button>
+        </>
       )}
     </div>
   )
