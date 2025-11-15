@@ -37,9 +37,12 @@ class Runner():
 
         # Save FullAssessment JSON
         cache_path = os.path.join("/data", f"{self.assessment_id}.json")
-        if os.path.exists(cache_path):
-            with open(cache_path, "r") as f:
-                return json.load(f)
-        else:
-            with open(cache_path, "w", encoding="utf-8") as f:
-                return json.dump(full.model_dump(), f, indent=2)
+
+        # Always write the assessment (overwrite if exists)
+        os.makedirs(os.path.dirname(cache_path), exist_ok=True)
+        full_assessment_dict = full.model_dump()
+
+        with open(cache_path, "w", encoding="utf-8") as f:
+            json.dump(full_assessment_dict, f, indent=2)
+
+        return full_assessment_dict
