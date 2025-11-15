@@ -1,0 +1,212 @@
+{
+  "vendor": {
+    "name": "1Password",
+    "country": "Canada",
+    "size": "Over 1,300 employees",
+    "notable_customers": [
+      "Oracle Red Bull Racing",
+      "ElectroNeek",
+      "Elastic",
+      "Zuora",
+      "Flipdish",
+      "HackerOne",
+      "Virtru",
+      "BuzzFeed"
+    ],
+    "security_team": "Security is a core focus with mentions of encryption and cryptography.",
+    "sources": [
+      "https://1password.com/company",
+      "https://1password.com/customer-stories",
+      "https://1password.com/security"
+    ],
+    "website": null
+  },
+  "category": {
+    "category": "Security",
+    "confidence": 0.9,
+    "reasoning": "1Password is a password manager that helps users securely store and manage their passwords and other sensitive information. This falls under the Security category."
+  },
+  "cve": {
+    "by_year_counts": {},
+    "critical": [
+      {
+        "cve_id": "CVE-2022-32550",
+        "severity": "High",
+        "description": "An issue was discovered in AgileBits 1Password, involving the method various 1Password apps and integrations used to create connections to the 1Password service. In specific circumstances, this issue allowed a malicious server to convince a 1Password app or integration it is communicating with the 1Password service.",
+        "year": 2022,
+        "sources": []
+      },
+      {
+        "cve_id": "CVE-2021-41795",
+        "severity": "High",
+        "description": "The Safari app extension bundled with 1Password for Mac 7.7.0 through 7.8.x before 7.8.7 is vulnerable to authorization bypass. By targeting a vulnerable component of this extension, a malicious web page could read a subset of 1Password vault items that would normally be fillable by the user on that web page.",
+        "year": 2021,
+        "sources": []
+      },
+      {
+        "cve_id": "CVE-2021-26905",
+        "severity": "Critical",
+        "description": "1Password SCIM Bridge before 1.6.2 mishandles validation of authenticated requests for log files, leading to disclosure of a TLS private key.",
+        "year": 2021,
+        "sources": []
+      },
+      {
+        "cve_id": "CVE-2023-4863",
+        "severity": "Critical",
+        "description": "A heap buffer overflow vulnerability in the WebP image format processing library (libwebp) affected 1Password 8 for Mac, Windows, and Linux versions prior to 8.10.15. This vulnerability was inherited from Google Chrome.",
+        "year": 2023,
+        "sources": []
+      },
+      {
+        "cve_id": "CVE-2023-5129",
+        "severity": "Critical",
+        "description": "A duplicate of CVE-2023-4863, this vulnerability also relates to a heap buffer overflow in the WebP image format processing library, impacting 1Password 8 for Mac, Windows, and Linux.",
+        "year": 2023,
+        "sources": []
+      }
+    ],
+    "trend": "Degrading",
+    "summary": "1Password has experienced several vulnerabilities, with notable ones including CVE-2022-32550, which allowed malicious servers to impersonate the 1Password service, and CVE-2021-41795, an authorization bypass in the Safari extension that could lead to sensitive data exposure. Another critical vulnerability, CVE-2021-26905, in the SCIM Bridge component, resulted in the disclosure of a TLS private key due to improper validation of authenticated requests. More recently, CVE-2023-4863 (and its duplicate CVE-2023-5129) affected 1Password 8 for Mac, Windows, and Linux, stemming from a heap buffer overflow vulnerability in the WebP image format processing, inherited from Google Chrome. The company has been actively addressing these by releasing updates and implementing security measures like enhanced autofill confirmations to mitigate risks.",
+    "sources": [
+      "https://nvd.nist.gov/vuln/detail/CVE-2022-32550",
+      "https://nvd.nist.gov/vuln/detail/CVE-2021-41795",
+      "https://nvd.nist.gov/vuln/detail/CVE-2021-26905",
+      "https://support.1password.com/kb/202309/",
+      "https://1password.com/blog/clickjacking-what-it-means-for-1password-users/"
+    ]
+  },
+  "compliance": {
+    "certs": [
+      {
+        "framework": "SOC 2 Type 2",
+        "status": "Certified",
+        "year": null,
+        "scope": null,
+        "auditor": null,
+        "report_url": null,
+        "standards": [],
+        "summary": "1Password securely manages data, protecting customer interests and privacy, as verified by an independent audit.",
+        "sources": []
+      },
+      {
+        "framework": "ISO 27001:2022",
+        "status": "Certified",
+        "year": null,
+        "scope": null,
+        "auditor": null,
+        "report_url": null,
+        "standards": [],
+        "summary": "Confirms adherence to international standards for information security management systems.",
+        "sources": []
+      },
+      {
+        "framework": "ISO 27017:2015",
+        "status": "Certified",
+        "year": null,
+        "scope": null,
+        "auditor": null,
+        "report_url": null,
+        "standards": [],
+        "summary": "Demonstrates compliance with international standards for cloud security.",
+        "sources": []
+      },
+      {
+        "framework": "ISO 27018:2019",
+        "status": "Certified",
+        "year": null,
+        "scope": null,
+        "auditor": null,
+        "report_url": null,
+        "standards": [],
+        "summary": "Verifies adherence to international standards for the privacy of personally identifiable information in the cloud.",
+        "sources": []
+      },
+      {
+        "framework": "ISO 27701:2019",
+        "status": "Certified",
+        "year": null,
+        "scope": null,
+        "auditor": null,
+        "report_url": null,
+        "standards": [],
+        "summary": "Confirms compliance with international standards for privacy information management.",
+        "sources": []
+      }
+    ],
+    "overall_summary": "1Password holds multiple high-level security and privacy certifications, including SOC 2 Type 2 and several ISO certifications (27001, 27017, 27018, and 27701). These validations indicate a strong commitment to data security, privacy, and adherence to international best practices across information management, cloud security, and privacy. The company also undergoes regular penetration tests and has a bug bounty program.",
+    "sources": []
+  },
+  "incidents": {
+    "items": [
+      {
+        "title": "Phishing Campaign Targeting 1Password Users",
+        "date": "October 2025",
+        "severity": "High",
+        "description": "A sophisticated phishing campaign impersonated 1Password's Watchtower feature, sending emails to users claiming their accounts were compromised. The emails urged users to reset their passwords via a malicious link, aiming to steal master passwords and secret keys.",
+        "sources": [
+          "https://www.malwarebytes.com/blog/news/2025/10/phishers-target-1password-users-with-convincing-fake-breach-alert",
+          "https://1password.com/blog/one-breach-one-leak/",
+          "https://www.forbes.com/sites/daveywinder/2025/03/12/1password-warning-dont-reset-your-master-password/"
+        ]
+      },
+      {
+        "title": "1Password Impacted by Okta Support System Breach",
+        "date": "September 2025",
+        "severity": "Medium",
+        "description": "1Password confirmed it was affected by a breach of Okta's customer support system. While 1Password's investigation found no evidence of user data being accessed, the incident highlights the risks associated with third-party service compromises.",
+        "sources": [
+          "https://www.cybersecuritydive.com/news/1password-okta-breach/697636/",
+          "https://1password.com/blog/one-breach-one-leak/"
+        ]
+      },
+      {
+        "title": "Large-Scale Credential Leak (16 Billion Records)",
+        "date": "Not specified, discussed in context of recent events",
+        "severity": "High",
+        "description": "Researchers discovered a massive dataset containing approximately 16 billion login credentials, likely a compilation of older breaches. This serves as a stark reminder of the risks of credential exposure, emphasizing the need for unique passwords and tools like 1Password's Watchtower to monitor for compromises.",
+        "sources": [
+          "https://1password.com/blog/what-to-do-16-billion-password-data-leak/"
+        ]
+      },
+      {
+        "title": "Microsoft Email Breach and MOAB Context",
+        "date": "Early 2024",
+        "severity": "High",
+        "description": "While not a direct breach of 1Password, these large-scale incidents involving billions of leaked records and a breach of Microsoft's email system underscore the importance of strong password hygiene, which 1Password helps facilitate. The incidents highlight the risks of password reuse and the need for robust security measures.",
+        "sources": [
+          "https://1password.com/blog/one-breach-one-leak/"
+        ]
+      }
+    ],
+    "summary": "1Password has been the target of phishing campaigns and indirectly affected by third-party breaches, but no direct breaches compromising user data have been reported.",
+    "sources": []
+  },
+  "docs": {
+    "encryption": [
+      "End-to-end encryption",
+      "AES-GCM-256",
+      "PBKDF2 key strengthening"
+    ],
+    "authentication": [
+      "Secure Remote Password (SRP)",
+      "Biometrics",
+      "System authentication"
+    ],
+    "data_handling": [
+      "Data is encrypted before leaving the user's device"
+    ],
+    "admin_controls": [
+      "Family organizers",
+      "Team administrators"
+    ],
+    "deployment_model": [
+      "SaaS (hosted service)"
+    ],
+    "summary": "1Password prioritizes a strong encryption-based security model, ensuring that only the user, with their account password and Secret Key, can decrypt and access their data. While authentication is used for account access and service provision, it's secondary to the robust encryption protecting the data itself. Features like automatic clipboard clearing, code signature validation, auto-lock, and phishing protection further enhance security. The company emphasizes transparency and the use of open standards and algorithms.",
+    "sources": [
+      "https://support.1password.com/authentication-encryption/",
+      "https://support.1password.com/1password-security/",
+      "https://1password.com/files/1password-white-paper.pdf"
+    ]
+  }
+}

@@ -20,7 +20,7 @@ class State(TypedDict, total=False):
     category: AppCategoryResult
     report: ResearchReport
 
-ai = AI(model="gemini-2.5-flash", temperature=0.2)
+ai = AI(model="gemini-2.5-flash-lite", temperature=0.2)
 
 # ---- Agent node helpers ----
 def _tools():  # keep tools centralized; easy to add more later
