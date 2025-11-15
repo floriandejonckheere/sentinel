@@ -45,7 +45,7 @@ class State(TypedDict, total=False):
     full_assessment: FullAssesment
     
 
-ai = AI(model="gemini-2.5-flash", temperature=0.2)
+ai = AI(model="gemini-2.5-flash-lite", temperature=0.2)
 
 
 # ---- Agent node helpers ----
@@ -409,7 +409,7 @@ def finalize_node(state: State) -> State:
     incident_counts: IncidentCounts = build_incident_counts(incidents)
 
     full = FullAssesment(
-        id=f"{vendor.name.lower().replace(' ', '-')}-{vendor.legal_name.lower().replace(' ', '-')}",
+        id=None,
         metadata=metadata,
         vendor=vendor,
         cve=cve,

@@ -87,6 +87,9 @@ class VendorIntel(BaseModel):
         description="URLs used to derive this information.",
     )
 
+class ApplicationIntel(BaseModel):
+    name: str = Field(..., description="The official name of the application or product.")
+    description: Optional[str] = Field(None, description="A brief description of the application or product.")
 
 class CVEItem(BaseModel):
     """Individual vulnerability record."""
@@ -274,6 +277,8 @@ ALLOWED_SUBCATEGORIES = [
 
 class AppCategoryResult(BaseModel):
     """Two-level classification output for a vendor/product."""
+    
+    application_intel: ApplicationIntel = Field(..., description="Application information including name and description.")
 
     category: str = Field(
         ...,

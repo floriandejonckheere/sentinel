@@ -1,0 +1,255 @@
+{
+  "id": null,
+  "metadata": {
+    "assessed_at": "2025-11-15T17:28:19.848013+00:00"
+  },
+  "vendor": {
+    "name": "1Password",
+    "legal_name": "AgileBits Inc.",
+    "country": "Canada",
+    "size": "over 1,300 people",
+    "url": null,
+    "notable_customers": [
+      "Oracle Red Bull Racing",
+      "HackerOne",
+      "BuzzFeed",
+      "Reddit",
+      "ClickUp",
+      "Warriors",
+      "AP",
+      "Under Armour"
+    ],
+    "security_team": "The 1Password Security team is a crew of wonderful characters responsible for security, privacy, and compliance.",
+    "sources": [
+      "https://1password.com/company",
+      "https://1password.com/customer-stories",
+      "https://1password.com/security",
+      "https://1password.com/blog/how-the-1password-security-team-evaluates-new-tools",
+      "https://1password.com/press/2025/nov/1password-expands-leadership-team"
+    ]
+  },
+  "cve": {
+    "by_year_counts": {},
+    "critical": [],
+    "trend": "Stable",
+    "summary": "No recent CVEs were found for 1Password in the last 120 days.",
+    "sources": []
+  },
+  "cves": {
+    "total": 0,
+    "critical": 0,
+    "high": 0,
+    "medium": 0,
+    "low": 0,
+    "trend": "stable"
+  },
+  "incidents": {
+    "total": 4,
+    "critical": 0,
+    "high": 2,
+    "medium": 2,
+    "low": 0,
+    "trend": "degrading"
+  },
+  "incident": {
+    "items": [
+      {
+        "title": "Phishing Campaign Targeting 1Password Users with Fake Breach Alert",
+        "date": "October 2023",
+        "severity": "High",
+        "description": "Scammers sent convincing phishing emails impersonating 1Password's Watchtower feature, attempting to trick users into resetting their passwords and revealing their credentials. The emails urged immediate action, claiming the user's account was compromised.",
+        "sources": [
+          "https://www.malwarebytes.com/blog/news/2025/10/phishers-target-1password-users-with-convincing-fake-breach-alert"
+        ]
+      },
+      {
+        "title": "1Password Affected by Okta Breach",
+        "date": "September 2023",
+        "severity": "Medium",
+        "description": "1Password reported a security incident where an attacker accessed its Okta environment. While no user data was compromised, the incident was linked to a broader breach at Okta, highlighting supply chain risks.",
+        "sources": [
+          "https://www.threatdown.com/blog/1password-reports-security-incident-after-breach-at-okta/"
+        ]
+      },
+      {
+        "title": "Master Password Reset Phishing Campaign",
+        "date": "March 2025",
+        "severity": "High",
+        "description": "A phishing campaign targeted 1Password users, urging them to reset their master password and provide their 'Secret Key' due to a supposed security issue. 1Password confirmed this was not a breach of their systems but a phishing attempt.",
+        "sources": [
+          "https://www.forbes.com/sites/daveywinder/2025/03/12/1password-warning-dont-reset-your-master-password/"
+        ]
+      },
+      {
+        "title": "Large Credential Leak Potentially Affecting 1Password Users",
+        "date": "Unknown (data recycled)",
+        "severity": "Medium",
+        "description": "A massive dataset of approximately 16 billion login credentials, likely compiled from older breaches, was found online. Users who reuse passwords or haven't updated credentials could be at risk if their information is included.",
+        "sources": [
+          "https://1password.com/blog/what-to-do-16-billion-password-data-leak"
+        ]
+      }
+    ],
+    "trend": "degrading",
+    "summary": "Multiple phishing campaigns and a supply chain incident related to Okta have targeted 1Password users, highlighting ongoing risks. While 1Password states its systems remain secure and no user data has been compromised in these specific incidents, the frequency and nature of these attacks indicate a degrading security posture for users who may fall victim to social engineering tactics.",
+    "sources": []
+  },
+  "architecture": {
+    "encryption": "AES-GCM-256, end-to-end encryption",
+    "key_derivation": "PBKDF2-HMAC-SHA256",
+    "zero_knowledge": null,
+    "open_source": null,
+    "authentication": "Secure Remote Password (SRP)",
+    "deployment": null
+  },
+  "compliance": {
+    "certs": [
+      {
+        "type": "SOC 2 Type II",
+        "status": "Certified",
+        "year": null,
+        "issued_by": null,
+        "issue_date": null,
+        "expiration_date": null,
+        "scope": null,
+        "auditor": null,
+        "report_url": null,
+        "standards": [],
+        "summary": "1Password is SOC 2 Type 2 certified, indicating that they securely manage data to protect customer interests and privacy. This certification covers security, availability, confidentiality, and privacy of customer data.",
+        "sources": []
+      },
+      {
+        "type": "ISO 27001:2022",
+        "status": "Certified",
+        "year": null,
+        "issued_by": null,
+        "issue_date": null,
+        "expiration_date": null,
+        "scope": null,
+        "auditor": null,
+        "report_url": null,
+        "standards": [],
+        "summary": "1Password has achieved ISO 27001:2022 certification, demonstrating adherence to international standards for information security management systems.",
+        "sources": []
+      },
+      {
+        "type": "ISO 27017:2015",
+        "status": "Certified",
+        "year": null,
+        "issued_by": null,
+        "issue_date": null,
+        "expiration_date": null,
+        "scope": null,
+        "auditor": null,
+        "report_url": null,
+        "standards": [],
+        "summary": "This certification signifies compliance with international standards for cloud security, providing information security controls for cloud service providers and customers.",
+        "sources": []
+      },
+      {
+        "type": "ISO 27018:2019",
+        "status": "Certified",
+        "year": null,
+        "issued_by": null,
+        "issue_date": null,
+        "expiration_date": null,
+        "scope": null,
+        "auditor": null,
+        "report_url": null,
+        "standards": [],
+        "summary": "This certification indicates adherence to standards for protecting Personally Identifiable Information (PII) in public cloud computing environments.",
+        "sources": []
+      },
+      {
+        "type": "ISO 27701:2019",
+        "status": "Certified",
+        "year": null,
+        "issued_by": null,
+        "issue_date": null,
+        "expiration_date": null,
+        "scope": null,
+        "auditor": null,
+        "report_url": null,
+        "standards": [],
+        "summary": "This certification confirms that 1Password meets international standards for establishing, implementing, and maintaining a Privacy Information Management System (PIMS).",
+        "sources": []
+      }
+    ],
+    "overall_summary": "1Password demonstrates a strong commitment to security and privacy through multiple third-party validations. They hold SOC 2 Type 2 certification and a comprehensive set of ISO certifications (27001, 27017, 27018, and 27701), covering information security management, cloud security, and privacy. These certifications collectively affirm that 1Password adheres to high international standards for managing and protecting sensitive data. While GDPR is a significant framework, its specific status for 1Password was not detailed in the provided text, though the ISO 27701 certification is highly relevant to privacy regulations like GDPR.",
+    "sources": [],
+    "data_residency": "Global"
+  },
+  "application": {
+    "application_intel": {
+      "name": "1Password",
+      "description": "1Password is a password manager that helps users store and manage their passwords, credit cards, secure notes, and other sensitive information."
+    },
+    "category": "Security",
+    "subcategory": "Password Manager",
+    "url": null
+  },
+  "alternatives": {
+    "items": [
+      {
+        "name": "Dashlane",
+        "risk_score": 8.5,
+        "reason": "Known for its user-friendly interface, strong security, and features like a VPN.",
+        "sources": []
+      },
+      {
+        "name": "Keeper",
+        "risk_score": 8.7,
+        "reason": "Offers flexibility and customization, with a strong focus on security and a good option for sharing passwords.",
+        "sources": []
+      },
+      {
+        "name": "NordPass",
+        "risk_score": 8.5,
+        "reason": "A solid choice with a user-friendly design and a generous free version.",
+        "sources": []
+      },
+      {
+        "name": "Bitwarden",
+        "risk_score": 8.4,
+        "reason": "A popular open-source option that is very affordable and offers a comprehensive free plan.",
+        "sources": []
+      },
+      {
+        "name": "Enpass",
+        "risk_score": 8.2,
+        "reason": "Provides more control over data storage by allowing local synchronization and offers a one-time purchase option.",
+        "sources": []
+      }
+    ]
+  },
+  "summary": {
+    "trust_score": {
+      "score": 78,
+      "confidence": "high",
+      "trend": "stable",
+      "architecture": 75,
+      "data_protection": 80,
+      "identity_access": 75,
+      "devsecops": 100,
+      "historical_security": 85,
+      "compliance": 75,
+      "platform_security": 80,
+      "risks_exposure": 58
+    },
+    "key_strengths": [
+      "Employs robust end-to-end encryption (AES-GCM-256) for data security.",
+      "Utilizes the Secure Remote Password (SRP) protocol for secure authentication.",
+      "Holds SOC 2 Type II certification, demonstrating strong data security and privacy controls.",
+      "Certified with multiple ISO standards (27001, 27017, 27018, 27701) for information security and privacy management.",
+      "No recent critical CVEs reported, indicating a stable vulnerability posture.",
+      "Has a strong list of notable enterprise customers, suggesting market trust."
+    ],
+    "key_risks": [
+      "Multiple phishing campaigns and a supply chain incident (Okta breach) have targeted users, indicating a risk of social engineering attacks.",
+      "While 1Password's systems are reported as secure, the frequency of user-targeted attacks suggests a potential for user error or compromise.",
+      "Details on specific admin controls, audit logs, and data residency options are not fully elaborated in the provided documentation.",
+      "The 'zero_knowledge' aspect of the architecture is not explicitly detailed.",
+      "The 'open_source' status of the application is not specified."
+    ]
+  }
+}
