@@ -178,7 +178,10 @@ export default function AssessmentDetails() {
                 )}
                 {visibleCards.alternatives && (
                     <div>
-                        <AlternativesCard alternatives={assessment.alternatives.items} />
+                        <AlternativesCard
+                            alternatives={assessment.alternatives.items}
+                            currentRole={role || 'global'}
+                        />
                     </div>
                 )}
             </div>
