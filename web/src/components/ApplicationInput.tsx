@@ -16,6 +16,13 @@ export default function ApplicationInput({ onSubmit, onBack }: ApplicationInputP
     }
   }
 
+  const handleExampleClick = (example: string) => {
+    setInputValue(example)
+    onSubmit(example)
+  }
+
+  const examples = ['1Password', 'Skype', 'CCleaner', 'Dropbox']
+
   return (
     <form onSubmit={handleSubmit} className="transition-opacity duration-500">
       <div className="flex items-center justify-center mb-10 gap-4">
@@ -54,6 +61,23 @@ export default function ApplicationInput({ onSubmit, onBack }: ApplicationInputP
         >
           <PaperAirplaneIcon className="h-6 w-6" />
         </button>
+      </div>
+
+      {/* Example buttons */}
+      <div className="mt-6 flex flex-wrap justify-center gap-3">
+        <span className="text-sm text-gray-500 dark:text-gray-400 self-center mr-2">
+          Try an example:
+        </span>
+        {examples.map((example) => (
+          <button
+            key={example}
+            type="button"
+            onClick={() => handleExampleClick(example)}
+            className="px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
+          >
+            {example}
+          </button>
+        ))}
       </div>
     </form>
   )

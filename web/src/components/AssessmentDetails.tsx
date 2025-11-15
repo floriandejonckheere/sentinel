@@ -20,6 +20,33 @@ export default function AssessmentDetails() {
     const [assessment, setAssessment] = useState<Assessment | null>(null)
     const [error, setError] = useState<string | null>(null)
 
+    // Determine which cards to show based on role
+    const getVisibleCards = (role: string | null) => {
+        const roleCardsMap: Record<string, string[]> = {
+            executive: ['trustScore', 'spiderChart', 'keyTakeaways'],
+            security: ['vulnerabilities', 'incidents'],
+            compliance: ['certifications', 'compliance'],
+            technical: ['architecture'],
+            global: ['trustScore', 'spiderChart', 'vulnerabilities', 'incidents', 'keyTakeaways', 'architecture', 'certifications', 'compliance']
+        }
+
+        const normalizedRole = role?.toLowerCase() || 'global'
+        const allowedCards = roleCardsMap[normalizedRole] || roleCardsMap.global
+
+        return {
+            trustScore: allowedCards.includes('trustScore'),
+            spiderChart: allowedCards.includes('spiderChart'),
+            vulnerabilities: allowedCards.includes('vulnerabilities'),
+            incidents: allowedCards.includes('incidents'),
+            keyTakeaways: allowedCards.includes('keyTakeaways'),
+            architecture: allowedCards.includes('architecture'),
+            certifications: allowedCards.includes('certifications'),
+            compliance: allowedCards.includes('compliance'),
+        }
+    }
+
+    const visibleCards = getVisibleCards(role)
+
     useEffect(() => {
         if (id) {
             fetchAssessment(id)
@@ -84,39 +111,55 @@ export default function AssessmentDetails() {
 
             {/* All other cards - Two Column Flexbox Layout */}
             <div className="flex flex-wrap gap-6">
-                <div className="flex-1 min-w-[calc(50%-0.75rem)]">
-                    <TrustScoreCard
-                        score={assessment.summary.trust_score.score}
-                        confidence={assessment.summary.trust_score.confidence}
-                    />
-                </div>
-                <div className="flex-1 min-w-[calc(50%-0.75rem)]">
-                    <SpiderChartCard data={assessment.summary.trust_score}/>
-                </div>
-                <div className="flex-1 min-w-[calc(50%-0.75rem)]">
-                    <VulnerabilitiesCard cves={assessment.cves}/>
-                </div>
-                <div className="flex-1 min-w-[calc(50%-0.75rem)]">
-                    <IncidentsCard incidents={assessment.incidents}/>
-                </div>
-                <div className="flex-1 min-w-[calc(50%-0.75rem)]">
-                    <KeyTakeawaysCard
-                        strengths={assessment.summary.key_strengths}
-                        risks={assessment.summary.key_risks}
-                    />
-                </div>
-                <div className="flex-1 min-w-[calc(50%-0.75rem)]">
-                    <ArchitectureCard architecture={assessment.architecture}/>
-                </div>
-                <div className="flex-1 min-w-[calc(50%-0.75rem)]">
-                    <CertificationsCard certifications={assessment.compliance.certifications}/>
-                </div>
-                <div className="flex-1 min-w-[calc(50%-0.75rem)]">
-                    <ComplianceCard
-                        frameworks={assessment.compliance.frameworks}
-                        dataResidency={assessment.compliance.data_residency}
-                    />
-                </div>
+                {visibleCards.trustScore && (
+                    <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                        <TrustScoreCard
+                            score={assessment.summary.trust_score.score}
+                            confidence={assessment.summary.trust_score.confidence}
+                        />
+                    </div>
+                )}
+                {visibleCards.spiderChart && (
+                    <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                        <SpiderChartCard data={assessment.summary.trust_score}/>
+                    </div>
+                )}
+                {visibleCards.vulnerabilities && (
+                    <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                        <VulnerabilitiesCard cves={assessment.cves}/>
+                    </div>
+                )}
+                {visibleCards.incidents && (
+                    <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                        <IncidentsCard incidents={assessment.incidents}/>
+                    </div>
+                )}
+                {visibleCards.keyTakeaways && (
+                    <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                        <KeyTakeawaysCard
+                            strengths={assessment.summary.key_strengths}
+                            risks={assessment.summary.key_risks}
+                        />
+                    </div>
+                )}
+                {visibleCards.architecture && (
+                    <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                        <ArchitectureCard architecture={assessment.architecture}/>
+                    </div>
+                )}
+                {visibleCards.certifications && (
+                    <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                        <CertificationsCard certifications={assessment.compliance.certifications}/>
+                    </div>
+                )}
+                {visibleCards.compliance && (
+                    <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                        <ComplianceCard
+                            frameworks={assessment.compliance.frameworks}
+                            dataResidency={assessment.compliance.data_residency}
+                        />
+                    </div>
+                )}
             </div>
         </div>
     )
