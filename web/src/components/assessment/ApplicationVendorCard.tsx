@@ -2,7 +2,7 @@ interface ApplicationVendorCardProps {
   application: {
     application_intel: {
         name: string
-        vendorName: string
+        vendor_name: string
     }
     description: string
     url: string
@@ -12,7 +12,7 @@ interface ApplicationVendorCardProps {
   vendor: {
     name: string
     legal_name: string
-    country: string
+    country: string | null
     url: string
   }
   assessedAt: string
@@ -53,7 +53,8 @@ function getRelativeTime(dateString: string): string {
   return `${diffYears} years ago`
 }
 
-function getCountryName(countryCode: string): string {
+function getCountryName(countryCode?: string | null): string {
+  if (!countryCode) return ''
   const countryMap: Record<string, string> = {
     'US': 'United States',
     'GB': 'United Kingdom',
@@ -104,7 +105,7 @@ export default function ApplicationVendorCard({ application, vendor, assessedAt 
         {application.application_intel.name}
       </h3>
       <p className="text-xl text-gray-600 dark:text-gray-400 mb-6">
-        By {vendor.name}, {getCountryName(vendor.country)}
+        By {application.application_intel.vendor_name}{vendor.country ? `, ${getCountryName(vendor.country)}` : ''}
       </p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-left pt-6 border-t border-gray-200 dark:border-gray-600">
