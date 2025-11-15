@@ -9,6 +9,7 @@ import SpiderChartCard from './assessment/SpiderChartCard'
 import KeyTakeawaysCard from './assessment/KeyTakeawaysCard'
 import ArchitectureCard from './assessment/ArchitectureCard'
 import CertificationsCard from './assessment/CertificationsCard'
+import ComplianceCard from './assessment/ComplianceCard'
 
 export default function AssessmentDetails() {
     const {id} = useParams<{ id: string }>()
@@ -105,6 +106,12 @@ export default function AssessmentDetails() {
                 </div>
                 <div className="flex-1 min-w-[calc(50%-0.75rem)]">
                     <CertificationsCard certifications={assessment.compliance.certifications}/>
+                </div>
+                <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                    <ComplianceCard
+                        frameworks={assessment.compliance.frameworks}
+                        dataResidency={assessment.compliance.data_residency}
+                    />
                 </div>
             </div>
         </div>

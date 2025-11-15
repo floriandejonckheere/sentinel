@@ -44,7 +44,7 @@ export interface Assessment {
     }
     compliance: {
         certifications: {
-            name: string
+            type: string
             status: "active" | "expired" | "pending"
             issued_by: string
             issue_date: string
