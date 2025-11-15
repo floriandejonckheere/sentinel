@@ -1,3 +1,5 @@
+import { InformationCircleIcon } from '@heroicons/react/24/outline'
+
 interface ApplicationVendorCardProps {
   application: {
     application_intel: {
@@ -110,16 +112,24 @@ export default function ApplicationVendorCard({ application, vendor, assessedAt 
 
       <div className={`grid ${vendor.url ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-2 md:grid-cols-3'} gap-4 text-left pt-6 border-t border-gray-200 dark:border-gray-600`}>
         <div>
-          <span className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+          <span className="flex items-center gap-1 text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
             Category
+            <InformationCircleIcon
+              className="h-4 w-4 text-gray-400 dark:text-gray-500 cursor-help"
+              title="These (sub-)categories follow Gartner Market Guide, G2, Microsoft Enterprise, and NIST software function classes."
+            />
           </span>
           <span className="text-base text-gray-900 dark:text-white">
             {application.category}
           </span>
         </div>
         <div>
-          <span className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+          <span className="flex items-center gap-1 text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
             Subcategory
+            <InformationCircleIcon
+              className="h-4 w-4 text-gray-400 dark:text-gray-500 cursor-help"
+              title="These (sub-)categories follow Gartner Market Guide, G2, Microsoft Enterprise, and NIST software function classes."
+            />
           </span>
           <span className="text-base text-gray-900 dark:text-white">
             {application.subcategory}
