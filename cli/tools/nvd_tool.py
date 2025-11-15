@@ -150,8 +150,8 @@ def nvd_keyword_search_minimal_120d(
     start_index: int = 0,
 ) -> Dict[str, Any]:
     """
-    Search NVD CVE API by keyword over the last 120 days and return
-    only the fields needed to build CVEItem / CVESection.
+    Search NVD CVE API by keyword over progressively older 120-day windows
+    until we get at least 5 vulnerabilities or reach 5 steps (600 days total).
 
     Returns:
         {
@@ -167,43 +167,69 @@ def nvd_keyword_search_minimal_120d(
           ]
         }
     """
-    pub_start, pub_end = get_120_day_range()
-
-    params = {
-        "keywordSearch": keyword,
-        "pubStartDate": pub_start,
-        "pubEndDate": pub_end,
-        "resultsPerPage": results_per_page,
-        "startIndex": start_index,
-    }
-
-    response = requests.get(NVD_BASE_URL, params=params, timeout=30)
-    response.raise_for_status()
-    data = response.json()
-
-    vulns = data.get("vulnerabilities") or []
     minimal_cves: List[Dict[str, Any]] = []
+    max_steps = 5
+    min_vulnerabilities = 5
 
-    for v in vulns:
-        cve_obj = v.get("cve") or {}
+    now = datetime.now(timezone.utc)
 
-        cve_id = cve_obj.get("id")
-        if not cve_id:
-            continue  
+    for step in range(max_steps):
+        # Calculate time range for this step
+        # Step 0: last 120 days (end=now, start=now-120)
+        # Step 1: 120-240 days ago (end=now-120, start=now-240)
+        # etc.
+        end_offset = timedelta(days=120 * step)
+        start_offset = timedelta(days=120 * (step + 1))
 
-        description = _extract_description(cve_obj)
-        severity = _extract_severity(cve_obj)
-        year = _extract_year(cve_obj)
-        sources = _extract_sources(cve_obj)
+        end = now - end_offset
+        start = now - start_offset
 
-        minimal_cves.append(
-            {
-                "cve_id": cve_id,
-                "severity": severity,        # "Critical" | "High" | "Medium" | "Low" | None
-                "description": description,
-                "year": year,
-                "sources": sources,
-            }
-        )
+        pub_start = start.strftime(DATE_FORMAT)
+        pub_end = end.strftime(DATE_FORMAT)
+
+        params = {
+            "keywordSearch": keyword,
+            "pubStartDate": pub_start,
+            "pubEndDate": pub_end,
+            "resultsPerPage": results_per_page,
+            "startIndex": start_index,
+        }
+
+        try:
+            response = requests.get(NVD_BASE_URL, params=params, timeout=30)
+            response.raise_for_status()
+            data = response.json()
+
+            vulns = data.get("vulnerabilities") or []
+
+            for v in vulns:
+                cve_obj = v.get("cve") or {}
+
+                cve_id = cve_obj.get("id")
+                if not cve_id:
+                    continue
+
+                description = _extract_description(cve_obj)
+                severity = _extract_severity(cve_obj)
+                year = _extract_year(cve_obj)
+                sources = _extract_sources(cve_obj)
+
+                minimal_cves.append(
+                    {
+                        "cve_id": cve_id,
+                        "severity": severity,        # "Critical" | "High" | "Medium" | "Low" | None
+                        "description": description,
+                        "year": year,
+                        "sources": sources,
+                    }
+                )
+        except Exception as e:
+            # Log error but continue to next step
+            print(f"Error fetching CVEs for step {step}: {e}")
+            continue
+
+        # Check if we have enough vulnerabilities
+        if len(minimal_cves) >= min_vulnerabilities:
+            break
 
     return {"cves": minimal_cves}
