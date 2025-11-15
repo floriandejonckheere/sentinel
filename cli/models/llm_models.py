@@ -116,7 +116,7 @@ class CVESection(BaseModel):
 
 class ComplianceCert(BaseModel):
     """Single compliance certification assesment."""
-    type: str = Field(..., description="Certification (e.g., ISO 27001, SOC 2 Type II).")
+    name: str = Field(..., description="Certification (e.g., ISO 27001, SOC 2 Type II).")
     status: str = Field(..., description="Status or outcome (e.g., Certified, In Progress, Claimed, Expired).")
     year: Optional[int] = Field(None, description="Year the certification was issued or last audited.")
     issued_by: Optional[str] = Field(None, description="Issuing body or certification authority (e.g., 'A-LIGN', 'BSI').")
