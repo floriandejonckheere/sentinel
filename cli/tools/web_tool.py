@@ -14,6 +14,8 @@ class SearchScrapeInput(BaseModel):
     query: str = Field(..., description="Search query to find relevant pages.")
     top_k: int = Field(3, ge=1, le=10, description="How many pages to scrape from search results.")
     min_chars: int = Field(200, ge=0, description="Ignore pages whose extracted text is shorter than this.")
+    max_page_chars: int = Field(3000, ge=500, le=20000, description="Hard cap per page after cleaning; excess truncated.")
+    max_total_chars: int = Field(8000, ge=1000, le=50000, description="Maximum total characters in combined_corpus.")
     include_domains: Optional[List[str]] = Field(
         default=None,
         description="If set, only accept pages whose hostname contains any of these substrings."
@@ -68,7 +70,6 @@ def fetch_text(url: str, *, timeout: int = 12) -> Tuple[str, str]:
 
     # Try Readability to get article-like main content
     title = ""
-    text = ""
     try:
         doc = Document(html)
         title = (doc.short_title() or doc.title() or "").strip()
@@ -86,9 +87,18 @@ def fetch_text(url: str, *, timeout: int = 12) -> Tuple[str, str]:
             t.decompose()
 
     # Extract text cleanly
-    text = " ".join(s.strip() for s in soup.get_text("\n").splitlines() if s.strip())
-    text = re.sub(r"\s+", " ", text).strip()
-    return title, text
+    raw = " ".join(s.strip() for s in soup.get_text("\n").splitlines() if s.strip())
+    raw = re.sub(r"\s+", " ", raw).strip()
+    # Remove common boilerplate phrases (heuristic)
+    boilerplate_patterns = [
+        r"cookie preferences", r"all rights reserved", r"privacy policy", r"terms of (use|service)",
+        r"subscribe", r"sign up", r"newsletter", r"follow us", r"contact us"
+    ]
+    lowered = raw.lower()
+    for pat in boilerplate_patterns:
+        lowered = re.sub(pat, "", lowered)
+    cleaned = re.sub(r"\s+", " ", lowered).strip()
+    return title, cleaned
 
 def _domain_allowed(url: str, include: Optional[List[str]], exclude: Optional[List[str]]) -> bool:
     host = _hostname(url).lower()
@@ -108,6 +118,8 @@ def search_scrape_tool(
     query: str,
     top_k: int = 3,
     min_chars: int = 200,
+    max_page_chars: int = 4000,
+    max_total_chars: int = 10000,
     include_domains: Optional[List[str]] = None,
     exclude_domains: Optional[List[str]] = None,
 ) -> dict:
@@ -140,18 +152,32 @@ def search_scrape_tool(
             continue
         if min_chars and len(text) < min_chars:
             continue
+        # Truncate page content hard cap
+        if len(text) > max_page_chars:
+            text = text[:max_page_chars]
+            last_period = text.rfind('.')
+            if last_period > max_page_chars * 0.6:
+                text = text[:last_period+1]
 
         # Prefer SERP title if Readability didn't produce one
         title = title or (item.get("title") or "")
-        pages.append({
-            "url": url,
-            "title": title,
-            "content": text,
-        })
-
-    combined = "\n\n---\n\n".join(p["content"] for p in pages)
-    return {
-        "query": query,
-        "pages": pages,
-        "combined_corpus": combined,
-    }
+        pages.append({"url": url, "title": title, "content": text})
+    # Build combined corpus with total cap
+    combined_parts = []
+    total_chars = 0
+    for p in pages:
+        segment = p["content"]
+        if total_chars + len(segment) > max_total_chars:
+            remaining = max_total_chars - total_chars
+            if remaining <= 0:
+                break
+            segment = segment[:remaining]
+            last_period = segment.rfind('.')
+            if last_period > remaining * 0.5:
+                segment = segment[:last_period+1]
+        combined_parts.append(segment)
+        total_chars += len(segment)
+        if total_chars >= max_total_chars:
+            break
+    combined = "\n\n---\n\n".join(combined_parts)
+    return {"query": query, "pages": pages, "combined_corpus": combined}
