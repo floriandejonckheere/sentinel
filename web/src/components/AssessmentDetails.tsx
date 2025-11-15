@@ -156,7 +156,7 @@ export default function AssessmentDetails() {
                     <div className="flex-1 min-w-[calc(50%-0.75rem)]">
                         <ComplianceCard
                             frameworks={assessment.compliance.frameworks}
-                            dataResidency={assessment.compliance.data_residency}
+                            data_residency={assessment.compliance.data_residency}
                         />
                     </div>
                 )}
