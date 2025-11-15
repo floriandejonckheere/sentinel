@@ -26,7 +26,7 @@ export default function AssessmentWorkflow({ onRoleChange }: AssessmentWorkflowP
 
   // Determine initial step from URL
   const getStepFromPath = (path: string): Step => {
-    if (path === '/' || path === '/application') return 'application'
+    if (path === '/name') return 'application'
     if (path === '/role') return 'role'
     if (path === '/size') return 'size'
     if (path === '/risk') return 'risk'
@@ -77,7 +77,7 @@ export default function AssessmentWorkflow({ onRoleChange }: AssessmentWorkflowP
   }
 
   const navigateToStep = (step: Step, data: AssessmentData) => {
-    const path = step === 'application' ? '/' : `/${step}`
+    const path = step === 'application' ? '/name' : `/${step}`
     const query = buildQueryString(data)
     navigate(`${path}${query}`)
   }
