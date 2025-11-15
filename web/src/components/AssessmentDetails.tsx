@@ -5,6 +5,7 @@ import LoadingSpinner from './LoadingSpinner'
 import ApplicationVendorCard from './assessment/ApplicationVendorCard'
 import TrustScoreCard from './assessment/TrustScoreCard'
 import VulnerabilitiesCard from './assessment/VulnerabilitiesCard'
+import SpiderChartCard from './assessment/SpiderChartCard'
 
 export default function AssessmentDetails() {
     const {id} = useParams<{ id: string }>()
@@ -73,12 +74,17 @@ export default function AssessmentDetails() {
                 />
             </div>
 
-            {/* Second Row - Trust Score & Vulnerabilities Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Second Row - Trust Score & Spider Chart Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <TrustScoreCard
                     score={assessment.summary.trust_score.score}
                     confidence={assessment.summary.trust_score.confidence}
                 />
+                <SpiderChartCard data={assessment.summary.trust_score}/>
+            </div>
+
+            {/* Third Row - Vulnerabilities Card */}
+            <div>
                 <VulnerabilitiesCard cves={assessment.cves}/>
             </div>
         </div>
