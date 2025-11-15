@@ -24,6 +24,7 @@ from .models.llm_models import (
     CVECounts,
     IncidentCounts,
     AssessmentMetadata,
+    TrustTrend,
 )
 
 from cli.helpers.build_metadata import build_metadata
@@ -177,19 +178,52 @@ def compliance_node(state: State) -> State:
     return {"compliance": result}
 
 def incidents_node(state: State) -> State:
+    # Strengthened prompt with explicit schema & fallback behavior
     prompt = (
-        "You are an Incident & Breach analyst. Search news/blogs for confirmed security incidents, controversies, or public advisories. "
-        "Return IncidentSection with 3–10 items, each with title, date (if available), severity (Low/Med/High if inferred), "
-        "a 1–2 sentence description, and sources. If none found, include summary explaining search coverage."
+        "You are an Incident & Breach analyst. Use web search ONCE to gather confirmed security incidents, controversies, "
+        "or public breach/advisory events for the vendor/product.\n\n"
+        "Return a JSON matching IncidentSection with fields: items (list[IncidentSignal]), trend (Improving|Degrading|Stable), "
+        "summary (2-5 sentences), sources (deduped list of URLs).\n"
+        "Each IncidentSignal must have: title, date (ISO8601 or null), severity (High|Medium|Low or null if unclear), description (1-2 sentences), sources (list of URLs).\n\n"
+        "Rules:\n"
+        "- 3–10 items when incidents exist; if genuinely none, items=[], summary MUST explain no confirmed incidents found.\n"
+        "- Do NOT invent or hallucinate incidents; prefer reputable news or official disclosures.\n"
+        "- If severity cannot be confidently inferred, set it to null.\n"
+        "- Always produce a non-empty summary.\n"
+        "- Trend: recent increase in incidents => Degrading; decrease => Improving; otherwise Stable.\n"
+        "- sources must aggregate unique URLs across items.\n"
     )
-    result = ai.generate_structured_with_tools(
-        prompt=prompt,
-        input_text=state["query"] + " breach incident security news",
-        tools=_tools(),
-        output_model=IncidentSection,
-        max_steps=8,
-    )
-    return {"incidents": result}
+
+    query = state["query"] + " security breach incident compromise leak disclosure"
+    try:
+        result = ai.generate_structured_with_tools(
+            prompt=prompt,
+            input_text=query,
+            tools=_tools(),
+            output_model=IncidentSection,
+            max_steps=8,
+        )
+        # Instrumentation: print raw structured incidents for debugging
+        try:
+            print("[debug/incidents]", result.model_dump_json(indent=2))
+        except Exception:
+            pass
+        # Ensure summary present
+        if not result.summary.strip():
+            result.summary = (
+                "No validated public security incidents found in current search. This does not guarantee historical absence; "
+                "only that no confirmed events were identified via the tool query."
+            )
+        return {"incidents": result}
+    except Exception as e:
+        # Fallback empty structure with explanatory summary
+        fallback = IncidentSection(
+            items=[],
+            trend=TrustTrend.stable,
+            summary=f"Incident collection failed: {e}",
+            sources=[],
+        )
+        return {"incidents": fallback}
 
 def docs_node(state: State) -> State:
     prompt = (
@@ -318,10 +352,6 @@ def summary_node(state: State) -> State:
     incidents = state.get("incidents")
     if incidents is not None:
         parts.append("IncidentSection:\n" + incidents.model_dump_json(indent=2))
-    
-    incident = state.get("incident")
-    if incident is not None:
-        parts.append("IncidentSection:\n" + incident.model_dump_json(indent=2))
 
     architecture = state.get("architecture")
     if architecture is not None:
@@ -416,7 +446,7 @@ def finalize_node(state: State) -> State:
         cve=cve,
         cves=cve_counts,
         incidents=incident_counts,
-        incident=incidents,
+        incident=incidents,  # detailed section
         architecture=architecture,
         compliance=compliance,
         application=category,
