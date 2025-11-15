@@ -97,7 +97,7 @@ function getCountryName(countryCode?: string | null): string {
 
 export default function ApplicationVendorCard({ application, vendor, assessedAt }: ApplicationVendorCardProps) {
   return (
-    <div className="bg-white dark:bg-gray-700 rounded-2xl p-8 border border-gray-300 dark:border-gray-600 shadow-lg relative">
+    <div className="bg-white dark:bg-gray-700 rounded-2xl p-4 sm:p-6 md:p-8 border border-gray-300 dark:border-gray-600 shadow-lg relative">
       <div className="absolute top-4 right-6">
         <p className="text-xs text-gray-500 dark:text-gray-400" title={formatDate(assessedAt)}>
           Assessed <span className="cursor-help">{getRelativeTime(assessedAt)}</span>
@@ -105,20 +105,20 @@ export default function ApplicationVendorCard({ application, vendor, assessedAt 
       </div>
 
       <div className="mb-3">
-        <h3 className="text-4xl font-bold text-gray-900 dark:text-white inline">
+        <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white inline">
           {application.application_intel.name}
         </h3>
         {application.application_intel.version && (
-          <span className="ml-3 text-lg text-gray-500 dark:text-gray-400">
+          <span className="ml-2 sm:ml-3 text-sm sm:text-base md:text-lg text-gray-500 dark:text-gray-400">
             {application.application_intel.version}
           </span>
         )}
       </div>
-      <p className="text-xl text-gray-600 dark:text-gray-400 mb-6">
+      <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-6">
         By {application.application_intel.vendor_name}{vendor.country ? ` (${getCountryName(vendor.country)})` : ''}
       </p>
 
-      <div className={`grid ${vendor.url ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-2 md:grid-cols-3'} gap-4 text-left pt-6 border-t border-gray-200 dark:border-gray-600`}>
+      <div className={`grid ${vendor.url ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-4' : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3'} gap-4 text-left pt-6 border-t border-gray-200 dark:border-gray-600`}>
         <div>
           <span className="flex items-center gap-1 text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
             Category

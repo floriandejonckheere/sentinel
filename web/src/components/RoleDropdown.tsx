@@ -37,17 +37,17 @@ export default function RoleDropdown({ currentRole, onRoleChange, disabled = fal
       <button
         onClick={() => !disabled && setIsOpen(!isOpen)}
         disabled={disabled}
-        className={`flex items-center justify-between px-4 py-2 text-white rounded-lg transition-colors ${
+        className={`flex items-center justify-between px-3 sm:px-4 py-2 text-white rounded-lg transition-colors ${
           disabled
             ? 'opacity-50 cursor-not-allowed bg-gray-400 dark:bg-gray-600'
             : colorClasses[selectedRole.color as keyof typeof colorClasses]
         }`}
       >
-        <div className="flex items-center gap-2">
-          <Icon className="h-5 w-5" />
-          <span className="font-medium">{selectedRole.name}</span>
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
+          <span className="font-medium text-sm sm:text-base">{selectedRole.name}</span>
         </div>
-        <ChevronDownIcon className="h-4 w-4" />
+        <ChevronDownIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4 ml-2" />
       </button>
 
       {isOpen && !disabled && (

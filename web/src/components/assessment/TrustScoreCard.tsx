@@ -33,8 +33,8 @@ function getConfidenceColor(confidence: string): string {
 
 export default function TrustScoreCard({ score, confidence }: TrustScoreCardProps) {
   return (
-    <div className="bg-white dark:bg-gray-700 rounded-2xl p-8 border border-gray-300 dark:border-gray-600 shadow-lg h-full">
-      <h4 className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-6 text-center">
+    <div className="bg-white dark:bg-gray-700 rounded-2xl p-4 sm:p-6 md:p-8 border border-gray-300 dark:border-gray-600 shadow-lg h-full">
+      <h4 className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 mb-4 sm:mb-6 text-center">
         Trust Score
       </h4>
 

@@ -56,19 +56,19 @@ function App() {
 
     <main
       className={[
-        "px-4", // shared
+        "px-4 sm:px-6", // shared responsive padding
 
         // Home: fully centered hero layout
         isHomePage && "flex items-center justify-center min-h-screen",
 
         // Assessment details page: scrollable content, top-aligned
         !isHomePage && isAssessmentDetailsPage &&
-          "min-h-[calc(100vh-5rem)] pt-24 pb-24 flex justify-center",
+          "min-h-[calc(100vh-5rem)] pt-16 sm:pt-20 md:pt-24 pb-16 sm:pb-20 md:pb-24 flex justify-center",
 
         // Wizard steps (/name, /role, /size, /risk, /complete):
         // top-aligned, scrollable, with room above footer
         !isHomePage && !isAssessmentDetailsPage &&
-          "min-h-[calc(100vh-5rem)] pt-12 pb-24 flex justify-center",
+          "min-h-[calc(100vh-5rem)] pt-8 sm:pt-10 md:pt-12 pb-16 sm:pb-20 md:pb-24 flex justify-center",
       ]
         .filter(Boolean)
         .join(" ")}

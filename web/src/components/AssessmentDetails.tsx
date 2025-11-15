@@ -99,8 +99,8 @@ export default function AssessmentDetails() {
     }
 
     return (
-        <div className="animate-fade-in w-full max-w-5xl px-4">
-            <h2 className="text-3xl font-medium text-gray-900 dark:text-white mb-6 text-center">
+        <div className="animate-fade-in w-full max-w-5xl">
+            <h2 className="text-2xl sm:text-3xl font-medium text-gray-900 dark:text-white mb-4 sm:mb-6 text-center">
                 Security Assessment Details
             </h2>
 
@@ -113,10 +113,10 @@ export default function AssessmentDetails() {
                 />
             </div>
 
-            {/* All other cards - Two Column Flexbox Layout */}
-            <div className="flex flex-wrap gap-6">
+            {/* All other cards - Responsive Grid Layout */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {visibleCards.trustScore && (
-                    <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                    <div>
                         <TrustScoreCard
                             score={assessment.summary.trust_score.score}
                             confidence={assessment.summary.trust_score.confidence}
@@ -124,27 +124,27 @@ export default function AssessmentDetails() {
                     </div>
                 )}
                 {visibleCards.spiderChart && (
-                    <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                    <div>
                         <SpiderChartCard data={assessment.summary.trust_score}/>
                     </div>
                 )}
                 {visibleCards.vulnerabilities && (
-                    <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                    <div>
                         <VulnerabilitiesCard cves={assessment.cves}/>
                     </div>
                 )}
                 {visibleCards.incidents && (
-                    <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                    <div>
                         <IncidentsCard incidents={assessment.incidents}/>
                     </div>
                 )}
                 {visibleCards.recentCVEs && (
-                    <div className="w-full">
+                    <div className="md:col-span-2">
                         <RecentCVEsCard cves={assessment.cve.critical} />
                     </div>
                 )}
                 {visibleCards.keyTakeaways && (
-                    <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                    <div>
                         <KeyTakeawaysCard
                             strengths={assessment.summary.key_strengths}
                             risks={assessment.summary.key_risks}
@@ -152,17 +152,17 @@ export default function AssessmentDetails() {
                     </div>
                 )}
                 {visibleCards.architecture && (
-                    <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                    <div>
                         <ArchitectureCard architecture={assessment.architecture}/>
                     </div>
                 )}
                 {visibleCards.certifications && (
-                    <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                    <div>
                         <CertificationsCard certs={assessment.compliance.certs}/>
                     </div>
                 )}
                 {visibleCards.compliance && (
-                    <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                    <div>
                         <ComplianceCard
                             frameworks={assessment.compliance.frameworks}
                             data_residency={assessment.compliance.data_residency}
@@ -170,7 +170,7 @@ export default function AssessmentDetails() {
                     </div>
                 )}
                 {visibleCards.alternatives && (
-                    <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                    <div>
                         <AlternativesCard alternatives={assessment.alternatives.items} />
                     </div>
                 )}
