@@ -40,6 +40,7 @@ function App() {
   }
 
   const isHomePage = location.pathname === '/'
+  const isAssessmentDetailsPage = location.pathname.startsWith('/assessments/')
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-800">
@@ -47,7 +48,13 @@ function App() {
         <Header onClearRole={handleReset} currentRole={currentRole} onRoleChange={handleDropdownRoleChange} />
       )}
 
-      <main className={`flex items-center justify-center px-4 ${isHomePage ? 'min-h-screen -mt-0' : 'h-[calc(100vh-5rem)] -mt-32'}`}>
+      <main className={`flex items-center justify-center px-4 ${
+        isHomePage
+          ? 'min-h-screen -mt-0'
+          : isAssessmentDetailsPage
+            ? 'min-h-[calc(100vh-5rem)] pt-24 pb-16'
+            : 'h-[calc(100vh-5rem)] -mt-32'
+      }`}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/name" element={<AssessmentWorkflow onRoleChange={handleWorkflowRoleChange} />} />

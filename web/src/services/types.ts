@@ -40,7 +40,7 @@ export interface Assessment {
         zero_knowledge: boolean
         open_source: boolean
         authentication: string
-        deployment_model: "on-premise" | "cloud" | "saas" | "hybrid"
+        deployment: "on-premise" | "cloud" | "saas" | "hybrid"
     }
     compliance: {
         certifications: {
@@ -57,8 +57,7 @@ export interface Assessment {
             last_audit_date: string
             url: string
         }
-        residency: string
-        encryption_standards: string[]
+        data_residency: string[]
     }
     cves: {
         total: number
@@ -81,5 +80,6 @@ export interface Assessment {
     alternatives: {
         name: string
         url: string
+        trust_score: number
     }
 }

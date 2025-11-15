@@ -135,8 +135,9 @@ export default function AssessmentWorkflow({ onRoleChange }: AssessmentWorkflowP
         risk: riskKey,
       })
 
-      // Redirect to the assessment details page
-      navigate(`/assessments/${assessmentId}`)
+      // Redirect to the assessment details page with role query param
+      const roleParam = assessmentData.role ? `?role=${encodeURIComponent(assessmentData.role)}` : ''
+      navigate(`/assessments/${assessmentId}${roleParam}`)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
       setIsLoading(false)
