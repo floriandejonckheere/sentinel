@@ -73,6 +73,7 @@ export default function AssessmentDetails() {
                 <ApplicationVendorCard
                     application={assessment.application}
                     vendor={assessment.vendor}
+                    assessedAt={assessment.metadata.assessed_at}
                 />
             </div>
 

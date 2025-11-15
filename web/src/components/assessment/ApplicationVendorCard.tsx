@@ -12,6 +12,42 @@ interface ApplicationVendorCardProps {
     country: string
     url: string
   }
+  assessedAt: string
+}
+
+function formatDate(dateString: string): string {
+  const date = new Date(dateString)
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
+
+function getRelativeTime(dateString: string): string {
+  const date = new Date(dateString)
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffMins = Math.floor(diffMs / 60000)
+  const diffHours = Math.floor(diffMs / 3600000)
+  const diffDays = Math.floor(diffMs / 86400000)
+  const diffWeeks = Math.floor(diffDays / 7)
+  const diffMonths = Math.floor(diffDays / 30)
+  const diffYears = Math.floor(diffDays / 365)
+
+  if (diffMins < 1) return 'just now'
+  if (diffMins < 60) return `${diffMins} minute${diffMins === 1 ? '' : 's'} ago`
+  if (diffHours < 24) return `${diffHours} hour${diffHours === 1 ? '' : 's'} ago`
+  if (diffDays === 1) return 'yesterday'
+  if (diffDays < 7) return `${diffDays} days ago`
+  if (diffWeeks === 1) return 'last week'
+  if (diffWeeks < 4) return `${diffWeeks} weeks ago`
+  if (diffMonths === 1) return 'last month'
+  if (diffMonths < 12) return `${diffMonths} months ago`
+  if (diffYears === 1) return 'last year'
+  return `${diffYears} years ago`
 }
 
 function getCountryName(countryCode: string): string {
@@ -52,9 +88,15 @@ function getCountryName(countryCode: string): string {
   return countryMap[countryCode.toUpperCase()] || countryCode
 }
 
-export default function ApplicationVendorCard({ application, vendor }: ApplicationVendorCardProps) {
+export default function ApplicationVendorCard({ application, vendor, assessedAt }: ApplicationVendorCardProps) {
   return (
-    <div className="bg-white dark:bg-gray-700 rounded-2xl p-8 border border-gray-300 dark:border-gray-600 shadow-lg">
+    <div className="bg-white dark:bg-gray-700 rounded-2xl p-8 border border-gray-300 dark:border-gray-600 shadow-lg relative">
+      <div className="absolute top-4 right-6">
+        <p className="text-xs text-gray-500 dark:text-gray-400" title={formatDate(assessedAt)}>
+          Assessed <span className="cursor-help">{getRelativeTime(assessedAt)}</span>
+        </p>
+      </div>
+
       <h3 className="text-4xl font-bold text-gray-900 dark:text-white mb-3">
         {application.name}
       </h3>
