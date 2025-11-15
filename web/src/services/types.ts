@@ -46,7 +46,7 @@ export interface Assessment {
         deployment: "on-premise" | "cloud" | "saas" | "hybrid"
     }
     compliance: {
-        certifications: {
+        certs: {
             name: string
             status: "active" | "expired" | "pending"
             issued_by: string

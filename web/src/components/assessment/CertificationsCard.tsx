@@ -8,10 +8,10 @@ interface Certification {
 }
 
 interface CertificationsCardProps {
-    certifications: Certification[]
+    certs: Certification[]
 }
 
-export default function CertificationsCard({certifications}: CertificationsCardProps) {
+export default function CertificationsCard({certs}: CertificationsCardProps) {
     const getStatusColor = (status: string) => {
         if (status === 'active') return 'text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30'
         if (status === 'expired') return 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30'
@@ -44,12 +44,12 @@ export default function CertificationsCard({certifications}: CertificationsCardP
             </h4>
 
             <div className="space-y-4">
-                {certifications.length === 0 ? (
+                {certs.length === 0 ? (
                     <p className="text-gray-500 dark:text-gray-400 text-center text-sm">
                         No certifications available
                     </p>
                 ) : (
-                    certifications.map((cert, index) => (
+                    certs.map((cert, index) => (
                         <div key={index}
                              className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600">
                             <div className="flex items-start justify-between mb-2">

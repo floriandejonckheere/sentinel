@@ -149,7 +149,7 @@ export default function AssessmentDetails() {
                 )}
                 {visibleCards.certifications && (
                     <div className="flex-1 min-w-[calc(50%-0.75rem)]">
-                        <CertificationsCard certifications={assessment.compliance.certifications}/>
+                        <CertificationsCard certs={assessment.compliance.certs}/>
                     </div>
                 )}
                 {visibleCards.compliance && (
