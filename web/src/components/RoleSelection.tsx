@@ -13,6 +13,7 @@ export default function RoleSelection({ onSelect, onBack }: RoleSelectionProps) 
     red: 'text-red-600 dark:text-red-400',
     blue: 'text-blue-600 dark:text-blue-400',
     yellow: 'text-yellow-600 dark:text-yellow-400',
+    purple: 'text-purple-600 dark:text-purple-400',
   }
 
   const borderColorClasses = {
@@ -20,7 +21,11 @@ export default function RoleSelection({ onSelect, onBack }: RoleSelectionProps) 
     red: 'hover:border-red-500 dark:hover:border-red-400',
     blue: 'hover:border-blue-500 dark:hover:border-blue-400',
     yellow: 'hover:border-yellow-500 dark:hover:border-yellow-400',
+    purple: 'hover:border-purple-500 dark:hover:border-purple-400',
   }
+
+  const mainRoles = roles.filter(role => role.id !== 'global')
+  const allRole = roles.find(role => role.id === 'global')
 
   return (
     <div className="animate-fade-in">
@@ -40,7 +45,7 @@ export default function RoleSelection({ onSelect, onBack }: RoleSelectionProps) 
         </h2>
       </div>
       <div className="grid grid-cols-2 gap-6">
-        {roles.map((role) => {
+        {mainRoles.map((role) => {
           const Icon = role.icon
           const iconColor = iconColorClasses[role.color as keyof typeof iconColorClasses]
           const borderColor = borderColorClasses[role.color as keyof typeof borderColorClasses]
@@ -51,11 +56,20 @@ export default function RoleSelection({ onSelect, onBack }: RoleSelectionProps) 
               className={`flex flex-col items-center justify-center p-8 bg-white dark:bg-gray-700 rounded-2xl border border-gray-300 dark:border-gray-600 ${borderColor} hover:shadow-lg transition-all`}
             >
               <Icon className={`h-16 w-16 ${iconColor} mb-4`} />
-              <span className="text-xl font-medium text-gray-900 dark:text-white">{role.label}</span>
+              <span className="text-xl font-medium text-gray-900 dark:text-white">{role.description}</span>
             </button>
           )
         })}
       </div>
+      {allRole && (
+        <button
+          onClick={() => onSelect(allRole.id)}
+          className={`mt-6 w-full flex flex-col items-center justify-center p-8 bg-white dark:bg-gray-700 rounded-2xl border border-gray-300 dark:border-gray-600 ${borderColorClasses[allRole.color as keyof typeof borderColorClasses]} hover:shadow-lg transition-all`}
+        >
+          <allRole.icon className={`h-16 w-16 ${iconColorClasses[allRole.color as keyof typeof iconColorClasses]} mb-4`} />
+          <span className="text-xl font-medium text-gray-900 dark:text-white">{allRole.description}</span>
+        </button>
+      )}
     </div>
   )
 }
