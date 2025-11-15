@@ -24,8 +24,8 @@ export default function RoleSelection({ onSelect, onBack }: RoleSelectionProps) 
     purple: 'hover:border-purple-500 dark:hover:border-purple-400',
   }
 
-  const mainRoles = roles.filter(role => role.id !== 'all')
-  const allRole = roles.find(role => role.id === 'all')
+  const mainRoles = roles.filter(role => role.id !== 'global')
+  const allRole = roles.find(role => role.id === 'global')
 
   return (
     <div className="animate-fade-in">
