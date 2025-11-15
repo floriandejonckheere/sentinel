@@ -18,13 +18,14 @@ class TrustConfidence(str, Enum):
     low = "low"
     medium = "medium"
     high = "high"
-    
+
 class CVECounts(BaseModel):
     total: int = Field(..., ge=0)
     critical: int = Field(..., ge=0)
     high: int = Field(..., ge=0)
     medium: int = Field(..., ge=0)
     low: int = Field(..., ge=0)
+    unknown: int = Field(..., ge=0)
     trend: TrustTrend = Field(
         ...,
         description="CVE posture trend (e.g., improving, stable, degrading).",

@@ -16,10 +16,10 @@ def build_cve_counts_from_section(cve_section: CVESection) -> CVECounts:
     # Total CVEs in window: prefer explicit yearly counts, else representative list length
     total = sum(cve_section.by_year_counts.values()) if cve_section.by_year_counts else len(cve_section.critical)
 
-    critical = high = medium = low = 0
+    unknown = critical = high = medium = low = 0
     for item in cve_section.critical:
         if item.severity is None:
-            continue
+            unknown += 1
         if item.severity == SeverityLevel.critical:
             critical += 1
         elif item.severity == SeverityLevel.high:
@@ -44,5 +44,6 @@ def build_cve_counts_from_section(cve_section: CVESection) -> CVECounts:
         high=high,
         medium=medium,
         low=low,
+        unknown=unknown,
         trend=trend,
     )
