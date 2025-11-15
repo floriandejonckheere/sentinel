@@ -7,6 +7,7 @@ interface VulnerabilitiesCardProps {
     high: number
     medium: number
     low: number
+    unknown: number
     trend: 'improving' | 'stable' | 'declining'
   }
 }
@@ -43,6 +44,7 @@ function createPieSlices(cves: VulnerabilitiesCardProps['cves']): PieSlice[] {
     { value: cves.high, color: '#ea580c', label: 'High' },
     { value: cves.medium, color: '#ca8a04', label: 'Medium' },
     { value: cves.low, color: '#16a34a', label: 'Low' },
+    { value: cves.unknown, color: '#6b7280', label: 'Unknown' },
   ]
 
   const total = cves.total || 1

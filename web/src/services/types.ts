@@ -68,6 +68,7 @@ export interface Assessment {
         high: number
         medium: number
         low: number
+        unknown: number
 
         trend: "improving" | "stable" | "declining"
     }
