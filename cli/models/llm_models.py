@@ -215,6 +215,7 @@ ALLOWED_CATEGORIES = [
     "AI & Machine Learning",
 ]
 
+# These subcategories follow Gartner Market Guide, G2, Microsoft Enterprise, and NIST software function classes.
 ALLOWED_SUBCATEGORIES = [
 
     # --- SECURITY ---
