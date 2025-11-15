@@ -39,9 +39,6 @@ export default function Home() {
             </span>
           </h1>
         </div>
-        <p className="mt-8 text-xl text-gray-600 dark:text-gray-300 max-w-2xl text-center">
-          AI-Powered Security Assessment Platform
-        </p>
       </div>
 
       <div className="text-center mb-12">
