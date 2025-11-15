@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import ApplicationInput from './ApplicationInput'
 import RoleSelection from './RoleSelection'
 import OrganizationSize from './OrganizationSize'
@@ -17,34 +18,93 @@ interface AssessmentWorkflowProps {
   onRoleChange?: (role: string) => void
 }
 
+const RISK_LABELS = ['Very Low', 'Low', 'Medium', 'High', 'Very High']
+
 export default function AssessmentWorkflow({ onRoleChange }: AssessmentWorkflowProps) {
-  const [currentStep, setCurrentStep] = useState<Step>('application')
-  const [assessmentData, setAssessmentData] = useState<AssessmentData>({
-    application: '',
-    role: '',
-    organizationSize: '',
-    riskTolerance: 2,
-  })
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  // Determine initial step from URL
+  const getStepFromPath = (path: string): Step => {
+    if (path === '/' || path === '/application') return 'application'
+    if (path === '/role') return 'role'
+    if (path === '/size') return 'size'
+    if (path === '/risk') return 'risk'
+    if (path === '/complete') return 'complete'
+    return 'application'
+  }
+
+  // Load data from query parameters
+  const loadDataFromQuery = (): AssessmentData => {
+    const params = new URLSearchParams(location.search)
+    const riskLabel = params.get('risk') || ''
+    const riskIndex = RISK_LABELS.indexOf(riskLabel)
+
+    return {
+      application: params.get('name') || '',
+      role: params.get('role') || '',
+      organizationSize: params.get('size') || '',
+      riskTolerance: riskIndex >= 0 ? riskIndex : 2,
+    }
+  }
+
+  const [currentStep, setCurrentStep] = useState<Step>(() => getStepFromPath(location.pathname))
+  const [assessmentData, setAssessmentData] = useState<AssessmentData>(loadDataFromQuery)
+
+  // Sync step and data with URL changes
+  useEffect(() => {
+    const step = getStepFromPath(location.pathname)
+    setCurrentStep(step)
+    setAssessmentData(loadDataFromQuery())
+  }, [location.pathname, location.search])
+
+  // Restore role in header when component mounts or data changes
+  useEffect(() => {
+    if (assessmentData.role && onRoleChange) {
+      onRoleChange(assessmentData.role)
+    }
+  }, [assessmentData.role, onRoleChange])
+
+  const buildQueryString = (data: Partial<AssessmentData>): string => {
+    const params = new URLSearchParams()
+    if (data.application) params.set('name', data.application)
+    if (data.role) params.set('role', data.role)
+    if (data.organizationSize) params.set('size', data.organizationSize)
+    if (data.riskTolerance !== undefined) params.set('risk', RISK_LABELS[data.riskTolerance])
+
+    const queryString = params.toString()
+    return queryString ? `?${queryString}` : ''
+  }
+
+  const navigateToStep = (step: Step, data: AssessmentData) => {
+    const path = step === 'application' ? '/' : `/${step}`
+    const query = buildQueryString(data)
+    navigate(`${path}${query}`)
+  }
 
   const handleApplicationSubmit = (value: string) => {
-    setAssessmentData(prev => ({ ...prev, application: value }))
-    setCurrentStep('role')
+    const newData = { ...assessmentData, application: value }
+    setAssessmentData(newData)
+    navigateToStep('role', newData)
   }
 
   const handleRoleSelect = (role: string) => {
-    setAssessmentData(prev => ({ ...prev, role }))
+    const newData = { ...assessmentData, role }
+    setAssessmentData(newData)
     onRoleChange?.(role)
-    setCurrentStep('size')
+    navigateToStep('size', newData)
   }
 
   const handleSizeSelect = (size: string) => {
-    setAssessmentData(prev => ({ ...prev, organizationSize: size }))
-    setCurrentStep('risk')
+    const newData = { ...assessmentData, organizationSize: size }
+    setAssessmentData(newData)
+    navigateToStep('risk', newData)
   }
 
   const handleRiskSelect = (tolerance: number) => {
-    setAssessmentData(prev => ({ ...prev, riskTolerance: tolerance }))
-    setCurrentStep('complete')
+    const newData = { ...assessmentData, riskTolerance: tolerance }
+    setAssessmentData(newData)
+    navigateToStep('complete', newData)
   }
 
   return (
@@ -81,7 +141,7 @@ export default function AssessmentWorkflow({ onRoleChange }: AssessmentWorkflowP
               <span className="font-semibold">Organization Size:</span> {assessmentData.organizationSize}
             </p>
             <p className="text-lg text-gray-700 dark:text-gray-300">
-              <span className="font-semibold">Risk Tolerance:</span> {['Very Low', 'Low', 'Medium', 'High', 'Very High'][assessmentData.riskTolerance]}
+              <span className="font-semibold">Risk Tolerance:</span> {RISK_LABELS[assessmentData.riskTolerance]}
             </p>
           </div>
         </div>

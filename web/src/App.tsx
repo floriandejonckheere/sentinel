@@ -1,14 +1,15 @@
 import { useState } from 'react'
+import { Routes, Route, useNavigate } from 'react-router-dom'
 import Header from './components/Header'
 import AssessmentWorkflow from './components/AssessmentWorkflow'
 
 function App() {
-  const [workflowKey, setWorkflowKey] = useState(0)
+  const navigate = useNavigate()
   const [currentRole, setCurrentRole] = useState<string>()
 
   const handleReset = () => {
-    setWorkflowKey(prev => prev + 1)
     setCurrentRole(undefined)
+    navigate('/')
   }
 
   const handleRoleChange = (role: string) => {
@@ -20,7 +21,9 @@ function App() {
       <Header onReset={handleReset} currentRole={currentRole} onRoleChange={handleRoleChange} />
 
       <main className="flex items-center justify-center h-[calc(100vh-5rem)] px-4 -mt-32">
-        <AssessmentWorkflow key={workflowKey} onRoleChange={handleRoleChange} />
+        <Routes>
+          <Route path="/*" element={<AssessmentWorkflow onRoleChange={handleRoleChange} />} />
+        </Routes>
       </main>
     </div>
   )
