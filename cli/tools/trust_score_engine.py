@@ -54,14 +54,14 @@ class TrustScoreEngine:
         Extracts normalized category scores from LLM output.
         """
         scores = {
-            "architecture": 75,
-            "data_protection": 80,
-            "identity_access": 75,
-            "devsecops": 70,
-            "historical_security": 70,
-            "compliance": 60,
-            "platform_security": 80,
-            "risks_exposure": 70
+            "architecture": 50,
+            "data_protection": 50,
+            "identity_access": 50,
+            "devsecops": 50,
+            "historical_security": 50,
+            "compliance": 50,
+            "platform_security": 50,
+            "risks_exposure": 50
         }
         
         docs = llm_output.get("docs", {})
