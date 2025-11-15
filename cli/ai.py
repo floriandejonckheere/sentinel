@@ -67,7 +67,7 @@ class AI:
     def __init__(
         self,
         *,
-        model: str = "gemini-2.5-flash",
+        model: str = "gemini-2.5-pro",
         temperature: float = 0.0,
         max_retries: int = 2,
     ) -> None:
