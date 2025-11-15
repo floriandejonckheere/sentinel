@@ -12,6 +12,7 @@ import ArchitectureCard from './assessment/ArchitectureCard'
 import CertificationsCard from './assessment/CertificationsCard'
 import ComplianceCard from './assessment/ComplianceCard'
 import AlternativesCard from './assessment/AlternativesCard'
+import RecentCVEsCard from './assessment/RecentCVEsCard'
 
 export default function AssessmentDetails() {
     const {id} = useParams<{ id: string }>()
@@ -25,10 +26,10 @@ export default function AssessmentDetails() {
     const getVisibleCards = (role: string | null) => {
         const roleCardsMap: Record<string, string[]> = {
             executive: ['trustScore', 'spiderChart', 'keyTakeaways', 'alternatives'],
-            security: ['vulnerabilities', 'incidents'],
+            security: ['vulnerabilities', 'incidents', 'recentCVEs'],
             compliance: ['certifications', 'compliance'],
             technical: ['architecture'],
-            global: ['trustScore', 'spiderChart', 'vulnerabilities', 'incidents', 'keyTakeaways', 'architecture', 'certifications', 'compliance', 'alternatives']
+            global: ['trustScore', 'spiderChart', 'vulnerabilities', 'incidents', 'recentCVEs', 'keyTakeaways', 'architecture', 'certifications', 'compliance', 'alternatives']
         }
 
         const normalizedRole = role?.toLowerCase() || 'global'
@@ -39,6 +40,7 @@ export default function AssessmentDetails() {
             spiderChart: allowedCards.includes('spiderChart'),
             vulnerabilities: allowedCards.includes('vulnerabilities'),
             incidents: allowedCards.includes('incidents'),
+            recentCVEs: allowedCards.includes('recentCVEs'),
             keyTakeaways: allowedCards.includes('keyTakeaways'),
             architecture: allowedCards.includes('architecture'),
             certifications: allowedCards.includes('certifications'),
@@ -134,6 +136,11 @@ export default function AssessmentDetails() {
                 {visibleCards.incidents && (
                     <div className="flex-1 min-w-[calc(50%-0.75rem)]">
                         <IncidentsCard incidents={assessment.incidents}/>
+                    </div>
+                )}
+                {visibleCards.recentCVEs && (
+                    <div className="w-full">
+                        <RecentCVEsCard cves={assessment.cve.critical} />
                     </div>
                 )}
                 {visibleCards.keyTakeaways && (

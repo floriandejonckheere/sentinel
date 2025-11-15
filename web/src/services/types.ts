@@ -62,6 +62,19 @@ export interface Assessment {
         }[]
         data_residency: string[]
     }
+    cve: {
+        by_year_counts: Record<string, number>
+        critical: {
+            cve_id: string
+            severity: string | null
+            description: string
+            year: number
+            sources: string[]
+        }[]
+        trend: string
+        summary: string
+        sources: string[]
+    }
     cves: {
         total: number
         critical: number
