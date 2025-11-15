@@ -43,32 +43,48 @@ function App() {
   const isAssessmentDetailsPage = location.pathname.startsWith('/assessments/')
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-800">
-      {!isHomePage && (
-        <Header onClearRole={handleReset} currentRole={currentRole} onRoleChange={handleDropdownRoleChange} />
-      )}
+  <div className="min-h-screen bg-gray-100 dark:bg-gray-800">
+    {!isHomePage && (
+      <Header
+        onClearRole={handleReset}
+        currentRole={currentRole}
+        onRoleChange={handleDropdownRoleChange}
+      />
+    )}
 
-      <main className={`flex items-center justify-center px-4 ${
-        isHomePage
-          ? 'min-h-screen -mt-0'
-          : isAssessmentDetailsPage
-            ? 'min-h-[calc(100vh-5rem)] pt-24 pb-16'
-            : 'h-[calc(100vh-5rem)] -mt-32'
-      }`}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/name" element={<AssessmentWorkflow onRoleChange={handleWorkflowRoleChange} />} />
-          <Route path="/role" element={<AssessmentWorkflow onRoleChange={handleWorkflowRoleChange} />} />
-          <Route path="/size" element={<AssessmentWorkflow onRoleChange={handleWorkflowRoleChange} />} />
-          <Route path="/risk" element={<AssessmentWorkflow onRoleChange={handleWorkflowRoleChange} />} />
-          <Route path="/complete" element={<AssessmentWorkflow onRoleChange={handleWorkflowRoleChange} />} />
-          <Route path="/assessments/:id" element={<AssessmentDetails />} />
-        </Routes>
-      </main>
+    <main
+      className={[
+        "px-4", // shared
 
-      {!isHomePage && <Footer />}
-    </div>
-  )
+        // Home: fully centered hero layout
+        isHomePage && "flex items-center justify-center min-h-screen",
+
+        // Assessment details page: scrollable content, top-aligned
+        !isHomePage && isAssessmentDetailsPage &&
+          "min-h-[calc(100vh-5rem)] pt-24 pb-24",
+
+        // Wizard steps (/name, /role, /size, /risk, /complete):
+        // top-aligned, scrollable, with room above footer
+        !isHomePage && !isAssessmentDetailsPage &&
+          "min-h-[calc(100vh-5rem)] pt-12 pb-24 flex justify-center",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/name" element={<AssessmentWorkflow onRoleChange={handleWorkflowRoleChange} />} />
+        <Route path="/role" element={<AssessmentWorkflow onRoleChange={handleWorkflowRoleChange} />} />
+        <Route path="/size" element={<AssessmentWorkflow onRoleChange={handleWorkflowRoleChange} />} />
+        <Route path="/risk" element={<AssessmentWorkflow onRoleChange={handleWorkflowRoleChange} />} />
+        <Route path="/complete" element={<AssessmentWorkflow onRoleChange={handleWorkflowRoleChange} />} />
+        <Route path="/assessments/:id" element={<AssessmentDetails />} />
+      </Routes>
+    </main>
+
+    {!isHomePage && <Footer />}
+  </div>
+);
 }
 
 export default App
