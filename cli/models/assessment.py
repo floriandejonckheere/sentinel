@@ -83,8 +83,6 @@ class RiskWeaknessResidualExposure(SQLModel, table=True):
 
     # Relationship
     assessment: Optional["Assessment"] = Relationship(back_populates="risk_weakness_residual_exposures")
-    
-
 
 
 class Assessment(SQLModel, table=True):
