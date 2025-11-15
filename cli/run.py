@@ -1,7 +1,7 @@
 import os
 from ai_workflow import app
 from tools import trust_score_engine
-
+import json
 
 REPORT_PATH = "research_report.json"
 
@@ -26,8 +26,18 @@ def main():
         print("No report built. Partial state keys:", list(state.keys()))
 
     # Calculate trust score & confidence based on output assesmet
-    engine = trust_score_engine.TrustScoreEngine
-    category_scores, trust_score, confidence = engine.evaluate_llm_output(full_report)
+    try:
+        with open("research_report.json", "r") as f:
+            llm_output = json.load(f)
+    except FileNotFoundError:
+        print("Error: 'research_report.json' not found.")
+        return
+    except json.JSONDecodeError:
+        print("Error: JSON file is not valid.")
+        return
+    
+    engine = trust_score_engine.TrustScoreEngine()
+    category_scores, trust_score, confidence = engine.evaluate_llm_output(llm_output)
     # Print results
     print("\n===== Trust Score Report =====\n")
     print("Category Scores:")
