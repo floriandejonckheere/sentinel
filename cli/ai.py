@@ -263,21 +263,3 @@ class AI:
         structured_llm = self.llm.with_structured_output(output_model)
         final_msg = structured_llm.invoke(messages + [("human", "Return ONLY the structured object.")])
         return final_msg
-
-ai = AI(model="gemini-2.5-flash", temperature=0.2)
-
-
-summary = ai.generate_structured_with_tools(
-    prompt=(
-        "Use the search & scrape tool iteratively to gather official and reputable information "
-        "about the organization's security/compliance posture. "
-        "Extract compliance signals for the requested frameworks, citing sources. "
-        "Return ONLY the structured object."
-        "You must always provide the GDPR status"
-    ),
-    input_text="1Password",
-    tools=[search_scrape_tool],
-    output_model=LLMComplianceSignalList,
-    max_steps=10,
-)
-print(summary)
