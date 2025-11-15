@@ -30,6 +30,9 @@ if __name__ == "__main__":
     # Example usage
     MY_API_KEY = os.getenv("SERPAPI_KEY")
 
+    if not MY_API_KEY:
+        raise ValueError("SERPAPI_KEY not set!")
+
     response = serpapi_search(
         "1Password",
         api_key=MY_API_KEY,
