@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Dict, List, Literal, Optional
 from pydantic import BaseModel, Field
 
 
@@ -122,10 +122,55 @@ class DocFeatures(BaseModel):
     )
     summary: str = Field(..., description="Concise overview of key security features and design choices.")
     sources: List[str] = Field(default_factory=list, description="Documentation URLs or whitepapers referenced.")
+    
+ALLOWED_CATEGORIES = [
+    "Productivity", "Communication", "Developer Tools", "Design", "Marketing", "Finance",
+    "Data & Analytics", "Security", "HR & People", "Education", "Healthcare", "Sales",
+    "Customer Support", "Media", "Operations", "Legal", "Creative", "AI & ML",
+]
+
+class AppCategoryResult(BaseModel):
+    """
+    Classification output indicating the most likely product category for a vendor,
+    along with confidence and the model’s reasoning.
+    """
+
+    category: Literal[tuple(ALLOWED_CATEGORIES)] = Field(
+        ...,
+        description=(
+            "The predicted category that best matches the vendor or product. "
+            "Must be one of the predefined ALLOWED_CATEGORIES. "
+            "Used by the workflow to route downstream research tasks "
+            "(e.g., security checks, compliance, feature extraction)."
+        ),
+    )
+
+    confidence: float = Field(
+        ...,
+        ge=0.0,
+        le=1.0,
+        description=(
+            "A probability-like confidence score (0.0–1.0) representing the "
+            "model’s certainty about the chosen category. "
+            "Higher values indicate stronger confidence and may be used by "
+            "the workflow to decide whether to trigger fallback or validation steps."
+        ),
+    )
+
+    reasoning: str = Field(
+        ...,
+        description=(
+            "Natural-language explanation of why the model selected the category. "
+            "This is used for debugging and ensuring interpretability inside the workflow. "
+            "It can also help downstream agents validate the categorization decision."
+        ),
+    )
+
 
 class ResearchReport(BaseModel):
     """Comprehensive security research report combining all agent outputs."""
     vendor: VendorIntel = Field(..., description="Vendor Intelligence section: background and reputation.")
+    category: AppCategoryResult = Field(..., description="Product category classification result.")
     cve: CVESection = Field(..., description="CVE and vulnerability history.")
     compliance: ComplianceSection = Field(..., description="Compliance and certification posture.")
     incidents: IncidentSection = Field(..., description="Security incidents and breach history.")

@@ -6,7 +6,7 @@ from langgraph.checkpoint.memory import MemorySaver  # optional
 from ai import AI
 from tools.web_tool import search_scrape_tool  # your BaseTool
 from models.llm_models import (
-    VendorIntel, CVESection, ComplianceSection, IncidentSection, DocFeatures, ResearchReport
+    ALLOWED_CATEGORIES, VendorIntel, CVESection, ComplianceSection, IncidentSection, DocFeatures, ResearchReport,AppCategoryResult
 )
 
 # ---- Shared state ----
@@ -17,6 +17,7 @@ class State(TypedDict, total=False):
     compliance: ComplianceSection
     incidents: IncidentSection
     docs: DocFeatures
+    category: AppCategoryResult
     report: ResearchReport
 
 ai = AI(model="gemini-2.5-flash", temperature=0.2)
@@ -39,6 +40,29 @@ def vendor_node(state: State) -> State:
         max_steps=6,
     )
     return {"vendor": result}
+
+def category_node(state: State) -> State:
+    prompt = (
+        "You are a product categorization agent.\n\n"
+        "Task:\n"
+        "- Read the user's research query about a vendor or product.\n"
+        "- Classify it into exactly one of these categories:\n"
+        f"{', '.join(ALLOWED_CATEGORIES)}\n\n"
+        "Output:\n"
+        "- Return an AppCategoryResult with:\n"
+        "  * category: the single best category from the list.\n"
+        "  * confidence: a float between 0.0 and 1.0.\n"
+        "  * reasoning: a short explanation of why this category fits."
+    )
+    result = ai.generate_structured_with_tools(
+        prompt=prompt,
+        input_text=state["query"],
+        tools=_tools(),
+        output_model=AppCategoryResult,
+        max_steps=2,
+    )
+    return {"category": result}
+
 
 def cve_node(state: State) -> State:
     prompt = (
@@ -104,16 +128,17 @@ def docs_node(state: State) -> State:
 
 def finalize_node(state: State) -> State:
     # Ensure all sections exist; you could add retries/defaults if any are missing
-    missing = [k for k in ("vendor","cve","compliance","incidents","docs") if k not in state]
+    missing = [k for k in ("vendor","cve","compliance","incidents","docs","category") if k not in state]
     if missing:
         # You can choose to raise, or inject empty shells. Here we just no-op.
         # raise ValueError(f"Missing sections: {missing}")
         pass
 
     # Construct the report only if sections are present
-    if all(k in state for k in ("vendor","cve","compliance","incidents","docs")):
+    if all(k in state for k in ("vendor","cve","compliance","incidents","docs","category")):
         report = ResearchReport(
             vendor=state["vendor"],
+            category=state["category"],
             cve=state["cve"],
             compliance=state["compliance"],
             incidents=state["incidents"],
@@ -127,6 +152,7 @@ def build_app():
     g = StateGraph(State)
 
     g.add_node("vendor", vendor_node)
+    g.add_node("category", category_node)
     g.add_node("cve", cve_node)
     g.add_node("compliance", compliance_node)
     g.add_node("incidents", incidents_node)
@@ -135,6 +161,7 @@ def build_app():
 
     # Fan out from START to all agents (they run in parallel and merge state)
     g.add_edge(START, "vendor")
+    g.add_edge(START, "category")
     g.add_edge(START, "cve")
     g.add_edge(START, "compliance")
     g.add_edge(START, "incidents")
@@ -142,6 +169,7 @@ def build_app():
 
     # All agents converge to finalize
     g.add_edge("vendor", "finalize")
+    g.add_edge("category", "finalize")
     g.add_edge("cve", "finalize")
     g.add_edge("compliance", "finalize")
     g.add_edge("incidents", "finalize")
