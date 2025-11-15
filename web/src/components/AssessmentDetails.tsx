@@ -7,6 +7,7 @@ import TrustScoreCard from './assessment/TrustScoreCard'
 import VulnerabilitiesCard from './assessment/VulnerabilitiesCard'
 import SpiderChartCard from './assessment/SpiderChartCard'
 import KeyTakeawaysCard from './assessment/KeyTakeawaysCard'
+import ArchitectureCard from './assessment/ArchitectureCard'
 
 export default function AssessmentDetails() {
     const {id} = useParams<{ id: string }>()
@@ -79,7 +80,7 @@ export default function AssessmentDetails() {
             </div>
 
             {/* All other cards - Equal Width and Height Grid */}
-            <div className="grid grid-cols-2 grid-rows-[1fr_1fr] gap-6">
+            <div className="grid grid-cols-2 auto-rows-fr gap-6">
                 <TrustScoreCard
                     score={assessment.summary.trust_score.score}
                     confidence={assessment.summary.trust_score.confidence}
@@ -90,6 +91,7 @@ export default function AssessmentDetails() {
                     strengths={assessment.summary.key_strengths}
                     risks={assessment.summary.key_risks}
                 />
+                <ArchitectureCard architecture={assessment.architecture}/>
             </div>
         </div>
     )
