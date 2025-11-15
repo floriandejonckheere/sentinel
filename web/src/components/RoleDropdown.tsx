@@ -5,9 +5,10 @@ import { roles } from '../constants/roles'
 interface RoleDropdownProps {
   currentRole: string
   onRoleChange: (role: string) => void
+  disabled?: boolean
 }
 
-export default function RoleDropdown({ currentRole, onRoleChange }: RoleDropdownProps) {
+export default function RoleDropdown({ currentRole, onRoleChange, disabled = false }: RoleDropdownProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   const selectedRole = roles.find(r => r.id === currentRole)
@@ -34,8 +35,13 @@ export default function RoleDropdown({ currentRole, onRoleChange }: RoleDropdown
   return (
     <div className="relative">
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center justify-between px-4 py-2 text-white rounded-lg transition-colors ${colorClasses[selectedRole.color as keyof typeof colorClasses]}`}
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+        disabled={disabled}
+        className={`flex items-center justify-between px-4 py-2 text-white rounded-lg transition-colors ${
+          disabled
+            ? 'opacity-50 cursor-not-allowed bg-gray-400 dark:bg-gray-600'
+            : colorClasses[selectedRole.color as keyof typeof colorClasses]
+        }`}
       >
         <div className="flex items-center gap-2">
           <Icon className="h-5 w-5" />
@@ -44,7 +50,7 @@ export default function RoleDropdown({ currentRole, onRoleChange }: RoleDropdown
         <ChevronDownIcon className="h-4 w-4" />
       </button>
 
-      {isOpen && (
+      {isOpen && !disabled && (
         <>
           <div
             className="fixed inset-0 z-10"

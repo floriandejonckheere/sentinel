@@ -41,6 +41,7 @@ function App() {
 
   const isHomePage = location.pathname === '/'
   const isAssessmentDetailsPage = location.pathname.startsWith('/assessments/')
+  const isLoadingPage = location.pathname === '/complete'
 
   return (
   <div className="min-h-screen bg-gray-100 dark:bg-gray-800">
@@ -49,6 +50,7 @@ function App() {
         onClearRole={handleReset}
         currentRole={currentRole}
         onRoleChange={handleDropdownRoleChange}
+        disabled={isLoadingPage}
       />
     )}
 

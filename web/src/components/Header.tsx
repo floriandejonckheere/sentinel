@@ -5,9 +5,10 @@ interface HeaderProps {
   onClearRole: () => void
   currentRole?: string
   onRoleChange?: (role: string) => void
+  disabled?: boolean
 }
 
-export default function Header({ onClearRole, currentRole, onRoleChange }: HeaderProps) {
+export default function Header({ onClearRole, currentRole, onRoleChange, disabled = false }: HeaderProps) {
   return (
     <header className="px-6 py-4 flex items-center justify-between">
       <button
@@ -19,7 +20,7 @@ export default function Header({ onClearRole, currentRole, onRoleChange }: Heade
       </button>
 
       {currentRole && onRoleChange && (
-        <RoleDropdown currentRole={currentRole} onRoleChange={onRoleChange} />
+        <RoleDropdown currentRole={currentRole} onRoleChange={onRoleChange} disabled={disabled} />
       )}
     </header>
   )
