@@ -2,6 +2,7 @@
 from typing import List, Optional, TYPE_CHECKING
 from enum import Enum
 from sqlmodel import Field, SQLModel, Relationship
+from sqlalchemy import Column, JSON
 
 if TYPE_CHECKING:
     from .application import Application
@@ -21,7 +22,7 @@ class CVETrend(SQLModel, table=True):
     severity: Levels
     description: str
     published_date: Optional[str] = None
-    sources: List[str] = Field(default_factory=list)
+    sources: List[str] = Field(default_factory=list,sa_column=Column(JSON))
 
     # Relationship
     assessment: Optional["Assessment"] = Relationship(back_populates="cve_trends")
@@ -34,7 +35,7 @@ class ComplianceSignal(SQLModel, table=True):
     framework: str  # e.g., "SOC2", "ISO27001", "GDPR"
     status: str  # e.g., "Compliant", "Partial", "Unknown"
     details: Optional[str] = None
-    sources: List[str] = Field(default_factory=list)
+    sources: List[str] = Field(default_factory=list,sa_column=Column(JSON))
 
     # Relationship
     assessment: Optional["Assessment"] = Relationship(back_populates="compliance_signals")
@@ -48,7 +49,7 @@ class Alternative(SQLModel, table=True):
     name: str
     risk_score: float
     reason: str  # Why this is a safer alternative
-    sources: List[str] = Field(default_factory=list)
+    sources: List[str] = Field(default_factory=list,sa_column=Column(JSON))
 
     # Relationships
     assessment: Optional["Assessment"] = Relationship(back_populates="safer_alternatives")
@@ -61,7 +62,7 @@ class SecurityControls(SQLModel, table=True):
     control_name: str
     implemented: bool
     details: Optional[str] = None
-    sources: List[str] = Field(default_factory=list)
+    sources: List[str] = Field(default_factory=list,sa_column=Column(JSON))
 
     # Relationship
     assessment: Optional["Assessment"] = Relationship(back_populates="security_controls")
@@ -74,7 +75,7 @@ class RiskWeaknessResidualExposure(SQLModel, table=True):
     description: str
     severity: Levels  # e.g., "Low", "Medium", "High"
     mitigation: Optional[str] = None
-    sources: List[str] = Field(default_factory=list)
+    sources: List[str] = Field(default_factory=list,sa_column=Column(JSON))
 
     # Relationship
     assessment: Optional["Assessment"] = Relationship(back_populates="risk_weakness_residual_exposures")
