@@ -113,14 +113,14 @@ class TrustScoreEngine:
         """Robust, multi-signal scoring across all 8 trust model categories."""
 
         scores = {
-            "architecture": 0,
-            "data_protection": 0,
-            "identity_access": 0,
-            "devsecops": 0,
-            "historical_security": 0,
-            "compliance": 0,
-            "platform_security": 0,
-            "risks_exposure": 0
+            "architecture": 20,
+            "data_protection": 20,
+            "identity_access": 20,
+            "devsecops": 20,
+            "historical_security": 20,
+            "compliance": 20,
+            "platform_security": 20,
+            "risks_exposure": 20
         }
 
         # --- 1. ARCHITECTURE ---
