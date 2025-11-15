@@ -4,6 +4,7 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import Home from './components/Home'
 import AssessmentWorkflow from './components/AssessmentWorkflow'
+import AssessmentDetails from './components/AssessmentDetails'
 
 function App() {
   const navigate = useNavigate()
@@ -54,6 +55,7 @@ function App() {
           <Route path="/size" element={<AssessmentWorkflow onRoleChange={handleWorkflowRoleChange} />} />
           <Route path="/risk" element={<AssessmentWorkflow onRoleChange={handleWorkflowRoleChange} />} />
           <Route path="/complete" element={<AssessmentWorkflow onRoleChange={handleWorkflowRoleChange} />} />
+          <Route path="/assessments/:id" element={<AssessmentDetails />} />
         </Routes>
       </main>
 
