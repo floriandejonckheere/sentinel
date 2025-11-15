@@ -124,24 +124,105 @@ class DocFeatures(BaseModel):
     sources: List[str] = Field(default_factory=list, description="Documentation URLs or whitepapers referenced.")
     
 ALLOWED_CATEGORIES = [
-    "Productivity", "Communication", "Developer Tools", "Design", "Marketing", "Finance",
-    "Data & Analytics", "Security", "HR & People", "Education", "Healthcare", "Sales",
-    "Customer Support", "Media", "Operations", "Legal", "Creative", "AI & ML",
+    "Security",
+    "Developer Tools",
+    "Productivity",
+    "Communication & Collaboration",
+    "Multimedia & Creative",
+    "File Transfer / Remote Access / Network",
+    "System Utilities",
+    "Virtualization & Emulation",
+    "Input Method Editors (IME)",
 ]
+
+ALLOWED_SUBCATEGORIES = [
+    # Security
+    "Password Manager",
+    "Client-Side Encryption",
+    "Disk Encryption",
+    "Security Suite",
+    "Anti-Malware",
+    "Adware Removal",
+    "System Cleanup Utility",
+
+    # Developer Tools
+    "API Client / Developer Tool",
+    "Code Editor",
+    "HTTP Debugging Proxy",
+    "Game Engine",
+    "Application Development Platform",
+
+    # Productivity
+    "Office Suite",
+    "Document Management",
+    "Reference Manager",
+    "Business Productivity App",
+    "ERP / Business Management Software",
+    "Scientific Graphing / Data Analysis",
+
+    # Communication & Collaboration
+    "Messaging / Collaboration",
+    "VoIP / Video Calling",
+    "Video Conferencing",
+    "Cloud Storage / File Sync",
+
+    # Multimedia & Creative
+    "Screen Recording",
+    "Video Conversion",
+    "Video Editing",
+    "Screen Capture",
+    "Image Editing",
+    "Media Player",
+    "Streaming & Recording",
+
+    # File Transfer / Remote Access / Network
+    "FTP/SFTP Client",
+    "File Copy Acceleration Utility",
+    "Remote Desktop / Remote Support",
+    "Terminal Emulator",
+    "SSH Client",
+
+    # System Utilities
+    "File Compression / Archiving",
+    "File Manager",
+    "Local Search Utility",
+    "File Indexing & Search",
+    "Uninstaller",
+    "Disk Cleanup Utility",
+    "System Information",
+
+    # Virtualization & Emulation
+    "Virtualization Platform",
+    "Emulator / Virtualization Engine",
+
+    # Input Method Editors (IME)
+    "Input Method Editor",
+]
+
 
 class AppCategoryResult(BaseModel):
     """
-    Classification output indicating the most likely product category for a vendor,
-    along with confidence and the model’s reasoning.
+    Two-level classification output for a vendor/product:
+    - `category` is the high-level column (e.g., Security, Productivity).
+    - `subcategory` is the more specific row/type within that category
+      (e.g., Password Manager, Office Suite).
     """
 
     category: Literal[tuple(ALLOWED_CATEGORIES)] = Field(
         ...,
         description=(
-            "The predicted category that best matches the vendor or product. "
-            "Must be one of the predefined ALLOWED_CATEGORIES. "
-            "Used by the workflow to route downstream research tasks "
-            "(e.g., security checks, compliance, feature extraction)."
+            "Top-level category taken from the column headers of the taxonomy "
+            "(e.g., 'Security', 'Productivity'). The workflow can use this to "
+            "route or branch into different research paths."
+        ),
+    )
+
+    subcategory: Literal[tuple(ALLOWED_SUBCATEGORIES)] = Field(
+        ...,
+        description=(
+            "More specific subcategory (row) within the chosen category "
+            "(e.g., 'Password Manager', 'Office Suite'). Must be consistent "
+            "with the category according to the predefined matrix."
         ),
     )
 
@@ -150,27 +231,26 @@ class AppCategoryResult(BaseModel):
         ge=0.0,
         le=1.0,
         description=(
-            "A probability-like confidence score (0.0–1.0) representing the "
-            "model’s certainty about the chosen category. "
-            "Higher values indicate stronger confidence and may be used by "
-            "the workflow to decide whether to trigger fallback or validation steps."
+            "A score from 0.0 to 1.0 representing the model’s certainty about "
+            "the chosen category + subcategory pair."
         ),
     )
 
     reasoning: str = Field(
         ...,
         description=(
-            "Natural-language explanation of why the model selected the category. "
-            "This is used for debugging and ensuring interpretability inside the workflow. "
-            "It can also help downstream agents validate the categorization decision."
+            "Natural-language explanation of why this category and subcategory "
+            "were selected. Useful for debugging, auditability, and for "
+            "downstream agents to validate or override the classification."
         ),
     )
+
 
 
 class ResearchReport(BaseModel):
     """Comprehensive security research report combining all agent outputs."""
     vendor: VendorIntel = Field(..., description="Vendor Intelligence section: background and reputation.")
-    category: AppCategoryResult = Field(..., description="Product category classification result.")
+    category: AppCategoryResult = Field(..., description="Product category and subcategory classification result.")
     cve: CVESection = Field(..., description="CVE and vulnerability history.")
     compliance: ComplianceSection = Field(..., description="Compliance and certification posture.")
     incidents: IncidentSection = Field(..., description="Security incidents and breach history.")

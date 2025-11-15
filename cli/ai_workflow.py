@@ -6,7 +6,7 @@ from langgraph.checkpoint.memory import MemorySaver  # optional
 from ai import AI
 from tools.web_tool import search_scrape_tool  # your BaseTool
 from models.llm_models import (
-    ALLOWED_CATEGORIES, VendorIntel, CVESection, ComplianceSection, IncidentSection, DocFeatures, ResearchReport,AppCategoryResult
+    ALLOWED_SUBCATEGORIES,ALLOWED_CATEGORIES, VendorIntel, CVESection, ComplianceSection, IncidentSection, DocFeatures, ResearchReport,AppCategoryResult
 )
 
 # ---- Shared state ----
@@ -46,14 +46,16 @@ def category_node(state: State) -> State:
         "You are a product categorization agent.\n\n"
         "Task:\n"
         "- Read the user's research query about a vendor or product.\n"
-        "- Classify it into exactly one of these categories:\n"
+        "- First choose a high-level *category* from this list of column headers:\n"
         f"{', '.join(ALLOWED_CATEGORIES)}\n\n"
-        "Output:\n"
-        "- Return an AppCategoryResult with:\n"
-        "  * category: the single best category from the list.\n"
-        "  * confidence: a float between 0.0 and 1.0.\n"
-        "  * reasoning: a short explanation of why this category fits."
+        "- Then choose a more specific *subcategory* from this list of allowed subcategories:\n"
+        f"{', '.join(ALLOWED_SUBCATEGORIES)}\n\n"
+        "  * category: the single best top-level category.\n"
+        "  * subcategory: a specific type from the allowed subcategories.\n"
+        "  * confidence: float between 0.0 and 1.0 reflecting your certainty.\n"
+        "  * reasoning: short explanation justifying both choices."
     )
+
     result = ai.generate_structured_with_tools(
         prompt=prompt,
         input_text=state["query"],
@@ -62,6 +64,7 @@ def category_node(state: State) -> State:
         max_steps=2,
     )
     return {"category": result}
+
 
 
 def cve_node(state: State) -> State:
