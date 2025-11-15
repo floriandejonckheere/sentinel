@@ -13,6 +13,7 @@ export interface Assessment {
         application_intel: {
             name: string
             vendor_name: string
+            version: string | null
         }
         description: string
         url: string

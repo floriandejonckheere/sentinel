@@ -80,11 +80,18 @@ def category_node(state: State) -> State:
         "You are a product categorization agent.\n\n"
         "Task:\n"
         "- Read the user's research query about a vendor or product.\n"
+        "- Use web search to find the official product name, vendor name, and the latest version number.\n"
         "- First choose a high-level *category* from this list:\n"
         f"{', '.join(ALLOWED_CATEGORIES)}\n\n"
         "- Then choose a more specific *subcategory* from this list:\n"
         f"{', '.join(ALLOWED_SUBCATEGORIES)}\n\n"
-        "Return an AppCategoryResult with category, subcategory, confidence, reasoning."
+        "- Fill in the ApplicationIntel with:\n"
+        "  - name: Official product/application name\n"
+        "  - vendor_name: Official vendor/company name (not the product name)\n"
+        "  - version: Latest version number or release (e.g., '8.10.30', 'v2024.1', 'Enterprise 2025')\n"
+        "    Search for release notes, changelog, or official download pages to find the current version.\n"
+        "    If no version is found, leave it as null.\n\n"
+        "Return an AppCategoryResult with application_intel, category, subcategory, and url."
     )
 
     result = ai.generate_structured_with_tools(
@@ -92,7 +99,7 @@ def category_node(state: State) -> State:
         input_text=state["query"],
         tools=_tools(),
         output_model=AppCategoryResult,
-        max_steps=2,
+        max_steps=4,
     )
     return {"category": result}
 

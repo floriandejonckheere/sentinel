@@ -91,6 +91,7 @@ class VendorIntel(BaseModel):
 class ApplicationIntel(BaseModel):
     name: str = Field(..., description="The official name of the application or product.")
     vendor_name: str = Field(..., description="The official name of the vendor or company. NOTE NOT THE SAME as the product name, make sure you get the correct one (e.g. AgileBits Inc, Meta, Alphabet).")
+    version: Optional[str] = Field(None, description="The latest version number or release of the application (e.g., '8.10.30', 'v2024.1', 'Enterprise 2025').")
 
 class CVEItem(BaseModel):
     """Individual vulnerability record."""

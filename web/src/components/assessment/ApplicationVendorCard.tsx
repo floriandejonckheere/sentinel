@@ -5,6 +5,7 @@ interface ApplicationVendorCardProps {
     application_intel: {
         name: string
         vendor_name: string
+        version: string | null
     }
     description: string
     url: string
@@ -103,9 +104,16 @@ export default function ApplicationVendorCard({ application, vendor, assessedAt 
         </p>
       </div>
 
-      <h3 className="text-4xl font-bold text-gray-900 dark:text-white mb-3">
-        {application.application_intel.name}
-      </h3>
+      <div className="mb-3">
+        <h3 className="text-4xl font-bold text-gray-900 dark:text-white inline">
+          {application.application_intel.name}
+        </h3>
+        {application.application_intel.version && (
+          <span className="ml-3 text-lg text-gray-500 dark:text-gray-400">
+            {application.application_intel.version}
+          </span>
+        )}
+      </div>
       <p className="text-xl text-gray-600 dark:text-gray-400 mb-6">
         By {application.application_intel.vendor_name}{vendor.country ? ` (${getCountryName(vendor.country)})` : ''}
       </p>
