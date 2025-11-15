@@ -1,16 +1,11 @@
 import { UsersIcon } from '@heroicons/react/24/outline'
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
+import { sizes } from '../constants/sizes'
 
 interface OrganizationSizeProps {
   onSelect: (size: string) => void
   onBack?: () => void
 }
-
-const sizes = [
-  { id: '1-10', label: '1-10' },
-  { id: '10-100', label: '10-100' },
-  { id: '100+', label: '100+' },
-]
 
 export default function OrganizationSize({ onSelect, onBack }: OrganizationSizeProps) {
   return (
@@ -38,7 +33,7 @@ export default function OrganizationSize({ onSelect, onBack }: OrganizationSizeP
             className="flex flex-col items-center justify-center gap-4 p-8 bg-white dark:bg-gray-700 rounded-2xl border border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-lg transition-all min-w-[160px]"
           >
             <UsersIcon className="h-10 w-10 text-blue-600 dark:text-blue-400" />
-            <span className="text-2xl font-medium text-gray-900 dark:text-white">{size.label}</span>
+            <span className="text-2xl font-medium text-gray-900 dark:text-white">{size.name}</span>
           </button>
         ))}
       </div>
