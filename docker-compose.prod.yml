@@ -2,9 +2,7 @@ x-app: &app
   image: ghcr.io/floriandejonckheere/sentinel:latest
   networks:
     - fcloud
-  environment:
-    GEMINI_API_KEY: ${GEMINI_API_KEY}
-    SERPAPI_API_KEY: ${SERPAPI_API_KEY}
+  env_file: .env
   volumes:
     - sentinel:/data
   restart: unless-stopped
