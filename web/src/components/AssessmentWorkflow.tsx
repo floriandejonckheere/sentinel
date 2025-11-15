@@ -18,7 +18,7 @@ interface AssessmentWorkflowProps {
   onRoleChange?: (role: string) => void
 }
 
-const RISK_LABELS = ['Very Low', 'Low', 'Medium', 'High', 'Very High']
+const RISK_LABELS = ['Low', 'Medium', 'High']
 
 export default function AssessmentWorkflow({ onRoleChange }: AssessmentWorkflowProps) {
   const navigate = useNavigate()
@@ -44,7 +44,7 @@ export default function AssessmentWorkflow({ onRoleChange }: AssessmentWorkflowP
       application: params.get('name') || '',
       role: params.get('role') || '',
       organizationSize: params.get('size') || '',
-      riskTolerance: riskIndex >= 0 ? riskIndex : 2,
+      riskTolerance: riskIndex >= 0 ? riskIndex : 1,
     }
   }
 
