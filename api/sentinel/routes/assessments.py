@@ -1,4 +1,6 @@
 """Assessment API routes."""
+import uuid
+from datetime import datetime
 from flask import Blueprint, jsonify, request
 
 from sentinel.constants.roles import VALID_ROLE_IDS
@@ -7,11 +9,14 @@ from sentinel.constants.risk import VALID_RISK_KEYS
 
 assessments_bp = Blueprint('assessments', __name__, url_prefix='/api')
 
+# In-memory storage for assessments (replace with database later)
+assessments_store = {}
+
 
 @assessments_bp.route("/assessments", methods=["GET"])
 def list_assessments():
     """List all assessments."""
-    return jsonify([]), 200
+    return jsonify(list(assessments_store.values())), 200
 
 
 @assessments_bp.route("/assessments", methods=["POST"])
@@ -42,6 +47,9 @@ def create_assessment():
     if risk not in VALID_RISK_KEYS:
         return jsonify({"error": f"Invalid risk. Must be one of: {', '.join(sorted(VALID_RISK_KEYS))}"}), 400
 
+    # Generate unique ID for this assessment
+    assessment_id = str(uuid.uuid4())
+
     # TODO: Use CLI assessor to perform actual assessment (after merge)
     # from cli.assessor import Assessor
     # from cli.database import Database
@@ -50,12 +58,15 @@ def create_assessment():
     # ai = AI()
     # assessor = Assessor(database=db, ai=ai)
     # assessment = assessor.assess(name=name, url=url)
-    # return jsonify(assessment.to_json()), 200
 
-    return jsonify({
+    # Create assessment object
+    assessment = {
+        "id": assessment_id,
         "metadata": {
-            "assessed_at": "2024-01-01T00:00:00Z",
-            "assessment_id": "assessment_12345",
+            "assessed_at": datetime.now().isoformat() + "Z",
+            "role": role,
+            "size": size,
+            "risk": risk,
         },
         "vendor": {
             "name": name or "Example Vendor",
@@ -72,4 +83,21 @@ def create_assessment():
         },
         "trust_score": 87,
         "confidence": 92,
-    }), 200
+    }
+
+    # Store assessment
+    assessments_store[assessment_id] = assessment
+
+    # Return just the ID
+    return jsonify({"id": assessment_id}), 201
+
+
+@assessments_bp.route("/assessments/<assessment_id>", methods=["GET"])
+def get_assessment(assessment_id):
+    """Get a specific assessment by ID."""
+    assessment = assessments_store.get(assessment_id)
+
+    if not assessment:
+        return jsonify({"error": "Assessment not found"}), 404
+
+    return jsonify(assessment), 200

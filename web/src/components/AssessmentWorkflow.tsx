@@ -4,8 +4,11 @@ import ApplicationInput from './ApplicationInput'
 import RoleSelection from './RoleSelection'
 import OrganizationSize from './OrganizationSize'
 import RiskTolerance from './RiskTolerance'
+import LoadingSpinner from './LoadingSpinner'
 import { roles } from '../constants/roles'
 import { sizes } from '../constants/sizes'
+import { riskLevels } from '../constants/risk'
+import { createAssessment } from '../services/api'
 
 type Step = 'application' | 'role' | 'size' | 'risk' | 'complete'
 
@@ -52,6 +55,8 @@ export default function AssessmentWorkflow({ onRoleChange }: AssessmentWorkflowP
 
   const [currentStep, setCurrentStep] = useState<Step>(() => getStepFromPath(location.pathname))
   const [assessmentData, setAssessmentData] = useState<AssessmentData>(loadDataFromQuery)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   // Sync step and data with URL changes
   useEffect(() => {
@@ -103,10 +108,41 @@ export default function AssessmentWorkflow({ onRoleChange }: AssessmentWorkflowP
     navigateToStep('risk', newData)
   }
 
-  const handleRiskSelect = (tolerance: number) => {
+  const handleRiskSelect = async (tolerance: number) => {
     const newData = { ...assessmentData, riskTolerance: tolerance }
     setAssessmentData(newData)
     navigateToStep('complete', newData)
+  }
+
+  // Create assessment when arriving at complete step
+  useEffect(() => {
+    if (currentStep === 'complete' && !isLoading && !error) {
+      handleCreateAssessment()
+    }
+  }, [currentStep])
+
+  const handleCreateAssessment = async () => {
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      // Map risk tolerance index to key
+      const riskKey = riskLevels[assessmentData.riskTolerance]?.id || 'medium'
+
+      // POST to create assessment
+      const assessmentId = await createAssessment({
+        name: assessmentData.application,
+        role: assessmentData.role,
+        size: assessmentData.organizationSize,
+        risk: riskKey,
+      })
+
+      // Redirect to the assessment details page
+      navigate(`/assessments/${assessmentId}`)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred')
+      setIsLoading(false)
+    }
   }
 
   const handleBackFromRole = () => {
@@ -140,34 +176,22 @@ export default function AssessmentWorkflow({ onRoleChange }: AssessmentWorkflowP
         <RiskTolerance onSelect={handleRiskSelect} onBack={handleBackFromRisk} />
       )}
 
-      {currentStep === 'complete' && (() => {
-        // Look up display names from constants based on IDs in URL params
-        const roleDisplay = roles.find(r => r.id === assessmentData.role)?.name || assessmentData.role
-        const sizeDisplay = sizes.find(s => s.id === assessmentData.organizationSize)?.name || assessmentData.organizationSize
-        const riskDisplay = RISK_LABELS[assessmentData.riskTolerance] || 'Unknown'
+      {currentStep === 'complete' && (
+        <>
+          {isLoading && <LoadingSpinner message="Creating your security assessment..." />}
 
-        return (
-          <div className="animate-fade-in text-center">
-            <h2 className="text-3xl font-medium text-gray-900 dark:text-white mb-6">
-              Assessment Complete
-            </h2>
-            <div className="bg-white dark:bg-gray-700 rounded-2xl p-8 border border-gray-300 dark:border-gray-600">
-              <p className="text-lg text-gray-700 dark:text-gray-300 mb-4">
-                <span className="font-semibold">Application:</span> {assessmentData.application}
-              </p>
-              <p className="text-lg text-gray-700 dark:text-gray-300 mb-4">
-                <span className="font-semibold">Role:</span> {roleDisplay}
-              </p>
-              <p className="text-lg text-gray-700 dark:text-gray-300 mb-4">
-                <span className="font-semibold">Organization Size:</span> {sizeDisplay}
-              </p>
-              <p className="text-lg text-gray-700 dark:text-gray-300">
-                <span className="font-semibold">Risk Tolerance:</span> {riskDisplay}
-              </p>
+          {error && (
+            <div className="animate-fade-in text-center">
+              <div className="bg-red-50 dark:bg-red-900/20 rounded-2xl p-8 border border-red-300 dark:border-red-600">
+                <h2 className="text-2xl font-medium text-red-900 dark:text-red-200 mb-4">
+                  Error
+                </h2>
+                <p className="text-red-700 dark:text-red-300">{error}</p>
+              </div>
             </div>
-          </div>
-        )
-      })()}
+          )}
+        </>
+      )}
     </div>
   )
 }
