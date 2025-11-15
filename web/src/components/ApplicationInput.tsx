@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import { PaperAirplaneIcon } from '@heroicons/react/24/outline'
+import { PaperAirplaneIcon, ChevronLeftIcon } from '@heroicons/react/24/outline'
 
 interface ApplicationInputProps {
   onSubmit: (value: string) => void
+  onBack?: () => void
 }
 
-export default function ApplicationInput({ onSubmit }: ApplicationInputProps) {
+export default function ApplicationInput({ onSubmit, onBack }: ApplicationInputProps) {
   const [inputValue, setInputValue] = useState('')
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -17,9 +18,21 @@ export default function ApplicationInput({ onSubmit }: ApplicationInputProps) {
 
   return (
     <form onSubmit={handleSubmit} className="transition-opacity duration-500">
-      <label htmlFor="app-input" className="block text-3xl font-medium text-gray-900 dark:text-white mb-10 text-center">
-        Which application do you want to assess today?
-      </label>
+      <div className="flex items-center justify-center mb-10 gap-4">
+        {onBack && (
+          <ChevronLeftIcon
+            role="button"
+            tabIndex={0}
+            aria-label="Back"
+            onClick={onBack}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onBack() }}
+            className="h-10 w-10 p-1 rounded-xl text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-600 transition cursor-pointer"
+          />
+        )}
+        <label htmlFor="app-input" className="text-3xl font-medium text-gray-900 dark:text-white text-center">
+          Which application do you want to assess today?
+        </label>
+      </div>
       <div className="relative">
         <input
           type="text"

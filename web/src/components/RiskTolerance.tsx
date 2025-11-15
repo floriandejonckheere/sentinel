@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { ChartBarIcon } from '@heroicons/react/24/outline'
+import { ChartBarIcon, ChevronLeftIcon } from '@heroicons/react/24/outline'
 
 interface RiskToleranceProps {
   onSelect: (tolerance: number) => void
+  onBack?: () => void
 }
 
 const toleranceLabels = ['Low', 'Medium', 'High']
@@ -12,7 +13,7 @@ const toleranceColors = [
   { bg: 'rgb(239, 68, 68)', text: 'text-red-600 dark:text-red-400' }, // Red
 ]
 
-export default function RiskTolerance({ onSelect }: RiskToleranceProps) {
+export default function RiskTolerance({ onSelect, onBack }: RiskToleranceProps) {
   const [value, setValue] = useState(1) // Default to Medium (index 1)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,9 +26,21 @@ export default function RiskTolerance({ onSelect }: RiskToleranceProps) {
 
   return (
     <div className="animate-fade-in">
-      <h2 className="block text-3xl font-medium text-gray-900 dark:text-white mb-10 text-center">
-        What is your risk tolerance?
-      </h2>
+      <div className="flex items-center justify-center mb-10 gap-4">
+        {onBack && (
+          <ChevronLeftIcon
+            role="button"
+            tabIndex={0}
+            aria-label="Back"
+            onClick={onBack}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onBack() }}
+            className="h-10 w-10 p-1 rounded-xl text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-600 transition cursor-pointer"
+          />
+        )}
+        <h2 className="block text-3xl font-medium text-gray-900 dark:text-white text-center">
+          What is your risk tolerance?
+        </h2>
+      </div>
       <div className="bg-white dark:bg-gray-700 rounded-2xl p-8 border border-gray-300 dark:border-gray-600 max-w-2xl mx-auto">
         <div className="flex justify-center mb-6">
           <ChartBarIcon className={`h-12 w-12 ${toleranceColors[value].text}`} />

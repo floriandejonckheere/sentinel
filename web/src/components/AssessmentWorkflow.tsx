@@ -107,6 +107,19 @@ export default function AssessmentWorkflow({ onRoleChange }: AssessmentWorkflowP
     navigateToStep('complete', newData)
   }
 
+  const handleBackFromRole = () => {
+    // Back to application
+    navigateToStep('application', assessmentData)
+  }
+
+  const handleBackFromSize = () => {
+    navigateToStep('role', assessmentData)
+  }
+
+  const handleBackFromRisk = () => {
+    navigateToStep('size', assessmentData)
+  }
+
   return (
     <div className="w-full max-w-3xl">
       {currentStep === 'application' && (
@@ -114,15 +127,15 @@ export default function AssessmentWorkflow({ onRoleChange }: AssessmentWorkflowP
       )}
 
       {currentStep === 'role' && (
-        <RoleSelection onSelect={handleRoleSelect} />
+        <RoleSelection onSelect={handleRoleSelect} onBack={handleBackFromRole} />
       )}
 
       {currentStep === 'size' && (
-        <OrganizationSize onSelect={handleSizeSelect} />
+        <OrganizationSize onSelect={handleSizeSelect} onBack={handleBackFromSize} />
       )}
 
       {currentStep === 'risk' && (
-        <RiskTolerance onSelect={handleRiskSelect} />
+        <RiskTolerance onSelect={handleRiskSelect} onBack={handleBackFromRisk} />
       )}
 
       {currentStep === 'complete' && (

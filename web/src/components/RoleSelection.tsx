@@ -1,11 +1,13 @@
 import { roles } from '../constants/roles'
+import { ChevronLeftIcon } from '@heroicons/react/24/outline'
 
 interface RoleSelectionProps {
   onSelect: (role: string) => void
+  onBack?: () => void
 }
 
 
-export default function RoleSelection({ onSelect }: RoleSelectionProps) {
+export default function RoleSelection({ onSelect, onBack }: RoleSelectionProps) {
   const iconColorClasses = {
     gray: 'text-gray-600 dark:text-gray-400',
     red: 'text-red-600 dark:text-red-400',
@@ -22,9 +24,21 @@ export default function RoleSelection({ onSelect }: RoleSelectionProps) {
 
   return (
     <div className="animate-fade-in">
-      <h2 className="block text-3xl font-medium text-gray-900 dark:text-white mb-10 text-center">
-        What is your main responsibility in the organization?
-      </h2>
+      <div className="flex items-center justify-center mb-10 gap-4">
+        {onBack && (
+          <ChevronLeftIcon
+            role="button"
+            tabIndex={0}
+            aria-label="Back"
+            onClick={onBack}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onBack() }}
+            className="h-10 w-10 p-1 rounded-xl text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-600 transition cursor-pointer"
+          />
+        )}
+        <h2 className="text-3xl font-medium text-gray-900 dark:text-white text-center">
+          What is your main responsibility in the organization?
+        </h2>
+      </div>
       <div className="grid grid-cols-2 gap-6">
         {roles.map((role) => {
           const Icon = role.icon
