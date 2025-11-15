@@ -82,7 +82,7 @@ def create_assessment():
             "subcategory": "Task Management",
         },
         "trust_score": 87,
-        "confidence": 92,
+        "confidence": "high",
     }
 
     # Store assessment

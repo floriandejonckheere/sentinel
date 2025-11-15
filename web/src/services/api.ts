@@ -1,3 +1,5 @@
+import { type Assessment } from './types'
+
 interface CreateAssessmentRequest {
   name: string
   role: string
@@ -7,31 +9,6 @@ interface CreateAssessmentRequest {
 
 interface CreateAssessmentResponse {
   id: string
-}
-
-interface Assessment {
-  id: string
-  metadata: {
-    assessed_at: string
-    role: string
-    size: string
-    risk: string
-  }
-  vendor: {
-    name: string
-    legal_name: string
-    country: string
-    url: string
-  }
-  application: {
-    name: string
-    description: string
-    url: string
-    category: string
-    subcategory: string
-  }
-  trust_score: number
-  confidence: number
 }
 
 export async function createAssessment(data: CreateAssessmentRequest): Promise<string> {
