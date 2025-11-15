@@ -1,59 +1,54 @@
-"""
-TrustScoreEngine
-----------------
-Self-contained class to convert LLM vendor output into
-category scores, overall trust score, and confidence.
+"""TrustScoreEngine
+---------------------
+Converts raw LLM JSON output into a structured `TrustScoreBreakdown` Pydantic model.
 """
 
-from typing import Dict, Tuple
+from typing import Dict, Any
+from models.llm_models import TrustScoreBreakdown, TrustConfidence, TrustTrend
+
 
 class TrustScoreEngine:
-    """
-    TrustScoreEngine:
-    - Converts LLM output into normalized category scores.
-    - Computes overall trust score and confidence.
-    """
-    
-    def __init__(self, weights: Dict[str,float] = None):
-        """
-        Initialize the engine with optional category weights.
-        Default: equal weights for 8 categories.
-        """
-        if weights is None:
-            weights = {
-                "architecture": 0.125,
-                "data_protection": 0.125,
-                "identity_access": 0.125,
-                "devsecops": 0.125,
-                "historical_security": 0.125,
-                "compliance": 0.125,
-                "platform_security": 0.125,
-                "risks_exposure": 0.125
-            }
-        self.weights = weights
+    """Compute category scores and aggregate trust score into `TrustScoreBreakdown`."""
 
-    # -------------------------
-    # Public method
-    # -------------------------
-    def evaluate_llm_output(self, llm_output: Dict) -> Tuple[Dict[str,float], float, str]:
-        """
-        Takes LLM JSON output and returns:
-        - category_scores: dict of 8 categories
-        - trust_score: weighted 0-100
-        - confidence: "low"/"medium"/"high"
-        """
+    DEFAULT_WEIGHTS: Dict[str, float] = {
+        "architecture": 0.125,
+        "data_protection": 0.125,
+        "identity_access": 0.125,
+        "devsecops": 0.125,
+        "historical_security": 0.125,
+        "compliance": 0.125,
+        "platform_security": 0.125,
+        "risks_exposure": 0.125,
+    }
+
+    def __init__(self, weights: Dict[str, float] | None = None) -> None:
+        self.weights = weights or self.DEFAULT_WEIGHTS
+
+    def evaluate_llm_output(self, llm_output: Dict[str, Any]) -> TrustScoreBreakdown:
+        """Return a populated `TrustScoreBreakdown` model from LLM output JSON."""
         category_scores = self._extract_category_scores(llm_output)
         trust_score, confidence = self._compute_trust(category_scores)
-        return category_scores, trust_score, confidence
+        trend = self._derive_trend(llm_output)
+        # Cast floats to int for the model fields expecting int
+        breakdown = TrustScoreBreakdown(
+            score=int(round(trust_score)),
+            confidence=TrustConfidence(confidence),
+            trend=trend,
+            architecture=int(round(category_scores["architecture"])),
+            data_protection=int(round(category_scores["data_protection"])),
+            identity_access=int(round(category_scores["identity_access"])),
+            devsecops=int(round(category_scores["devsecops"])),
+            historical_security=int(round(category_scores["historical_security"])),
+            compliance=int(round(category_scores["compliance"])),
+            platform_security=int(round(category_scores["platform_security"])),
+            risks_exposure=int(round(category_scores["risks_exposure"])),
+        )
+        return breakdown
 
-    # -------------------------
-    # Internal helper: extract category scores
-    # -------------------------
-    def _extract_category_scores(self, llm_output: Dict) -> Dict[str,float]:
-        """
-        Extracts normalized category scores from LLM output.
-        """
-        scores = {
+    # ------------------------- Internal helpers -------------------------
+    def _extract_category_scores(self, llm_output: Dict[str, Any]) -> Dict[str, float]:
+        """Derive per-category scores from the LLM output JSON structure."""
+        scores: Dict[str, float] = {
             "architecture": 75,
             "data_protection": 80,
             "identity_access": 75,
@@ -61,72 +56,61 @@ class TrustScoreEngine:
             "historical_security": 70,
             "compliance": 60,
             "platform_security": 80,
-            "risks_exposure": 70
+            "risks_exposure": 70,
         }
-        
+
         docs = llm_output.get("docs", {})
         compliance = llm_output.get("compliance", {})
-        
-        # 1. Architecture
-        if any("AES-256" in enc for enc in docs.get("encryption", [])) and "zero-knowledge" in docs.get("summary","").lower():
+
+        # Architecture
+        if any("AES-256" in enc for enc in docs.get("encryption", [])) and "zero-knowledge" in docs.get("summary", "").lower():
             scores["architecture"] = 94
-        if any("bug bounty" in cert.get("framework","").lower() for cert in compliance.get("certs",[])):
-            scores["architecture"] += 2
-        scores["architecture"] = min(100, scores["architecture"])
-        
-        # 2. Data Protection
-        if len(docs.get("data_handling",[])) > 0:
+        if any("bug bounty" in cert.get("framework", "").lower() for cert in compliance.get("certs", [])):
+            scores["architecture"] = min(100, scores["architecture"] + 2)
+
+        # Data Protection
+        if docs.get("data_handling"):
             scores["data_protection"] = 93
-        
-        # 3. Identity & Access
-        if len(docs.get("authentication",[])) > 0 and "RBAC" in docs.get("admin_controls", []):
+
+        # Identity & Access
+        if docs.get("authentication") and "RBAC" in docs.get("admin_controls", []):
             scores["identity_access"] = 92
-        
-        # 4. DevSecOps
+
+        # DevSecOps (penalize for vulnerabilities)
         cve_list = llm_output.get("cve", {}).get("critical", [])
-        num_critical = sum(1 for x in cve_list if x.get("severity")=="High")
-        num_medium = sum(1 for x in cve_list if x.get("severity")=="Medium")
-        scores["devsecops"] = max(0, 100 - num_critical*10 - num_medium*5)
-        
-        # 5. Historical Security
-        trend = llm_output.get("cve", {}).get("trend","").lower()
-        if trend in ["stable","improving"]:
+        num_critical = sum(1 for x in cve_list if x.get("severity") == "High")
+        num_medium = sum(1 for x in cve_list if x.get("severity") == "Medium")
+        scores["devsecops"] = max(0, 100 - num_critical * 10 - num_medium * 5)
+
+        # Historical Security influenced by CVE trend
+        cve_trend = llm_output.get("cve", {}).get("trend", "").lower()
+        if cve_trend in {"stable", "improving"}:
             scores["historical_security"] = 85
-        
-        # 6. Compliance
+
+        # Compliance: accumulate cert status
         certs = compliance.get("certs", [])
         comp_score = 0
         for cert in certs:
-            if cert.get("status","").lower() in ["certified","claimed"]:
+            if cert.get("status", "").lower() in {"certified", "claimed"}:
                 comp_score += 15
         scores["compliance"] = min(100, comp_score)
-        
-        # 7. Platform & Operational Security
-        deployment = docs.get("deployment_model", [])
-        if "SaaS" in deployment:
+
+        # Platform Security
+        if "SaaS" in docs.get("deployment_model", []):
             scores["platform_security"] = 90
-        
-        # 8. Risks & Residual Exposure
+
+        # Risks / Exposure (incident penalty)
         incidents = llm_output.get("incidents", {}).get("items", [])
-        risks_score = 78 - min(len(incidents)*5, 20)
+        risks_score = 78 - min(len(incidents) * 5, 20)
         scores["risks_exposure"] = max(0, risks_score)
-        
-        # Round scores
-        for k in scores:
-            scores[k] = round(scores[k], 2)
-        
+
+        # Round floats for consistency prior to casting
+        for key, val in scores.items():
+            scores[key] = round(val, 2)
         return scores
 
-    # -------------------------
-    # Internal helper: compute trust
-    # -------------------------
-    def _compute_trust(self, category_scores: Dict[str,float]) -> Tuple[float, str]:
-        """
-        Compute weighted trust score and confidence.
-        """
-        trust_score = sum(category_scores.get(cat,0)*weight for cat, weight in self.weights.items())
-        
-        # Confidence based on missing categories
+    def _compute_trust(self, category_scores: Dict[str, float]) -> tuple[float, str]:
+        trust_score = sum(category_scores.get(cat, 0) * w for cat, w in self.weights.items())
         missing = sum(1 for cat in self.weights if cat not in category_scores)
         if missing == 0:
             confidence = "high"
@@ -134,5 +118,10 @@ class TrustScoreEngine:
             confidence = "medium"
         else:
             confidence = "low"
-        
-        return round(trust_score,2), confidence
+        return round(trust_score, 2), confidence
+
+    def _derive_trend(self, llm_output: Dict[str, Any]) -> TrustTrend:
+        raw = llm_output.get("cve", {}).get("trend", "stable").lower()
+        if raw not in {"improving", "degrading", "stable"}:
+            raw = "stable"
+        return TrustTrend(raw)
