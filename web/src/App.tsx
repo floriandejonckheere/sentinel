@@ -24,7 +24,17 @@ function App() {
     navigate('/')
   }
 
-  const handleRoleChange = (role: string) => {
+  // Handler for dropdown role changes - updates URL
+  const handleDropdownRoleChange = (role: string) => {
+    setCurrentRole(role)
+    // Update URL query params to sync with workflow
+    const params = new URLSearchParams(location.search)
+    params.set('role', role)
+    navigate(`${location.pathname}?${params.toString()}`)
+  }
+
+  // Handler for workflow role changes - just updates state
+  const handleWorkflowRoleChange = (role: string) => {
     setCurrentRole(role)
   }
 
@@ -32,16 +42,16 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-800">
-      <Header onClearRole={handleReset} currentRole={currentRole} onRoleChange={handleRoleChange} />
+      <Header onClearRole={handleReset} currentRole={currentRole} onRoleChange={handleDropdownRoleChange} />
 
       <main className={`flex items-center justify-center px-4 ${isHomePage ? 'h-[calc(100vh-5rem)] -mt-32' : 'h-[calc(100vh-5rem)] -mt-32'}`}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/name" element={<AssessmentWorkflow onRoleChange={handleRoleChange} />} />
-          <Route path="/role" element={<AssessmentWorkflow onRoleChange={handleRoleChange} />} />
-          <Route path="/size" element={<AssessmentWorkflow onRoleChange={handleRoleChange} />} />
-          <Route path="/risk" element={<AssessmentWorkflow onRoleChange={handleRoleChange} />} />
-          <Route path="/complete" element={<AssessmentWorkflow onRoleChange={handleRoleChange} />} />
+          <Route path="/name" element={<AssessmentWorkflow onRoleChange={handleWorkflowRoleChange} />} />
+          <Route path="/role" element={<AssessmentWorkflow onRoleChange={handleWorkflowRoleChange} />} />
+          <Route path="/size" element={<AssessmentWorkflow onRoleChange={handleWorkflowRoleChange} />} />
+          <Route path="/risk" element={<AssessmentWorkflow onRoleChange={handleWorkflowRoleChange} />} />
+          <Route path="/complete" element={<AssessmentWorkflow onRoleChange={handleWorkflowRoleChange} />} />
         </Routes>
       </main>
 
