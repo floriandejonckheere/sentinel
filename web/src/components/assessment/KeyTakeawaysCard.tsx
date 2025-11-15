@@ -46,6 +46,13 @@ export default function KeyTakeawaysCard({strengths, risks}: KeyTakeawaysCardPro
                     </ul>
                 </div>
             </div>
+
+            {/* Explanation */}
+            <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-600">
+                <p className="text-xs text-gray-600 dark:text-gray-400 text-justify">
+                    Key takeaways are identified through AI-powered analysis of security documentation, vulnerability databases, compliance certifications, and industry best practices to highlight the most critical strengths and risks.
+                </p>
+            </div>
         </div>
     )
 }

@@ -87,6 +87,13 @@ export default function TrustScoreCard({ score, confidence }: TrustScoreCardProp
           </p>
         </div>
       </div>
+
+      {/* Explanation */}
+      <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-600">
+        <p className="text-xs text-gray-600 dark:text-gray-400 text-justify">
+          The Trust Score is calculated by analyzing eight security dimensions: architecture, data protection, identity & access management, DevSecOps practices, historical security performance, compliance posture, platform security, and risk exposure.
+        </p>
+      </div>
     </div>
   )
 }
