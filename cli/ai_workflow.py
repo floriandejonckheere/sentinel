@@ -2,11 +2,12 @@ from __future__ import annotations
 from typing import TypedDict, Optional
 from langgraph.graph import StateGraph, END, START
 from langgraph.checkpoint.memory import MemorySaver
-from ai import AI
-from tools.web_tool import search_scrape_tool
-from tools.nvd_tool import nvd_keyword_search_minimal_120d
 
-from models.llm_models import (
+from .ai import AI
+from .tools.web_tool import search_scrape_tool
+from .tools.nvd_tool import nvd_keyword_search_minimal_120d
+
+from .models.llm_models import (
     ALLOWED_SUBCATEGORIES,
     ALLOWED_CATEGORIES,
     AssessmentSummary,
@@ -25,9 +26,9 @@ from models.llm_models import (
     AssessmentMetadata,
 )
 
-from helpers.build_metadata import build_metadata
-from helpers.build_cve_counts_from_section import build_cve_counts_from_section
-from helpers.build_incident_counts import build_incident_counts
+from cli.helpers.build_metadata import build_metadata
+from cli.helpers.build_cve_counts_from_section import build_cve_counts_from_section
+from cli.helpers.build_incident_counts import build_incident_counts
 
 # ---- Shared state ----
 class State(TypedDict, total=False):

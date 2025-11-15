@@ -1,6 +1,6 @@
 from typing import Optional
 
-from models.llm_models import IncidentCounts, IncidentSection, SeverityLevel
+from cli.models.llm_models import IncidentCounts, IncidentSection, SeverityLevel
 
 def build_incident_counts(incidents: IncidentSection) -> IncidentCounts:
     total = len(incidents.items)

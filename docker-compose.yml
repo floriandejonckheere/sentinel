@@ -8,7 +8,8 @@ services:
     volumes:
       - ./api:/app/api
       - ./cli:/app/cli
-      - ./sentinel.sqlite3:/data/sentinel.sqlite3
+      - ./data/:/data/
+    env_file: .env
     environment:
       - PORT=8080
       - FLASK_ENV=development

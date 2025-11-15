@@ -1,5 +1,5 @@
 import datetime
-from models.llm_models import AssessmentMetadata
+from cli.models.llm_models import AssessmentMetadata
 
 
 def build_metadata() -> AssessmentMetadata:

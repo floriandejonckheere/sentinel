@@ -1,4 +1,4 @@
-from models.llm_models import CVECounts, CVESection, TrustTrend, SeverityLevel
+from cli.models.llm_models import CVECounts, CVESection, TrustTrend, SeverityLevel
 
 
 def build_cve_counts_from_section(cve_section: CVESection) -> CVECounts:

@@ -30,9 +30,6 @@ from pathlib import Path
 from pydantic import BaseModel
 from langchain_core.messages import ToolMessage  
 from langchain_core.tools import BaseTool  
-from models.assessment import ComplianceSignal, Assessment, CVETrend, CVETrendList
-from models.llm_models import LLMComplianceSignal, LLMComplianceSignalList
-from tools.web_tool import search_scrape_tool
 try:
     from langchain_google_genai import ChatGoogleGenerativeAI
 except Exception as e:  # pragma: no cover

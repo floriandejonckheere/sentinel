@@ -1,6 +1,6 @@
-from ai import AI
-from models.llm_models import ApplicationIntel
-from tools.web_tool import search_scrape_tool
+from cli.ai import AI
+from cli.models.llm_models import ApplicationIntel
+from cli.tools.web_tool import search_scrape_tool
 def get_application_info(input_text: str) -> ApplicationIntel:
     """Retrieve application information using the AI module."""
     ai = AI()
@@ -16,4 +16,3 @@ def get_application_info(input_text: str) -> ApplicationIntel:
         max_steps=2
     )
     return result
-

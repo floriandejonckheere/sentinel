@@ -9,6 +9,9 @@ from sentinel.constants.roles import VALID_ROLE_IDS
 from sentinel.constants.sizes import VALID_SIZE_IDS
 from sentinel.constants.risk import VALID_RISK_KEYS
 from cli.application_info import get_application_info
+from cli.assessor import Assessor
+from cli.runner import Runner
+from cli.tools.trust_score_engine import TrustScoreEngine
 
 assessments_bp = Blueprint('assessments', __name__, url_prefix='/api')
 
@@ -76,6 +79,8 @@ def create_assessment():
         return jsonify({"id": assessment_id}), 201
 
     # TODO: Run the full assessment process here (omitted for brevity)
+    runner = Runner(assessment_id=assessment_id, name=input_text)
+    runner.run()
 
     # Return just the ID
     return jsonify({"id": assessment_id}), 201

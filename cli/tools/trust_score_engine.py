@@ -4,7 +4,7 @@ Converts raw LLM JSON output into a structured `TrustScoreBreakdown` Pydantic mo
 """
 
 from typing import Dict, Any
-from models.llm_models import TrustScoreBreakdown, TrustConfidence, TrustTrend
+from cli.models.llm_models import TrustScoreBreakdown, TrustConfidence, TrustTrend
 
 
 class TrustScoreEngine:

@@ -1,12 +1,12 @@
 """Security assessor that evaluates IT tools and applications."""
 from typing import Optional
 
-from ai import AI
-from database import Database
+from cli.ai import AI
+from cli.database import Database
 
-from models.assessment import Assessment, CVETrend, ComplianceSignal, Alternative
-from models.application import Application
-from models.vendor import Vendor
+from cli.models.assessment import Assessment, CVETrend, ComplianceSignal, Alternative
+from cli.models.application import Application
+from cli.models.vendor import Vendor
 
 
 class Assessor:

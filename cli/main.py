@@ -5,9 +5,9 @@ from urllib.parse import urlparse
 
 import typer
 
-from ai import AI
-from assessor import Assessor
-from database import Database
+from cli.ai import AI
+from cli.assessor import Assessor
+from cli.database import Database
 
 app = typer.Typer()
 
@@ -56,7 +56,3 @@ def main(
 
     # Output assessment as JSON
     print(json.dumps(assessment.to_json(), indent=2))
-
-
-if __name__ == "__main__":
-    app()

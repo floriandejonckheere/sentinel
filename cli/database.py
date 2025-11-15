@@ -2,9 +2,6 @@
 from sqlmodel import create_engine, SQLModel, Session
 
 # Import all models to ensure they are registered with SQLModel
-from models.vendor import Vendor
-from models.application import Application
-from models.assessment import Assessment, CVETrend, ComplianceSignal, Alternative
 
 
 class Database:
