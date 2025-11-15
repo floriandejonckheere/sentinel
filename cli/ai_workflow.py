@@ -5,7 +5,7 @@ from langgraph.graph import StateGraph, END, START
 from langgraph.checkpoint.memory import MemorySaver  # optional
 from ai import AI
 from tools.web_tool import search_scrape_tool  # your BaseTool
-from tools.nvd_tool import search_nvd_cves_tool
+from tools.nvd_tool import nvd_keyword_search_minimal_120d
 from models.llm_models import (
     ALLOWED_SUBCATEGORIES,ALLOWED_CATEGORIES, VendorIntel, CVESection, ComplianceSection, IncidentSection, DocFeatures, ResearchReport,AppCategoryResult
 )
@@ -21,14 +21,14 @@ class State(TypedDict, total=False):
     category: AppCategoryResult
     report: ResearchReport
 
-ai = AI(model="gemini-2.5-flash-lite", temperature=0.2)
+ai = AI(model="gemini-2.5-flash", temperature=0.2)
 
 # ---- Agent node helpers ----
 def _tools():  # keep tools centralized; easy to add more later
     return [search_scrape_tool]
 
 def _cve_tools():
-    return [search_nvd_cves_tool]
+    return [nvd_keyword_search_minimal_120d]
 
 def vendor_node(state: State) -> State:
     prompt = (
@@ -74,30 +74,62 @@ def category_node(state: State) -> State:
 def cve_node(state: State) -> State:
     prompt = (
         "You are a CVE & Vulnerability analyst.\n\n"
-        "Use the `search_nvd_cves` tool to query the official NVD CVE 2.0 API. "
-        "The tool returns a list of CVEs as JSON objects containing fields like "
-        "`id`, `published`, `english_description`, `best_cvss`, and `affected_cpes`.\n\n"
-        "Your job is to transform the raw CVE list into a structured CVESection.\n\n"
-        "Steps:\n"
-        "1. Call search_nvd_cves with the vendor or product from the query.\n"
-        "2. Group all CVEs by publication year to populate by_year_counts.\n"
-        "3. Select 3–8 representative or critical CVEs (use highest severity or broad impact).\n"
-        "4. For each, build a CVEItem:\n"
-        "   - cve_id from c.id\n"
-        "   - severity from c.best_cvss['severity'] if available\n"
-        "   - description from c.english_description\n"
-        "   - year extracted from c.published\n"
-        "   - sources: include NVD detail link (https://nvd.nist.gov/vuln/detail/[cve_id])\n"
-        "5. Determine trend: Improving, Degrading, or Stable based on changes over years.\n"
-        "6. Write a concise 3–5 sentence summary.\n\n"
-        "Return a CVESection Pydantic object."
+        "You have access to the `search_nvd_cves` tool which queries the official "
+        "NVD CVE 2.0 API using a keyword. It returns JSON shaped as:\n"
+        "  { \"cves\": [\n"
+        "      {\n"
+        "        \"cve_id\": str,\n"
+        "        \"severity\": Optional[str],     # One of: Critical, High, Medium, Low, or null\n"
+        "        \"description\": str,            # Short English description\n"
+        "        \"year\": Optional[int],         # Year published\n"
+        "        \"sources\": List[str]           # URLs (NVD detail + advisories if available)\n"
+        "      },\n"
+        "      ...\n"
+        "  ] }\n\n"
+        "Your job is to take the user query, fetch relevant CVEs with the tool, "
+        "and return a structured CVESection.\n\n"
+        "Instructions:\n"
+        "1. From the user query, infer an appropriate keyword (vendor, product, or technology).\n"
+        "2. Call `search_nvd_cves` ONCE using that keyword. The tool already handles the 120-day date range.\n"
+        "3. Use the returned list of CVEs to build `by_year_counts`:\n"
+        "   - Group CVEs by their `year` field (ignore entries without a year).\n"
+        "   - Keys in by_year_counts must be strings like \"2023\", \"2024\".\n"
+        "4. Select 3–8 **representative or notable** CVEs (not just severity=Critical):\n"
+        "   - If there are fewer than 3 CVEs total, include all of them.\n"
+        "   - Otherwise, choose those with highest severity first "
+        "     (Critical > High > Medium > Low > null), and prefer recent years.\n"
+        "5. For each selected CVE, build a CVEItem and put it into CVESection.critical:\n"
+        "   - cve_id from c.cve_id.\n"
+        "   - severity from c.severity (map to Critical/High/Medium/Low if not null; otherwise leave as null).\n"
+        "   - description from c.description.\n"
+        "   - year from c.year.\n"
+        "   - sources from c.sources. If the NVD detail URL is missing, add:\n"
+        "       https://nvd.nist.gov/vuln/detail/{cve_id}\n"
+        "   - The CVESection.critical list must contain these 3–8 CVEItem objects.\n"
+        "6. Determine trend (Improving, Degrading, or Stable):\n"
+        "   - Look at by_year_counts over time. More recent years having fewer CVEs suggests 'Improving';\n"
+        "     more suggests 'Degrading'; roughly flat suggests 'Stable'.\n"
+        "7. Set CVESection.sources as a deduplicated list of all URLs from all CVEItem.sources.\n"
+        "8. Write a concise 3–5 sentence summary for CVESection.summary describing:\n"
+        "   - Overall vulnerability exposure for the vendor/product.\n"
+        "   - Any notable spikes, drops, or patterns by year.\n"
+        "   - The impact and nature of the most serious vulnerabilities.\n"
+        "9. If **no CVEs** are returned from the tool:\n"
+        "   - Use an empty by_year_counts and critical list.\n"
+        "   - Set trend to 'Stable'.\n"
+        "   - Write a summary explaining that no recent CVEs were found in the last 120 days.\n"
+        "   - Set sources to an empty list.\n"
+        "10. IMPORTANT: If at least one CVE is returned, CVESection.critical MUST NOT be empty. "
+        "    Always include the selected 3–8 representative CVEs.\n\n"
+        "Always return a valid CVESection Pydantic object."
     )
+
     result = ai.generate_structured_with_tools(
         prompt=prompt,
         input_text=state["query"],
-        tools=_cve_tools(),
+        tools=_cve_tools(),   # should include the new `search_nvd_cves` minimal tool
         output_model=CVESection,
-        max_steps=8,
+        max_steps=4,          # fewer steps needed now
     )
     return {"cve": result}
 
