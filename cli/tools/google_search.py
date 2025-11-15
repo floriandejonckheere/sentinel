@@ -26,7 +26,7 @@ def serpapi_search(query: str, api_key: str, **kwargs):
     return results
 
 
-def google_search(app, loc):
+def google_search(app): #USE FOR SEARCH
     MY_API_KEY = os.getenv("SERPAPI_KEY")
 
     if not MY_API_KEY:
@@ -36,8 +36,8 @@ def google_search(app, loc):
         #"1password",
         app,
         api_key=MY_API_KEY,
-        #location="Austin, Texas, United States",
-        location = loc,
+        location="Austin, Texas, United States",
+        #location = loc,
         num=3 #Top num results from google
     )
 
