@@ -61,7 +61,7 @@ function App() {
 
         // Assessment details page: scrollable content, top-aligned
         !isHomePage && isAssessmentDetailsPage &&
-          "min-h-[calc(100vh-5rem)] pt-24 pb-24",
+          "min-h-[calc(100vh-5rem)] pt-24 pb-24 flex justify-center",
 
         // Wizard steps (/name, /role, /size, /risk, /complete):
         // top-aligned, scrollable, with room above footer

@@ -13,7 +13,7 @@ interface ApplicationVendorCardProps {
     name: string
     legal_name: string
     country: string | null
-    url: string
+    url: string | null
   }
   assessedAt: string
 }
@@ -108,7 +108,7 @@ export default function ApplicationVendorCard({ application, vendor, assessedAt 
         By {application.application_intel.vendor_name}{vendor.country ? `, ${getCountryName(vendor.country)}` : ''}
       </p>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-left pt-6 border-t border-gray-200 dark:border-gray-600">
+      <div className={`grid ${vendor.url ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-2 md:grid-cols-3'} gap-4 text-left pt-6 border-t border-gray-200 dark:border-gray-600`}>
         <div>
           <span className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
             Category
@@ -133,19 +133,21 @@ export default function ApplicationVendorCard({ application, vendor, assessedAt 
             {vendor.legal_name}
           </span>
         </div>
-        <div>
-          <span className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-            Website
-          </span>
-          <a
-            href={vendor.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-base text-blue-600 dark:text-blue-400 hover:underline"
-          >
-            Visit
-          </a>
-        </div>
+        {vendor.url && (
+          <div>
+            <span className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+              Website
+            </span>
+            <a
+              href={vendor.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-base text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              Visit
+            </a>
+          </div>
+        )}
       </div>
 
       <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">

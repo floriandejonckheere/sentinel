@@ -206,6 +206,7 @@ ALLOWED_CATEGORIES = [
     "System Utilities",
     "Virtualization & Emulation",
     "Input Method Editors (IME)",
+    "Cloud Storage / File Sync",
 ]
 
 ALLOWED_SUBCATEGORIES = [
