@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import ApplicationInput from './ApplicationInput'
 import RoleSelection from './RoleSelection'
+import OrganizationSize from './OrganizationSize'
 
-type Step = 'application' | 'role' | 'complete'
+type Step = 'application' | 'role' | 'size' | 'complete'
 
 interface AssessmentData {
   application: string
   role: string
+  organizationSize: string
 }
 
 export default function AssessmentWorkflow() {
@@ -14,6 +16,7 @@ export default function AssessmentWorkflow() {
   const [assessmentData, setAssessmentData] = useState<AssessmentData>({
     application: '',
     role: '',
+    organizationSize: '',
   })
 
   const handleApplicationSubmit = (value: string) => {
@@ -23,6 +26,11 @@ export default function AssessmentWorkflow() {
 
   const handleRoleSelect = (role: string) => {
     setAssessmentData(prev => ({ ...prev, role }))
+    setCurrentStep('size')
+  }
+
+  const handleSizeSelect = (size: string) => {
+    setAssessmentData(prev => ({ ...prev, organizationSize: size }))
     setCurrentStep('complete')
   }
 
@@ -36,6 +44,10 @@ export default function AssessmentWorkflow() {
         <RoleSelection onSelect={handleRoleSelect} />
       )}
 
+      {currentStep === 'size' && (
+        <OrganizationSize onSelect={handleSizeSelect} />
+      )}
+
       {currentStep === 'complete' && (
         <div className="animate-fade-in text-center">
           <h2 className="text-3xl font-medium text-gray-900 dark:text-white mb-6">
@@ -45,8 +57,11 @@ export default function AssessmentWorkflow() {
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-4">
               <span className="font-semibold">Application:</span> {assessmentData.application}
             </p>
-            <p className="text-lg text-gray-700 dark:text-gray-300">
+            <p className="text-lg text-gray-700 dark:text-gray-300 mb-4">
               <span className="font-semibold">Role:</span> {assessmentData.role}
+            </p>
+            <p className="text-lg text-gray-700 dark:text-gray-300">
+              <span className="font-semibold">Organization Size:</span> {assessmentData.organizationSize}
             </p>
           </div>
         </div>

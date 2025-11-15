@@ -25,6 +25,7 @@ export default function ApplicationInput({ onSubmit }: ApplicationInputProps) {
           type="text"
           id="app-input"
           value={inputValue}
+          autoComplete="off"
           onChange={(e) => setInputValue(e.target.value)}
           placeholder="Type an application name or URL"
           className="w-full px-6 py-4 pr-14 text-lg rounded-2xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
