@@ -79,19 +79,29 @@ export default function AssessmentDetails() {
                 />
             </div>
 
-            {/* All other cards - Equal Width and Height Grid */}
-            <div className="grid grid-cols-2 auto-rows-fr gap-6">
-                <TrustScoreCard
-                    score={assessment.summary.trust_score.score}
-                    confidence={assessment.summary.trust_score.confidence}
-                />
-                <SpiderChartCard data={assessment.summary.trust_score}/>
-                <VulnerabilitiesCard cves={assessment.cves}/>
-                <KeyTakeawaysCard
-                    strengths={assessment.summary.key_strengths}
-                    risks={assessment.summary.key_risks}
-                />
-                <ArchitectureCard architecture={assessment.architecture}/>
+            {/* All other cards - Two Column Flexbox Layout */}
+            <div className="flex flex-wrap gap-6">
+                <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                    <TrustScoreCard
+                        score={assessment.summary.trust_score.score}
+                        confidence={assessment.summary.trust_score.confidence}
+                    />
+                </div>
+                <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                    <SpiderChartCard data={assessment.summary.trust_score}/>
+                </div>
+                <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                    <VulnerabilitiesCard cves={assessment.cves}/>
+                </div>
+                <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                    <KeyTakeawaysCard
+                        strengths={assessment.summary.key_strengths}
+                        risks={assessment.summary.key_risks}
+                    />
+                </div>
+                <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                    <ArchitectureCard architecture={assessment.architecture}/>
+                </div>
             </div>
         </div>
     )
