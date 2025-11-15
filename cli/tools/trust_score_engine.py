@@ -154,8 +154,8 @@ class TrustScoreEngine:
         # --- 3. IDENTITY & ACCESS ---
         auth = data.get("docs", {}).get("authentication", [])
 
-        if any(x for x in auth if "mfa" in x.lower()):
-            scores["identity_access"] += 25
+        if any(x for x in auth if "mfa" in x.lower() or "2fa" in x.lower()):
+            scores["identity_access"] += 35
 
         if any(x for x in auth if "sso" in x.lower() or "scim" in x.lower()):
             scores["identity_access"] += 35
