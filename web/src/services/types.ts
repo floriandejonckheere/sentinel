@@ -56,7 +56,7 @@ export interface Assessment {
             compliance_level: "compliant" | "non-compliant" | "partial"
             last_audit_date: string
             url: string
-        }
+        }[]
         data_residency: string[]
     }
     cves: {
