@@ -105,7 +105,7 @@ export default function ApplicationVendorCard({ application, vendor, assessedAt 
         {application.application_intel.name}
       </h3>
       <p className="text-xl text-gray-600 dark:text-gray-400 mb-6">
-        By {application.application_intel.vendor_name}{vendor.country ? `, ${getCountryName(vendor.country)}` : ''}
+        By {application.application_intel.vendor_name}{vendor.country ? ` (${getCountryName(vendor.country)})` : ''}
       </p>
 
       <div className={`grid ${vendor.url ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-2 md:grid-cols-3'} gap-4 text-left pt-6 border-t border-gray-200 dark:border-gray-600`}>

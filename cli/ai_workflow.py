@@ -178,13 +178,40 @@ def compliance_node(state: State) -> State:
 
 def incidents_node(state: State) -> State:
     prompt = (
-        "You are an Incident & Breach analyst. Search news/blogs for confirmed security incidents, controversies, or public advisories. "
-        "Return IncidentSection with 3–10 items, each with title, date (if available), severity (Low/Med/High if inferred), "
-        "a 1–2 sentence description, and sources. If none found, include summary explaining search coverage."
+        "You are an Incident & Breach analyst. Search news, blogs, and security advisories for confirmed security incidents, "
+        "data breaches, controversies, or public security disclosures.\n\n"
+        "Instructions:\n"
+        "1. Use web search to find security incidents, breaches, or controversies specifically related to the vendor/product.\n"
+        "2. Focus on:\n"
+        "   - Confirmed data breaches or security incidents\n"
+        "   - Public security advisories or disclosures\n"
+        "   - Major controversies related to security or privacy\n"
+        "   - Regulatory actions or fines related to security\n"
+        "3. For each incident found, create an IncidentSignal with:\n"
+        "   - title: Clear headline describing the incident\n"
+        "   - date: When it occurred or was disclosed (if available)\n"
+        "   - severity: Inferred impact (High/Medium/Low based on scope and impact)\n"
+        "   - description: 1-2 sentence summary of what happened and impact\n"
+        "   - sources: URLs to news articles, advisories, or official statements\n"
+        "4. Aim to find 3-10 notable incidents if they exist.\n"
+        "5. Set trend based on incident history:\n"
+        "   - 'improving' if incidents are decreasing over time\n"
+        "   - 'degrading' if incidents are increasing\n"
+        "   - 'stable' if roughly consistent or no clear pattern\n"
+        "6. Write a summary describing:\n"
+        "   - What incidents were found (or that none were found)\n"
+        "   - The search approach and coverage\n"
+        "   - Overall incident posture and transparency\n"
+        "7. **IMPORTANT**: If NO incidents are found:\n"
+        "   - Return an empty items list ([])\n"
+        "   - Set trend to 'stable'\n"
+        "   - Write a summary explaining the search was performed but no confirmed incidents were found\n"
+        "   - Set sources to an empty list\n\n"
+        "Always return a valid IncidentSection Pydantic object."
     )
     result = ai.generate_structured_with_tools(
         prompt=prompt,
-        input_text=state["query"] + " breach incident security news",
+        input_text=state["query"] + " security breach data breach incident hack compromise",
         tools=_tools(),
         output_model=IncidentSection,
         max_steps=8,

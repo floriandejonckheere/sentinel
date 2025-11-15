@@ -21,7 +21,7 @@ export default function ApplicationInput({ onSubmit, onBack }: ApplicationInputP
     onSubmit(example)
   }
 
-  const examples = ['1Password', 'Skype', 'CCleaner', 'Dropbox']
+  const examples = ['1Password', 'Microsoft Office', 'CCleaner', 'Dropbox']
 
   return (
     <form onSubmit={handleSubmit} className="transition-opacity duration-500">
