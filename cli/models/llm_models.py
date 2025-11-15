@@ -131,13 +131,13 @@ class ComplianceCert(BaseModel):
     
 class ComplianceFramework(BaseModel):
     """Single compliance framework assesment."""
-    type: str = Field(..., description="Framework (e.g., SOC 2, ISO27001, GDPR, HIPAA, FedRAMP).")
+    name: str = Field(..., description="Framework (e.g., SOC 2, ISO27001, GDPR, HIPAA, FedRAMP).")
     compliance_level: str = Field(..., description="Compliance status (e.g., Compliant, Partial, Unknown, Noncompliant).")
     year: Optional[int] = Field(None, description="Year the certification was issued or last audited.")
     last_audit_date: Optional[str] = Field(None, description="Date when the last audit was conducted.")
     scope: Optional[str] = Field(None, description="Scope or environment covered (e.g., 'production systems', 'EU region', etc.).")
     auditor: Optional[str] = Field(None, description="Auditor or certification body (e.g., 'EY', 'A-LIGN', 'BSI').")
-    report_url: Optional[str] = Field(None, description="Direct link to the attestation report or summary, if available.")
+    url: Optional[str] = Field(None, description="Direct link to the attestation report or summary, if available.")
     standards: List[str] = Field(default_factory=list, description="Associated standards, controls, or trust principles (e.g., ISO 27001 Annex A, SOC 2 CC1–CC9).")
     summary: Optional[str] = Field(None, description="Brief summary of certification content or findings.")
     sources: List[str] = Field(default_factory=list, description="URLs or documents cited to identify this certification.")
@@ -147,10 +147,8 @@ class ComplianceSection(BaseModel):
     certs: List[ComplianceCert] = Field(..., description="List of discovered or claimed compliance certifications.")
     overall_summary: str = Field(..., description="High-level summary of compliance and audit posture across all frameworks.")
     sources: List[str] = Field(default_factory=list, description="Unique list of URLs or sources used across all certifications.")
-    data_residency: Optional[str] = Field(
-        None,       
-        description="Data residency (e.g., 'US', 'EU', 'Global').",
-    )
+    data_residency: List[str] = Field(default_factory=list, description="Data residency (e.g., 'US', 'EU', 'Global').")
+    frameworks: List[ComplianceFramework] = Field(default_factory=list, description="List of compliance frameworks.")
 
 
 class IncidentSignal(BaseModel):

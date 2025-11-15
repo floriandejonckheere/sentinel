@@ -10,7 +10,10 @@ export interface Assessment {
         url: string
     }
     application: {
-        name: string
+        application_intel: {
+            name: string
+            vendorName: string
+        }
         description: string
         url: string
         category: string
@@ -43,7 +46,7 @@ export interface Assessment {
         deployment: "on-premise" | "cloud" | "saas" | "hybrid"
     }
     compliance: {
-        certifications: {
+        certs: {
             name: string
             status: "active" | "expired" | "pending"
             issued_by: string

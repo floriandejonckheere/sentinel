@@ -7,10 +7,10 @@ interface Framework {
 
 interface ComplianceCardProps {
     frameworks: Framework[]
-    dataResidency: string[]
+    data_residency: string[]
 }
 
-export default function ComplianceCard({frameworks, dataResidency}: ComplianceCardProps) {
+export default function ComplianceCard({frameworks, data_residency}: ComplianceCardProps) {
     const getComplianceLevelColor = (level: string) => {
         if (level === 'compliant') return 'text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30'
         if (level === 'non-compliant') return 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30'
@@ -51,12 +51,12 @@ export default function ComplianceCard({frameworks, dataResidency}: ComplianceCa
                     Data Residency
                 </h5>
                 <div className="flex flex-wrap gap-2">
-                    {dataResidency.length === 0 ? (
+                    {data_residency.length === 0 ? (
                         <p className="text-gray-500 dark:text-gray-400 text-xs">
                             No data residency information available
                         </p>
                     ) : (
-                        dataResidency.map((location, index) => (
+                        data_residency.map((location, index) => (
                             <span
                                 key={index}
                                 className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium"

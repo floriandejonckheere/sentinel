@@ -1,6 +1,9 @@
 interface ApplicationVendorCardProps {
   application: {
-    name: string
+    application_intel: {
+        name: string
+        vendorName: string
+    }
     description: string
     url: string
     category: string
@@ -98,7 +101,7 @@ export default function ApplicationVendorCard({ application, vendor, assessedAt 
       </div>
 
       <h3 className="text-4xl font-bold text-gray-900 dark:text-white mb-3">
-        {application.name}
+        {application.application_intel.name}
       </h3>
       <p className="text-xl text-gray-600 dark:text-gray-400 mb-6">
         By {vendor.name}, {getCountryName(vendor.country)}
