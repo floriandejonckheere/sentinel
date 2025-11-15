@@ -10,7 +10,10 @@ export interface Assessment {
         url: string
     }
     application: {
-        name: string
+        application_intel: {
+            name: string
+            vendorName: string
+        }
         description: string
         url: string
         category: string
