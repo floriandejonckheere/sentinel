@@ -1,126 +1,209 @@
-# tools/nvd_cve_tool.py
-from __future__ import annotations
+from datetime import datetime, timedelta, timezone
+from typing import Optional, Tuple, List, Dict, Any
+import requests
 
-import os
-from typing import Any, Dict, List, Optional
+from langchain.tools import tool
 
-from pydantic import BaseModel, Field
-from langchain_core.tools import StructuredTool
-
-from cli.cve import search_cves_keyword, Cve
+NVD_BASE_URL = "https://services.nvd.nist.gov/rest/json/cves/2.0"
+DATE_FORMAT = "%Y-%m-%dT%H:%M:%S.000"
 
 
-class NvdCveSearchArgs(BaseModel):
+def get_120_day_range(end: Optional[datetime] = None) -> Tuple[str, str]:
     """
-    Arguments for the NVD CVE search tool.
+    Return (pubStartDate, pubEndDate) for a 120-day window in ISO-8601.
+
+    - end: end of the window (UTC). If None, uses current UTC time.
     """
+    if end is None:
+        end = datetime.now(timezone.utc)
 
-    keyword: str = Field(
-        ...,
-        description=(
-            "Keyword to search for in NVD CVE records. Typically this is the "
-            "vendor or product name (e.g. 'Okta', 'Microsoft Exchange')."
-        ),
-    )
-    results_per_page: int = Field(
-        20,
-        ge=1,
-        le=100,
-        description=(
-            "Number of CVEs to fetch per request. The tool will handle pagination "
-            "up to 'max_pages'."
-        ),
-    )
-    
-    max_results: int = Field(
-        20,
-        ge=1,
-        le=100,
-        description=(
-            "Maximum number of CVEs to return. "
-            "The tool will fetch pages until this limit is reached."
-        ),
-    )
-    
-    max_pages: int = Field(
-        1,
-        ge=1,
-        description=(
-            "Maximum number of pages to fetch from the NVD API. Each page "
-            "contains up to 'results_per_page' CVEs."
-        ),
-    )
-    pub_start: Optional[str] = Field(
-        None,
-        description=(
-            "Optional publication start date in ISO 8601 format "
-            "(e.g. '2020-01-01T00:00:00.000'). If provided, only CVEs published "
-            "on or after this date are returned."
-        ),
-    )
-    pub_end: Optional[str] = Field(
-        None,
-        description=(
-            "Optional publication end date in ISO 8601 format. If provided, only "
-            "CVEs published on or before this date are returned."
-        ),
-    )
-    cvss_v3_severity: Optional[str] = Field(
-        None,
-        description=(
-            "Optional filter for CVSS v3 severity (e.g. 'CRITICAL', 'HIGH', "
-            "'MEDIUM', 'LOW'). If set, only CVEs with matching severity are returned."
-        ),
-    )
+    start = end - timedelta(days=120)
+
+    pub_start = start.strftime(DATE_FORMAT)
+    pub_end = end.strftime(DATE_FORMAT)
+    return pub_start, pub_end
 
 
-def _search_nvd_cves(args: NvdCveSearchArgs) -> List[Dict[str, Any]]:
+
+def _extract_description(cve_obj: Dict[str, Any]) -> str:
     """
-    Internal function used by the LangChain tool.
-
-    Returns a JSON-serializable list of CVEs with some helpful derived fields
-    (english_description, best_cvss, affected_cpes) to make it easier for the LLM
-    to summarize. The result list is capped at `max_results`.
+    Get a short English description if available, otherwise fallback.
     """
-    # api_key = os.getenv("NVD_API_KEY")
+    descriptions = cve_obj.get("descriptions") or []
+    # Prefer English description
+    for d in descriptions:
+        if d.get("lang") == "en" and d.get("value"):
+            return d["value"]
 
-    # Make sure we don't request more per page than the overall max we care about
-    results_per_page = min(args.results_per_page, args.max_results)
+    # Fallback to first non-empty description
+    for d in descriptions:
+        if d.get("value"):
+            return d["value"]
 
-    cves: List[Cve] = search_cves_keyword(
-        keyword=args.keyword,
-        results_per_page=results_per_page,
-        max_pages=args.max_pages,
-        pub_start=args.pub_start,
-        pub_end=args.pub_end,
-        cvss_v3_severity=args.cvss_v3_severity,
-        # api_key=api_key,
-    )
-
-    # Hard cap the total CVEs handed to the LLM
-    cves = cves[: args.max_results]
-
-    out: List[Dict[str, Any]] = []
-    for c in cves:
-        data = c.model_dump()  # full raw CVE data
-        # Convenience fields for the LLM:
-        data["english_description"] = c.english_description()
-        data["best_cvss"] = c.best_cvss()
-        data["affected_cpes"] = c.affected_cpes()
-        out.append(data)
-
-    return out
+    return ""
 
 
+def _extract_severity(cve_obj: Dict[str, Any]) -> Optional[str]:
+    """
+    Extract severity as one of Critical/High/Medium/Low if possible.
 
-search_nvd_cves_tool = StructuredTool.from_function(
-    name="search_nvd_cves",
-    description=(
-        "Searches the NVD (National Vulnerability Database) CVE 2.0 API for "
-        "vulnerabilities matching a given keyword (usually a vendor or product). "
-        "Returns a list of CVE records as JSON objects, including convenience "
-        "fields for english_description, best_cvss, and affected_cpes."
-    ),
-    args_schema=NvdCveSearchArgs,
-    func=_search_nvd_cves,
-)
+    NVD 2.0 metrics usually look like:
+    - metrics.cvssMetricV31[0].cvssData.baseSeverity
+    - metrics.cvssMetricV30[0].cvssData.baseSeverity
+    - metrics.cvssMetricV2[0].baseSeverity or .severity
+    """
+    metrics = cve_obj.get("metrics") or {}
+
+    candidates = [
+        "cvssMetricV31",
+        "cvssMetricV30",
+        "cvssMetricV2",
+    ]
+
+    for key in candidates:
+        metric_list = metrics.get(key)
+        if not metric_list:
+            continue
+
+        m0 = metric_list[0] or {}
+
+        # v3.x
+        cvss_data = m0.get("cvssData") or {}
+        sev = (
+            cvss_data.get("baseSeverity")
+            or cvss_data.get("severity")
+            or m0.get("baseSeverity")
+            or m0.get("severity")
+        )
+        if not sev:
+            continue
+
+        sev_norm = sev.strip().upper()
+        mapping = {
+            "CRITICAL": "Critical",
+            "HIGH": "High",
+            "MEDIUM": "Medium",
+            "LOW": "Low",
+        }
+        if sev_norm in mapping:
+            return mapping[sev_norm]
+
+    return None
+
+
+def _extract_year(cve_obj: Dict[str, Any]) -> Optional[int]:
+    """
+    Use published date (preferred) or lastModified to derive year.
+    """
+    published = cve_obj.get("published")
+    if not published:
+        published = cve_obj.get("lastModified")
+
+    if not published or len(published) < 4:
+        return None
+
+    try:
+        return int(published[:4])
+    except ValueError:
+        return None
+
+
+def _extract_sources(cve_obj: Dict[str, Any]) -> List[str]:
+    """
+    Collect URLs from references. NVD 2.0 typically has:
+    - references: [ { "url": "...", ... }, ... ]
+    but we also support older v1-style shapes.
+    """
+    urls: List[str] = []
+
+    refs = cve_obj.get("references") or []
+    if isinstance(refs, list):
+        for r in refs:
+            if isinstance(r, dict):
+                url = r.get("url")
+                if url:
+                    urls.append(url)
+    elif isinstance(refs, dict):
+        # v1-style compatibility: { "reference_data": [ { "url": ... }, ... ] }
+        ref_data = refs.get("reference_data") or []
+        for r in ref_data:
+            if isinstance(r, dict):
+                url = r.get("url")
+                if url:
+                    urls.append(url)
+
+    # Deduplicate preserving order
+    seen = set()
+    unique_urls = []
+    for u in urls:
+        if u not in seen:
+            seen.add(u)
+            unique_urls.append(u)
+    return unique_urls
+
+
+
+@tool
+def nvd_keyword_search_minimal_120d(
+    keyword: str,
+    results_per_page: int = 50,
+    start_index: int = 0,
+) -> Dict[str, Any]:
+    """
+    Search NVD CVE API by keyword over the last 120 days and return
+    only the fields needed to build CVEItem / CVESection.
+
+    Returns:
+        {
+          "cves": [
+            {
+              "cve_id": str,
+              "severity": Optional[str],
+              "description": str,
+              "year": Optional[int],
+              "sources": List[str]
+            },
+            ...
+          ]
+        }
+    """
+    pub_start, pub_end = get_120_day_range()
+
+    params = {
+        "keywordSearch": keyword,
+        "pubStartDate": pub_start,
+        "pubEndDate": pub_end,
+        "resultsPerPage": results_per_page,
+        "startIndex": start_index,
+    }
+
+    response = requests.get(NVD_BASE_URL, params=params, timeout=30)
+    response.raise_for_status()
+    data = response.json()
+
+    vulns = data.get("vulnerabilities") or []
+    minimal_cves: List[Dict[str, Any]] = []
+
+    for v in vulns:
+        cve_obj = v.get("cve") or {}
+
+        cve_id = cve_obj.get("id")
+        if not cve_id:
+            continue  
+
+        description = _extract_description(cve_obj)
+        severity = _extract_severity(cve_obj)
+        year = _extract_year(cve_obj)
+        sources = _extract_sources(cve_obj)
+
+        minimal_cves.append(
+            {
+                "cve_id": cve_id,
+                "severity": severity,        # "Critical" | "High" | "Medium" | "Low" | None
+                "description": description,
+                "year": year,
+                "sources": sources,
+            }
+        )
+
+    return {"cves": minimal_cves}

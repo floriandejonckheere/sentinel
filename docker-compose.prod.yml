@@ -1,0 +1,29 @@
+x-app: &app
+  image: ghcr.io/floriandejonckheere/sentinel:latest
+  networks:
+    - fcloud
+  environment:
+    GEMINI_API_KEY: ${GEMINI_API_KEY}
+  restart: unless-stopped
+
+services:
+  app:
+    <<: *app
+    labels:
+      traefik.enable: 'true'
+      traefik.http.middlewares.sentinel-tls.redirectscheme.scheme: 'https'
+
+      traefik.http.routers.sentinel.rule: 'Host(`sentinel.dejonckhee.re`)'
+      traefik.http.routers.sentinel.entrypoints: 'web'
+      traefik.http.routers.sentinel.middlewares: 'sentinel-tls'
+
+      traefik.http.routers.sentinel-tls.rule: 'Host(`sentinel.dejonckhee.re`)'
+      traefik.http.routers.sentinel-tls.entrypoints: 'websecure'
+      traefik.http.routers.sentinel-tls.tls: 'true'
+      traefik.http.routers.sentinel-tls.tls.certresolver: 'letsencrypt'
+
+      traefik.http.services.sentinel.loadbalancer.server.port: '8080'
+networks:
+  fcloud:
+    external: true
+    name: 'fcloud_default'

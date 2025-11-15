@@ -1,6 +1,8 @@
 """Assessment API routes."""
 import uuid
+import os
 from datetime import datetime
+
 from flask import Blueprint, jsonify, request
 
 from sentinel.constants.roles import VALID_ROLE_IDS
@@ -59,35 +61,6 @@ def create_assessment():
     # assessor = Assessor(database=db, ai=ai)
     # assessment = assessor.assess(name=name, url=url)
 
-    # Create assessment object
-    assessment = {
-        "id": assessment_id,
-        "metadata": {
-            "assessed_at": datetime.now().isoformat() + "Z",
-            "role": role,
-            "size": size,
-            "risk": risk,
-        },
-        "vendor": {
-            "name": name or "Example Vendor",
-            "legal_name": "Example Vendor LLC",
-            "country": "FI",
-            "url": url or "https://example.com",
-        },
-        "application": {
-            "name": name or "Example Application",
-            "description": "This is an example application used for demonstration purposes.",
-            "url": url or "https://example.com/app",
-            "category": "Productivity",
-            "subcategory": "Task Management",
-        },
-        "trust_score": 87,
-        "confidence": "high",
-    }
-
-    # Store assessment
-    assessments_store[assessment_id] = assessment
-
     # Return just the ID
     return jsonify({"id": assessment_id}), 201
 
@@ -95,9 +68,4 @@ def create_assessment():
 @assessments_bp.route("/assessments/<assessment_id>", methods=["GET"])
 def get_assessment(assessment_id):
     """Get a specific assessment by ID."""
-    assessment = assessments_store.get(assessment_id)
-
-    if not assessment:
-        return jsonify({"error": "Assessment not found"}), 404
-
-    return jsonify(assessment), 200
+    return open(os.path.join(os.path.dirname(__file__), "example_assessment.json")).read(), 200
