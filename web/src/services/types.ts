@@ -98,6 +98,18 @@ export interface Assessment {
 
         trend: "improving" | "stable" | "declining"
     }
+    incident: {
+        items: {
+            title: string
+            date: string | null
+            severity: "High" | "Medium" | "Low" | null
+            description: string
+            sources: string[]
+        }[]
+        trend: "improving" | "stable" | "declining"
+        summary: string
+        sources: string[]
+    }
     alternatives: {
         items: {
             name: string

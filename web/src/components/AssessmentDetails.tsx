@@ -13,6 +13,7 @@ import CertificationsCard from './assessment/CertificationsCard'
 import ComplianceCard from './assessment/ComplianceCard'
 import AlternativesCard from './assessment/AlternativesCard'
 import RecentCVEsCard from './assessment/RecentCVEsCard'
+import RecentIncidentsCard from './assessment/RecentIncidentsCard'
 
 export default function AssessmentDetails() {
     const {id} = useParams<{ id: string }>()
@@ -26,10 +27,10 @@ export default function AssessmentDetails() {
     const getVisibleCards = (role: string | null) => {
         const roleCardsMap: Record<string, string[]> = {
             executive: ['trustScore', 'spiderChart', 'keyTakeaways', 'alternatives'],
-            security: ['vulnerabilities', 'incidents', 'recentCVEs'],
+            security: ['vulnerabilities', 'incidents', 'recentCVEs', 'recentIncidents'],
             compliance: ['certifications', 'compliance'],
             technical: ['architecture'],
-            global: ['trustScore', 'spiderChart', 'vulnerabilities', 'incidents', 'recentCVEs', 'keyTakeaways', 'architecture', 'certifications', 'compliance', 'alternatives']
+            global: ['trustScore', 'spiderChart', 'vulnerabilities', 'incidents', 'recentCVEs', 'recentIncidents', 'keyTakeaways', 'architecture', 'certifications', 'compliance', 'alternatives']
         }
 
         const normalizedRole = role?.toLowerCase() || 'global'
@@ -41,6 +42,7 @@ export default function AssessmentDetails() {
             vulnerabilities: allowedCards.includes('vulnerabilities'),
             incidents: allowedCards.includes('incidents'),
             recentCVEs: allowedCards.includes('recentCVEs'),
+            recentIncidents: allowedCards.includes('recentIncidents'),
             keyTakeaways: allowedCards.includes('keyTakeaways'),
             architecture: allowedCards.includes('architecture'),
             certifications: allowedCards.includes('certifications'),
@@ -141,6 +143,11 @@ export default function AssessmentDetails() {
                 {visibleCards.recentCVEs && (
                     <div className="md:col-span-2">
                         <RecentCVEsCard cves={assessment.cve.critical} />
+                    </div>
+                )}
+                {visibleCards.recentIncidents && (
+                    <div className="md:col-span-2">
+                        <RecentIncidentsCard incidents={assessment.incident.items} />
                     </div>
                 )}
                 {visibleCards.keyTakeaways && (
