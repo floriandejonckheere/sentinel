@@ -6,7 +6,8 @@ from cli.tools.trust_score_engine import TrustScoreEngine
 
 
 class Runner():
-    def __init__(self, assessment_id: str, name: str):
+    def __init__(self, query_id: str, assessment_id: str, name: str):
+        self.query_id = query_id
         self.assessment_id = assessment_id
         self.name = name
 
@@ -36,13 +37,17 @@ class Runner():
         full.summary.trust_score = breakdown
 
         # Save FullAssessment JSON
-        cache_path = os.path.join("/data", f"{self.assessment_id}.json")
+        query_cache_path = os.path.join("/data", f"{self.query_id}.json")
+        assessments_cache_path = os.path.join("/data", f"{self.assessment_id}.json")
 
         # Always write the assessment (overwrite if exists)
-        os.makedirs(os.path.dirname(cache_path), exist_ok=True)
+        os.makedirs(os.path.dirname(assessments_cache_path), exist_ok=True)
         full_assessment_dict = full.model_dump()
 
-        with open(cache_path, "w", encoding="utf-8") as f:
+        with open(assessments_cache_path, "w", encoding="utf-8") as f:
+            json.dump(full_assessment_dict, f, indent=2)
+
+        with open(query_cache_path, "w", encoding="utf-8") as f:
             json.dump(full_assessment_dict, f, indent=2)
 
         return full_assessment_dict

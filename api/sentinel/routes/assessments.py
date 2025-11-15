@@ -64,7 +64,17 @@ def create_assessment():
     if risk not in VALID_RISK_KEYS:
         return jsonify({"error": f"Invalid risk. Must be one of: {', '.join(sorted(VALID_RISK_KEYS))}"}), 400
 
+    # Generate deterministic ID based on name or URL
+    query_id = parameterize(name if name else url)
+
+    # Fetch the cached assessment if it exists
+    cache_path = os.path.join("/data", f"{query_id}.json")
+    if os.path.exists(cache_path):
+        print(f"Found cached assessment for query: {query_id}")
+        return jsonify({"id": query_id}), 201
+
     # Get application information
+    print(f"Fetching application info for input: {name or url}")
     input_text = name if name else url
     app_info = get_application_info(input_text)
 
@@ -76,10 +86,11 @@ def create_assessment():
     # Fetch the cached assessment if it exists
     cache_path = os.path.join("/data", f"{assessment_id}.json")
     if os.path.exists(cache_path):
+        print(f"Found cached assessment for ID: {assessment_id}")
         return jsonify({"id": assessment_id}), 201
 
-    # TODO: Run the full assessment process here (omitted for brevity)
-    runner = Runner(assessment_id=assessment_id, name=input_text)
+    print(f"Creating new assessment with ID: {assessment_id}")
+    runner = Runner(query_id=query_id, assessment_id=assessment_id, name=input_text)
     runner.run()
 
     # Return just the ID
