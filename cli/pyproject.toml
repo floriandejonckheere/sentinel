@@ -3,7 +3,7 @@ name = "cli"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.14"
+requires-python = ">=3.11,<3.14"
 dependencies = [
     "httpx>=0.28.1",
     "langchain>=0.3.27",
@@ -13,4 +13,6 @@ dependencies = [
     "sqlalchemy>=2.0.44",
     "sqlmodel>=0.0.27",
     "typer>=0.20.0",
+    # Pin orjson to a version with Windows cp312 wheels to avoid Rust build
+    "orjson==3.10.7",
 ]
