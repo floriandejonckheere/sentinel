@@ -1,3 +1,5 @@
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
+
 interface Certification {
     name: string
     status: "active" | "expired" | "pending"
@@ -5,6 +7,7 @@ interface Certification {
     issue_date: string
     expiry_date: string
     url: string
+    sources: string[]
 }
 
 interface CertificationsCardProps {
@@ -54,20 +57,27 @@ export default function CertificationsCard({certs}: CertificationsCardProps) {
                              className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600">
                             <div className="flex items-start justify-between mb-2">
                                 <div className="flex-1">
-                                    <h5 className="font-bold text-gray-900 dark:text-white mb-1">
-                                        {cert.name}
-                                        {cert.url && (
-                                            <a
-                                                href={cert.url}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="ml-2 text-blue-600 dark:text-blue-400 hover:underline text-xs"
-                                                title="View certification"
-                                            >
-                                                ↗
-                                            </a>
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <h5 className="font-bold text-gray-900 dark:text-white">
+                                            {cert.name}
+                                        </h5>
+                                        {cert.sources && cert.sources.length > 0 && (
+                                            <div className="flex gap-1">
+                                                {cert.sources.map((source, idx) => (
+                                                    <a
+                                                        key={idx}
+                                                        href={source}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
+                                                        title={`Source ${idx + 1}: ${source}`}
+                                                    >
+                                                        <ArrowTopRightOnSquareIcon className="h-4 w-4" />
+                                                    </a>
+                                                ))}
+                                            </div>
                                         )}
-                                    </h5>
+                                    </div>
                                 </div>
                                 <span
                                     className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(cert.status)}`}>

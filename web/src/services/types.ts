@@ -8,6 +8,7 @@ export interface Assessment {
         legal_name: string
         country: string
         url: string
+        sources: string[]
     }
     application: {
         application_intel: {
@@ -54,12 +55,14 @@ export interface Assessment {
             issue_date: string
             expiry_date: string
             url: string
+            sources: string[]
         }[]
         frameworks: {
             name: string
             compliance_level: "compliant" | "non-compliant" | "partial"
             last_audit_date: string
             url: string
+            sources: string[]
         }[]
         data_residency: string[]
     }

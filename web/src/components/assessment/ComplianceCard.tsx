@@ -1,8 +1,11 @@
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
+
 interface Framework {
     name: string
     compliance_level: "compliant" | "non-compliant" | "partial"
     last_audit_date: string
     url: string
+    sources: string[]
 }
 
 interface ComplianceCardProps {
@@ -84,20 +87,27 @@ export default function ComplianceCard({frameworks, data_residency}: ComplianceC
                                  className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600">
                                 <div className="flex items-start justify-between mb-2">
                                     <div className="flex-1">
-                                        <h6 className="font-bold text-gray-900 dark:text-white text-sm">
-                                            {framework.name}
-                                            {framework.url && (
-                                                <a
-                                                    href={framework.url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="ml-2 text-blue-600 dark:text-blue-400 hover:underline text-xs"
-                                                    title="View framework details"
-                                                >
-                                                    ↗
-                                                </a>
+                                        <div className="flex items-center gap-2">
+                                            <h6 className="font-bold text-gray-900 dark:text-white text-sm">
+                                                {framework.name}
+                                            </h6>
+                                            {framework.sources && framework.sources.length > 0 && (
+                                                <div className="flex gap-1">
+                                                    {framework.sources.map((source, idx) => (
+                                                        <a
+                                                            key={idx}
+                                                            href={source}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
+                                                            title={`Source ${idx + 1}: ${source}`}
+                                                        >
+                                                            <ArrowTopRightOnSquareIcon className="h-4 w-4" />
+                                                        </a>
+                                                    ))}
+                                                </div>
                                             )}
-                                        </h6>
+                                        </div>
                                     </div>
                                     <span
                                         className={`px-2 py-1 rounded text-xs font-medium ${getComplianceLevelColor(framework.compliance_level)}`}>

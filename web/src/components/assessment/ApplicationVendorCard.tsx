@@ -17,6 +17,7 @@ interface ApplicationVendorCardProps {
     legal_name: string
     country: string | null
     url: string | null
+    sources: string[]
   }
   assessedAt: string
 }
@@ -173,6 +174,53 @@ export default function ApplicationVendorCard({ application, vendor, assessedAt 
           {application.description}
         </p>
       </div>
+
+      {vendor.sources && vendor.sources.length > 0 && (
+        <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-600">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="flex-shrink-0 w-1 h-1 rounded-full bg-blue-600 dark:bg-blue-400"></div>
+            <h5 className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              Sources & References
+            </h5>
+            <div className="flex-1 h-px bg-gradient-to-r from-gray-200 dark:from-gray-600 to-transparent"></div>
+          </div>
+          <div className="grid grid-cols-1 gap-2">
+            {vendor.sources.map((source, index) => {
+              const url = new URL(source)
+              const domain = url.hostname.replace('www.', '')
+              return (
+                <a
+                  key={index}
+                  href={source}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-start gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-all duration-200"
+                >
+                  <span className="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-semibold">
+                    {index + 1}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                      {domain}
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-500 truncate mt-0.5">
+                      {source}
+                    </div>
+                  </div>
+                  <svg
+                    className="flex-shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              )
+            })}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
