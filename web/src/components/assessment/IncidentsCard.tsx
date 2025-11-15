@@ -1,7 +1,7 @@
 import React from 'react'
 
-interface VulnerabilitiesCardProps {
-  cves: {
+interface IncidentsCardProps {
+  incidents: {
     total: number
     critical: number
     high: number
@@ -37,15 +37,15 @@ function getTrendText(trend: string): string {
   return 'Stable'
 }
 
-function createPieSlices(cves: VulnerabilitiesCardProps['cves']): PieSlice[] {
+function createPieSlices(incidents: IncidentsCardProps['incidents']): PieSlice[] {
   const data = [
-    { value: cves.critical, color: '#dc2626', label: 'Critical' },
-    { value: cves.high, color: '#ea580c', label: 'High' },
-    { value: cves.medium, color: '#ca8a04', label: 'Medium' },
-    { value: cves.low, color: '#16a34a', label: 'Low' },
+    { value: incidents.critical, color: '#dc2626', label: 'Critical' },
+    { value: incidents.high, color: '#ea580c', label: 'High' },
+    { value: incidents.medium, color: '#ca8a04', label: 'Medium' },
+    { value: incidents.low, color: '#16a34a', label: 'Low' },
   ]
 
-  const total = cves.total || 1
+  const total = incidents.total || 1
   let currentAngle = 0
 
   return data.map((item) => {
@@ -101,11 +101,11 @@ function getLabelPosition(centerX: number, centerY: number, outerRadius: number,
   return polarToCartesian(centerX, centerY, labelRadius, midAngle)
 }
 
-export default function VulnerabilitiesCard({ cves }: VulnerabilitiesCardProps) {
+export default function IncidentsCard({ incidents }: IncidentsCardProps) {
   const [hoveredSlice, setHoveredSlice] = React.useState<string | null>(null)
   const [tooltipPos, setTooltipPos] = React.useState({ x: 0, y: 0 })
 
-  const slices = createPieSlices(cves)
+  const slices = createPieSlices(incidents)
   const centerX = 150
   const centerY = 150
   const outerRadius = 100
@@ -127,9 +127,9 @@ export default function VulnerabilitiesCard({ cves }: VulnerabilitiesCardProps) 
   }
 
   return (
-    <div className="bg-white dark:bg-gray-700 rounded-2xl p-6 border border-gray-300 dark:border-gray-600 shadow-lg h-full">
+    <div className="bg-white dark:bg-gray-700 rounded-2xl p-6 border border-gray-300 dark:border-gray-600 shadow-lg">
       <h4 className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4 text-center">
-        Vulnerabilities
+        Incidents
       </h4>
 
       {/* First Row: Pie Chart */}
@@ -138,7 +138,7 @@ export default function VulnerabilitiesCard({ cves }: VulnerabilitiesCardProps) 
         <div className="relative">
           <svg width="250" height="250" viewBox="0 0 300 300">
             {/* Donut Chart Rings */}
-            {cves.total > 0 ? (
+            {incidents.total > 0 ? (
               <>
                 {slices.map((slice, index) => {
                   if (slice.value === 0) return null
@@ -184,7 +184,7 @@ export default function VulnerabilitiesCard({ cves }: VulnerabilitiesCardProps) 
               </>
             )}
 
-            {/* Total CVEs in Center */}
+            {/* Total Incidents in Center */}
             <g transform={`translate(${centerX}, ${centerY})`}>
               <text
                 x="0"
@@ -195,7 +195,7 @@ export default function VulnerabilitiesCard({ cves }: VulnerabilitiesCardProps) 
                 fill="currentColor"
                 className="fill-gray-900 dark:fill-white"
               >
-                {cves.total}
+                {incidents.total}
               </text>
               <text
                 x="0"
@@ -205,7 +205,7 @@ export default function VulnerabilitiesCard({ cves }: VulnerabilitiesCardProps) 
                 fill="currentColor"
                 className="fill-gray-500 dark:fill-gray-400"
               >
-                Total CVEs
+                Total Incidents
               </text>
             </g>
 
@@ -243,18 +243,18 @@ export default function VulnerabilitiesCard({ cves }: VulnerabilitiesCardProps) 
       <div className="grid grid-cols-2 gap-3">
         {/* Left Column: Trend */}
         <div className="flex flex-col items-center justify-center gap-1">
-          <span className={`text-4xl font-bold ${getTrendColor(cves.trend)}`}>
-            {getTrendIcon(cves.trend)}
+          <span className={`text-4xl font-bold ${getTrendColor(incidents.trend)}`}>
+            {getTrendIcon(incidents.trend)}
           </span>
-          <span className={`text-base font-medium ${getTrendColor(cves.trend)}`}>
-            {getTrendText(cves.trend)}
+          <span className={`text-base font-medium ${getTrendColor(incidents.trend)}`}>
+            {getTrendText(incidents.trend)}
           </span>
         </div>
 
         {/* Right Column: Explanation */}
         <div className="flex items-center">
           <p className="text-xs text-gray-500 dark:text-gray-400 text-justify">
-            Vulnerabilities are known weaknesses in software that can be exploited by attackers to compromise security. Monitoring vulnerability trends helps assess the security posture over time.
+            Reported security breaches and events involving the application, categorized by severity levels. Trend indicates whether the incident frequency is improving, stable, or declining over time.
           </p>
         </div>
       </div>

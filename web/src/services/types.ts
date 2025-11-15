@@ -44,7 +44,7 @@ export interface Assessment {
     }
     compliance: {
         certifications: {
-            name: string
+            type: string
             status: "active" | "expired" | "pending"
             issued_by: string
             issue_date: string
@@ -56,7 +56,7 @@ export interface Assessment {
             compliance_level: "compliant" | "non-compliant" | "partial"
             last_audit_date: string
             url: string
-        }
+        }[]
         data_residency: string[]
     }
     cves: {

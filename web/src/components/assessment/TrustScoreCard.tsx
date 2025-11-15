@@ -33,7 +33,7 @@ function getConfidenceColor(confidence: string): string {
 
 export default function TrustScoreCard({ score, confidence }: TrustScoreCardProps) {
   return (
-    <div className="bg-white dark:bg-gray-700 rounded-2xl p-8 border border-gray-300 dark:border-gray-600 shadow-lg">
+    <div className="bg-white dark:bg-gray-700 rounded-2xl p-8 border border-gray-300 dark:border-gray-600 shadow-lg h-full">
       <h4 className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-6 text-center">
         Trust Score
       </h4>
@@ -86,6 +86,13 @@ export default function TrustScoreCard({ score, confidence }: TrustScoreCardProp
             Confidence
           </p>
         </div>
+      </div>
+
+      {/* Explanation */}
+      <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-600">
+        <p className="text-xs text-gray-600 dark:text-gray-400 text-justify">
+          The Trust Score is calculated by analyzing eight security dimensions: architecture, data protection, identity & access management, DevSecOps practices, historical security performance, compliance posture, platform security, and risk exposure.
+        </p>
       </div>
     </div>
   )

@@ -5,7 +5,12 @@ import LoadingSpinner from './LoadingSpinner'
 import ApplicationVendorCard from './assessment/ApplicationVendorCard'
 import TrustScoreCard from './assessment/TrustScoreCard'
 import VulnerabilitiesCard from './assessment/VulnerabilitiesCard'
+import IncidentsCard from './assessment/IncidentsCard'
 import SpiderChartCard from './assessment/SpiderChartCard'
+import KeyTakeawaysCard from './assessment/KeyTakeawaysCard'
+import ArchitectureCard from './assessment/ArchitectureCard'
+import CertificationsCard from './assessment/CertificationsCard'
+import ComplianceCard from './assessment/ComplianceCard'
 
 export default function AssessmentDetails() {
     const {id} = useParams<{ id: string }>()
@@ -68,26 +73,50 @@ export default function AssessmentDetails() {
                 Security Assessment Details
             </h2>
 
-            {/* First Row - Application & Vendor Card */}
+            {/* Application & Vendor Card - Full Width */}
             <div className="mb-6">
                 <ApplicationVendorCard
                     application={assessment.application}
                     vendor={assessment.vendor}
+                    assessedAt={assessment.metadata.assessed_at}
                 />
             </div>
 
-            {/* Second Row - Trust Score & Spider Chart Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <TrustScoreCard
-                    score={assessment.summary.trust_score.score}
-                    confidence={assessment.summary.trust_score.confidence}
-                />
-                <SpiderChartCard data={assessment.summary.trust_score}/>
-            </div>
-
-            {/* Third Row - Vulnerabilities Card */}
-            <div>
-                <VulnerabilitiesCard cves={assessment.cves}/>
+            {/* All other cards - Two Column Flexbox Layout */}
+            <div className="flex flex-wrap gap-6">
+                <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                    <TrustScoreCard
+                        score={assessment.summary.trust_score.score}
+                        confidence={assessment.summary.trust_score.confidence}
+                    />
+                </div>
+                <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                    <SpiderChartCard data={assessment.summary.trust_score}/>
+                </div>
+                <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                    <VulnerabilitiesCard cves={assessment.cves}/>
+                </div>
+                <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                    <IncidentsCard incidents={assessment.incidents}/>
+                </div>
+                <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                    <KeyTakeawaysCard
+                        strengths={assessment.summary.key_strengths}
+                        risks={assessment.summary.key_risks}
+                    />
+                </div>
+                <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                    <ArchitectureCard architecture={assessment.architecture}/>
+                </div>
+                <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                    <CertificationsCard certifications={assessment.compliance.certifications}/>
+                </div>
+                <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                    <ComplianceCard
+                        frameworks={assessment.compliance.frameworks}
+                        dataResidency={assessment.compliance.data_residency}
+                    />
+                </div>
             </div>
         </div>
     )
