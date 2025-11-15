@@ -5,8 +5,6 @@ import RoleSelection from './RoleSelection'
 import OrganizationSize from './OrganizationSize'
 import RiskTolerance from './RiskTolerance'
 import LoadingSpinner from './LoadingSpinner'
-import { roles } from '../constants/roles'
-import { sizes } from '../constants/sizes'
 import { riskLevels } from '../constants/risk'
 import { createAssessment } from '../services/api'
 
