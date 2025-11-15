@@ -1,4 +1,5 @@
 from serpapi import GoogleSearch
+import os
 
 def serpapi_search(query: str, api_key: str, **kwargs):
     """
@@ -27,7 +28,7 @@ def serpapi_search(query: str, api_key: str, **kwargs):
 
 if __name__ == "__main__":
     # Example usage
-    MY_API_KEY = "API_KEY"  # replace with your key!
+    MY_API_KEY = os.getenv("SERPAPI_KEY")
 
     response = serpapi_search(
         "1Password",
