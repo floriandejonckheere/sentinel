@@ -5,6 +5,7 @@ import LoadingSpinner from './LoadingSpinner'
 import ApplicationVendorCard from './assessment/ApplicationVendorCard'
 import TrustScoreCard from './assessment/TrustScoreCard'
 import VulnerabilitiesCard from './assessment/VulnerabilitiesCard'
+import IncidentsCard from './assessment/IncidentsCard'
 import SpiderChartCard from './assessment/SpiderChartCard'
 import KeyTakeawaysCard from './assessment/KeyTakeawaysCard'
 import ArchitectureCard from './assessment/ArchitectureCard'
@@ -94,6 +95,9 @@ export default function AssessmentDetails() {
                 </div>
                 <div className="flex-1 min-w-[calc(50%-0.75rem)]">
                     <VulnerabilitiesCard cves={assessment.cves}/>
+                </div>
+                <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                    <IncidentsCard incidents={assessment.incidents}/>
                 </div>
                 <div className="flex-1 min-w-[calc(50%-0.75rem)]">
                     <KeyTakeawaysCard
