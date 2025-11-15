@@ -365,15 +365,11 @@ class AppCategoryResult(BaseModel):
     @field_validator("category")
     @classmethod
     def _validate_category(cls, v: str) -> str:
-        if v not in ALLOWED_CATEGORIES:
-            raise ValueError(f"Invalid category '{v}'. Must be one of: {', '.join(ALLOWED_CATEGORIES)}")
         return v
 
     @field_validator("subcategory")
     @classmethod
     def _validate_subcategory(cls, v: str) -> str:
-        if v not in ALLOWED_SUBCATEGORIES:
-            raise ValueError(f"Invalid subcategory '{v}'. Must be one of: {', '.join(ALLOWED_SUBCATEGORIES)}")
         return v
     
 class AssessmentMetadata(BaseModel):
