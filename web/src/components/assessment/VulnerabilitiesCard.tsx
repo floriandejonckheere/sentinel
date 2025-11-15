@@ -127,7 +127,7 @@ export default function VulnerabilitiesCard({ cves }: VulnerabilitiesCardProps) 
   }
 
   return (
-    <div className="bg-white dark:bg-gray-700 rounded-2xl p-8 border border-gray-300 dark:border-gray-600 shadow-lg">
+    <div className="bg-white dark:bg-gray-700 rounded-2xl p-8 border border-gray-300 dark:border-gray-600 shadow-lg h-full">
       <h4 className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-6 text-center">
         Vulnerabilities
       </h4>

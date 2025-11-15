@@ -6,6 +6,7 @@ import ApplicationVendorCard from './assessment/ApplicationVendorCard'
 import TrustScoreCard from './assessment/TrustScoreCard'
 import VulnerabilitiesCard from './assessment/VulnerabilitiesCard'
 import SpiderChartCard from './assessment/SpiderChartCard'
+import KeyTakeawaysCard from './assessment/KeyTakeawaysCard'
 
 export default function AssessmentDetails() {
     const {id} = useParams<{ id: string }>()
@@ -68,7 +69,7 @@ export default function AssessmentDetails() {
                 Security Assessment Details
             </h2>
 
-            {/* First Row - Application & Vendor Card */}
+            {/* Application & Vendor Card - Full Width */}
             <div className="mb-6">
                 <ApplicationVendorCard
                     application={assessment.application}
@@ -77,18 +78,18 @@ export default function AssessmentDetails() {
                 />
             </div>
 
-            {/* Second Row - Trust Score & Spider Chart Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            {/* All other cards - Equal Width and Height Grid */}
+            <div className="grid grid-cols-2 grid-rows-[1fr_1fr] gap-6">
                 <TrustScoreCard
                     score={assessment.summary.trust_score.score}
                     confidence={assessment.summary.trust_score.confidence}
                 />
                 <SpiderChartCard data={assessment.summary.trust_score}/>
-            </div>
-
-            {/* Third Row - Vulnerabilities Card */}
-            <div>
                 <VulnerabilitiesCard cves={assessment.cves}/>
+                <KeyTakeawaysCard
+                    strengths={assessment.summary.key_strengths}
+                    risks={assessment.summary.key_risks}
+                />
             </div>
         </div>
     )
