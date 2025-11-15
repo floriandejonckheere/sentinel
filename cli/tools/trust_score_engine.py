@@ -120,14 +120,14 @@ class TrustScoreEngine:
 
         # Start with 50 baseline for every category
         scores = {
-            "architecture": 50,
-            "data_protection": 50,
-            "identity_access": 50,
-            "devsecops": 50,
-            "historical_security": 50,
-            "compliance": 50,
-            "platform_security": 50,
-            "risks_exposure": 50
+            "architecture": 65,
+            "data_protection": 65,
+            "identity_access": 65,
+            "devsecops": 65,
+            "historical_security": 65,
+            "compliance": 65,
+            "platform_security": 65,
+            "risks_exposure": 65
         }
 
         # Helper to normalize to 0–100
