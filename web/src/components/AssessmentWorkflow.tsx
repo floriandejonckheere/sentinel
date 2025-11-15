@@ -2,13 +2,15 @@ import { useState } from 'react'
 import ApplicationInput from './ApplicationInput'
 import RoleSelection from './RoleSelection'
 import OrganizationSize from './OrganizationSize'
+import RiskTolerance from './RiskTolerance'
 
-type Step = 'application' | 'role' | 'size' | 'complete'
+type Step = 'application' | 'role' | 'size' | 'risk' | 'complete'
 
 interface AssessmentData {
   application: string
   role: string
   organizationSize: string
+  riskTolerance: number
 }
 
 export default function AssessmentWorkflow() {
@@ -17,6 +19,7 @@ export default function AssessmentWorkflow() {
     application: '',
     role: '',
     organizationSize: '',
+    riskTolerance: 2,
   })
 
   const handleApplicationSubmit = (value: string) => {
@@ -31,6 +34,11 @@ export default function AssessmentWorkflow() {
 
   const handleSizeSelect = (size: string) => {
     setAssessmentData(prev => ({ ...prev, organizationSize: size }))
+    setCurrentStep('risk')
+  }
+
+  const handleRiskSelect = (tolerance: number) => {
+    setAssessmentData(prev => ({ ...prev, riskTolerance: tolerance }))
     setCurrentStep('complete')
   }
 
@@ -48,6 +56,10 @@ export default function AssessmentWorkflow() {
         <OrganizationSize onSelect={handleSizeSelect} />
       )}
 
+      {currentStep === 'risk' && (
+        <RiskTolerance onSelect={handleRiskSelect} />
+      )}
+
       {currentStep === 'complete' && (
         <div className="animate-fade-in text-center">
           <h2 className="text-3xl font-medium text-gray-900 dark:text-white mb-6">
@@ -60,8 +72,11 @@ export default function AssessmentWorkflow() {
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-4">
               <span className="font-semibold">Role:</span> {assessmentData.role}
             </p>
-            <p className="text-lg text-gray-700 dark:text-gray-300">
+            <p className="text-lg text-gray-700 dark:text-gray-300 mb-4">
               <span className="font-semibold">Organization Size:</span> {assessmentData.organizationSize}
+            </p>
+            <p className="text-lg text-gray-700 dark:text-gray-300">
+              <span className="font-semibold">Risk Tolerance:</span> {['Very Low', 'Low', 'Medium', 'High', 'Very High'][assessmentData.riskTolerance]}
             </p>
           </div>
         </div>
