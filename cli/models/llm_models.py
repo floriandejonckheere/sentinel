@@ -199,80 +199,146 @@ class DocFeatures(BaseModel):
     
 ALLOWED_CATEGORIES = [
     "Security",
+    "Identity & Access Management",
     "Developer Tools",
-    "Productivity",
+    "IT & Infrastructure",
+    "Productivity & Office",
     "Communication & Collaboration",
+    "Data Management & Storage",
+    "Business Applications",
     "Multimedia & Creative",
-    "File Transfer / Remote Access / Network",
+    "Networking & Remote Access",
     "System Utilities",
-    "Virtualization & Emulation",
-    "Input Method Editors (IME)",
-    "Cloud Storage / File Sync",
+    "Virtualization & Containerization",
+    "Endpoint & Device Management",
+    "Cloud Services",
+    "AI & Machine Learning",
 ]
 
 ALLOWED_SUBCATEGORIES = [
-    # Security
+
+    # --- SECURITY ---
     "Password Manager",
-    "Client-Side Encryption",
-    "Disk Encryption",
-    "Security Suite",
-    "Anti-Malware",
-    "Adware Removal",
-    "System Cleanup Utility",
+    "Endpoint Protection Platform (EPP)",
+    "Endpoint Detection & Response (EDR)",
+    "Zero Trust Security",
+    "Security Information & Event Management (SIEM)",
+    "Vulnerability Scanner",
+    "Cloud Security Posture Management (CSPM)",
+    "Data Loss Prevention (DLP)",
+    "Identity Threat Detection & Response (ITDR)",
+    "Application Security Testing (SAST/DAST)",
+    "Privileged Access Management (PAM)",
 
-    # Developer Tools
-    "API Client / Developer Tool",
+    # --- IDENTITY & ACCESS ---
+    "Single Sign-On (SSO)",
+    "Multi-Factor Authentication (MFA)",
+    "Identity Governance & Administration (IGA)",
+    "Directory Services",
+    "SCIM Provisioning",
+    "Passwordless Authentication",
+
+    # --- DEVELOPER TOOLS ---
     "Code Editor",
-    "HTTP Debugging Proxy",
-    "Game Engine",
-    "Application Development Platform",
+    "Integrated Development Environment (IDE)",
+    "API Testing Tool",
+    "Version Control System",
+    "CI/CD Platform",
+    "Debugger / Profiling Tool",
+    "Package Manager",
+    "Infrastructure as Code (IaC)",
 
-    # Productivity
+    # --- IT & INFRASTRUCTURE ---
+    "Cloud Infrastructure Management",
+    "Configuration Management",
+    "Monitoring & Observability",
+    "Backup & Recovery",
+    "Logging Platform",
+
+    # --- PRODUCTIVITY & OFFICE ---
     "Office Suite",
-    "Document Management",
-    "Reference Manager",
-    "Business Productivity App",
-    "ERP / Business Management Software",
-    "Scientific Graphing / Data Analysis",
+    "Project Management",
+    "Task Management",
+    "Note-Taking",
+    "Document Editor",
+    "Spreadsheet Application",
+    "PDF Tools",
 
-    # Communication & Collaboration
-    "Messaging / Collaboration",
-    "VoIP / Video Calling",
+    # --- COMMUNICATION & COLLABORATION ---
+    "Messaging Platform",
+    "Email Client",
     "Video Conferencing",
+    "Team Collaboration",
+    "VoIP / Calling",
+    "Screen Sharing Tools",
+
+    # --- DATA MANAGEMENT & STORAGE ---
+    "Database Client",
     "Cloud Storage / File Sync",
+    "File Management",
+    "ETL / Data Pipeline Tool",
+    "Analytics & BI Tool",
 
-    # Multimedia & Creative
-    "Screen Recording",
-    "Video Conversion",
-    "Video Editing",
-    "Screen Capture",
+    # --- BUSINESS APPLICATIONS ---
+    "CRM",
+    "ERP",
+    "Finance & Accounting",
+    "HRIS / Employee Management",
+    "Inventory Management",
+    "Marketing Automation",
+    "Sales Enablement",
+
+    # --- MULTIMEDIA & CREATIVE ---
     "Image Editing",
+    "Video Editing",
+    "Screen Recording",
+    "Audio Editing",
     "Media Player",
-    "Streaming & Recording",
+    "Content Creation Tools",
 
-    # File Transfer / Remote Access / Network
-    "FTP/SFTP Client",
-    "File Copy Acceleration Utility",
-    "Remote Desktop / Remote Support",
-    "Terminal Emulator",
+    # --- NETWORKING & REMOTE ACCESS ---
+    "VPN Client",
     "SSH Client",
+    "Remote Desktop / Remote Support",
+    "Network Analyzer",
+    "Firewall Management Tool",
+    "Proxy / Traffic Interception",
 
-    # System Utilities
+    # --- SYSTEM UTILITIES ---
     "File Compression / Archiving",
-    "File Manager",
-    "Local Search Utility",
-    "File Indexing & Search",
-    "Uninstaller",
     "Disk Cleanup Utility",
-    "System Information",
+    "Uninstaller",
+    "System Information Tool",
+    "Password Recovery Tools",
+    "Encryption Tools",
+    "Local Search Utility",
 
-    # Virtualization & Emulation
-    "Virtualization Platform",
-    "Emulator / Virtualization Engine",
+    # --- VIRTUALIZATION & CONTAINERIZATION ---
+    "Virtual Machine Platform",
+    "Container Runtime",
+    "Container Orchestration Tool",
+    "Sandbox / Emulator",
 
-    # Input Method Editors (IME)
-    "Input Method Editor",
+    # --- ENDPOINT & DEVICE MANAGEMENT ---
+    "Mobile Device Management (MDM)",
+    "Endpoint Configuration",
+    "Patch Management",
+    "Device Inventory Tool",
+
+    # --- CLOUD SERVICES ---
+    "SaaS Platform",
+    "PaaS Platform",
+    "IaaS Management Tool",
+    "Cloud API Tool",
+    "Cloud Monitoring",
+
+    # --- AI & MACHINE LEARNING ---
+    "AI Assistant",
+    "ML Model Development",
+    "Vector Database Client",
+    "AI Inference Engine",
 ]
+
 
 
 class AppCategoryResult(BaseModel):
