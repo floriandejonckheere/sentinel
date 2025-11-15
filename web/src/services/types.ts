@@ -82,8 +82,10 @@ export interface Assessment {
         trend: "improving" | "stable" | "declining"
     }
     alternatives: {
-        name: string
-        url: string
-        trust_score: number
+        items: {
+            name: string
+            risk_score: number | null
+            reason: string
+        }[]
     }
 }

@@ -11,6 +11,7 @@ import KeyTakeawaysCard from './assessment/KeyTakeawaysCard'
 import ArchitectureCard from './assessment/ArchitectureCard'
 import CertificationsCard from './assessment/CertificationsCard'
 import ComplianceCard from './assessment/ComplianceCard'
+import AlternativesCard from './assessment/AlternativesCard'
 
 export default function AssessmentDetails() {
     const {id} = useParams<{ id: string }>()
@@ -23,11 +24,11 @@ export default function AssessmentDetails() {
     // Determine which cards to show based on role
     const getVisibleCards = (role: string | null) => {
         const roleCardsMap: Record<string, string[]> = {
-            executive: ['trustScore', 'spiderChart', 'keyTakeaways'],
+            executive: ['trustScore', 'spiderChart', 'keyTakeaways', 'alternatives'],
             security: ['vulnerabilities', 'incidents'],
             compliance: ['certifications', 'compliance'],
             technical: ['architecture'],
-            global: ['trustScore', 'spiderChart', 'vulnerabilities', 'incidents', 'keyTakeaways', 'architecture', 'certifications', 'compliance']
+            global: ['trustScore', 'spiderChart', 'vulnerabilities', 'incidents', 'keyTakeaways', 'architecture', 'certifications', 'compliance', 'alternatives']
         }
 
         const normalizedRole = role?.toLowerCase() || 'global'
@@ -42,6 +43,7 @@ export default function AssessmentDetails() {
             architecture: allowedCards.includes('architecture'),
             certifications: allowedCards.includes('certifications'),
             compliance: allowedCards.includes('compliance'),
+            alternatives: allowedCards.includes('alternatives'),
         }
     }
 
@@ -158,6 +160,11 @@ export default function AssessmentDetails() {
                             frameworks={assessment.compliance.frameworks}
                             data_residency={assessment.compliance.data_residency}
                         />
+                    </div>
+                )}
+                {visibleCards.alternatives && (
+                    <div className="flex-1 min-w-[calc(50%-0.75rem)]">
+                        <AlternativesCard alternatives={assessment.alternatives.items} />
                     </div>
                 )}
             </div>
