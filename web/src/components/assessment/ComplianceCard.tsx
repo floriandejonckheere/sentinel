@@ -1,5 +1,3 @@
-import React from "react";
-
 interface Framework {
     name: string
     compliance_level: "compliant" | "non-compliant" | "partial"

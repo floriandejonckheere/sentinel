@@ -1,7 +1,5 @@
-import React from "react";
-
 interface Certification {
-    type: string
+    name: string
     status: "active" | "expired" | "pending"
     issued_by: string
     issue_date: string
