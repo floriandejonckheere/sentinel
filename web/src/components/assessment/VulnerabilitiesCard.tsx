@@ -127,16 +127,16 @@ export default function VulnerabilitiesCard({ cves }: VulnerabilitiesCardProps) 
   }
 
   return (
-    <div className="bg-white dark:bg-gray-700 rounded-2xl p-8 border border-gray-300 dark:border-gray-600 shadow-lg h-full">
-      <h4 className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-6 text-center">
+    <div className="bg-white dark:bg-gray-700 rounded-2xl p-6 border border-gray-300 dark:border-gray-600 shadow-lg h-full">
+      <h4 className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4 text-center">
         Vulnerabilities
       </h4>
 
       {/* First Row: Pie Chart */}
-      <div className="flex justify-center mb-6">
+      <div className="flex justify-center mb-3">
         {/* Donut Chart with Total in Center */}
         <div className="relative">
-          <svg width="300" height="300" viewBox="0 0 300 300">
+          <svg width="250" height="250" viewBox="0 0 300 300">
             {/* Donut Chart Rings */}
             {cves.total > 0 ? (
               <>
@@ -240,9 +240,9 @@ export default function VulnerabilitiesCard({ cves }: VulnerabilitiesCardProps) 
       </div>
 
       {/* Second Row: Trend and Explanation */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-3">
         {/* Left Column: Trend */}
-        <div className="flex flex-col items-center justify-center gap-2">
+        <div className="flex flex-col items-center justify-center gap-1">
           <span className={`text-4xl font-bold ${getTrendColor(cves.trend)}`}>
             {getTrendIcon(cves.trend)}
           </span>
