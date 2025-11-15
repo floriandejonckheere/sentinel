@@ -15,14 +15,30 @@ export default function RoleDropdown({ currentRole, onRoleChange }: RoleDropdown
 
   const Icon = selectedRole.icon
 
+  const colorClasses = {
+    gray: 'bg-gray-600 hover:bg-gray-700 dark:bg-gray-500 dark:hover:bg-gray-600',
+    red: 'bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600',
+    blue: 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600',
+    yellow: 'bg-yellow-600 hover:bg-yellow-700 dark:bg-yellow-500 dark:hover:bg-yellow-600',
+  }
+
+  const iconColorClasses = {
+    gray: 'text-gray-600 dark:text-gray-400',
+    red: 'text-red-600 dark:text-red-400',
+    blue: 'text-blue-600 dark:text-blue-400',
+    yellow: 'text-yellow-600 dark:text-yellow-400',
+  }
+
   return (
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-lg transition-colors w-44"
+        className={`flex items-center justify-between px-4 py-2 text-white rounded-lg transition-colors w-44 ${colorClasses[selectedRole.color as keyof typeof colorClasses]}`}
       >
-        <Icon className="h-5 w-5" />
-        <span className="font-medium">{selectedRole.label}</span>
+        <div className="flex items-center gap-2">
+          <Icon className="h-5 w-5" />
+          <span className="font-medium">{selectedRole.label}</span>
+        </div>
         <ChevronDownIcon className="h-4 w-4" />
       </button>
 
@@ -35,6 +51,7 @@ export default function RoleDropdown({ currentRole, onRoleChange }: RoleDropdown
           <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-lg shadow-lg border border-gray-300 dark:border-gray-600 z-20">
             {roles.map((role) => {
               const RoleIcon = role.icon
+              const iconColor = iconColorClasses[role.color as keyof typeof iconColorClasses]
               return (
                 <button
                   key={role.id}
@@ -43,10 +60,10 @@ export default function RoleDropdown({ currentRole, onRoleChange }: RoleDropdown
                     setIsOpen(false)
                   }}
                   className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors first:rounded-t-lg last:rounded-b-lg ${
-                    role.id === currentRole ? 'bg-blue-50 dark:bg-blue-900/20' : ''
+                    role.id === currentRole ? 'bg-gray-50 dark:bg-gray-600/50' : ''
                   }`}
                 >
-                  <RoleIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                  <RoleIcon className={`h-5 w-5 ${iconColor}`} />
                   <span className="text-gray-900 dark:text-white">{role.label}</span>
                 </button>
               )
