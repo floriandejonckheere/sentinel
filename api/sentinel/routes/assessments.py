@@ -72,6 +72,10 @@ def create_assessment():
     if os.path.exists(cache_path):
         print(f"Found cached assessment for query: {query_id}")
         return jsonify({"id": query_id}), 201
+    else:
+        # Write the file anyway, to prevent the request from being repeated if the user refreshes
+        with open(cache_path, "w") as f:
+            f.write("")
 
     # Get application information
     print(f"Fetching application info for input: {name or url}")
@@ -104,7 +108,11 @@ def get_assessment(assessment_id):
     cache_path = os.path.join("/data", f"{assessment_id}.json")
     if os.path.exists(cache_path):
         with open(cache_path, "r") as f:
-            assessment = json.load(f)
+            content = f.read().strip()
+            # If file is empty, return empty JSON
+            if not content:
+                return jsonify({}), 200
+            assessment = json.loads(content)
         return jsonify(assessment), 200
 
     # Return 404 if not found
