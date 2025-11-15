@@ -4,6 +4,8 @@ x-app: &app
     - fcloud
   environment:
     GEMINI_API_KEY: ${GEMINI_API_KEY}
+  volumes:
+    - sentinel:/data
   restart: unless-stopped
 
 services:
@@ -23,7 +25,11 @@ services:
       traefik.http.routers.sentinel-tls.tls.certresolver: 'letsencrypt'
 
       traefik.http.services.sentinel.loadbalancer.server.port: '8080'
+
 networks:
   fcloud:
     external: true
     name: 'fcloud_default'
+
+volumes:
+  sentinel:
