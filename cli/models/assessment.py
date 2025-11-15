@@ -1,6 +1,7 @@
 """Assessment data models."""
 from typing import List, Optional, TYPE_CHECKING
 from enum import Enum
+from pydantic import BaseModel
 from sqlmodel import Field, SQLModel, Relationship
 from sqlalchemy import Column, JSON
 
@@ -26,6 +27,9 @@ class CVETrend(SQLModel, table=True):
 
     # Relationship
     assessment: Optional["Assessment"] = Relationship(back_populates="cve_trends")
+    
+class CVETrendList(BaseModel):
+    trends: List[CVETrend] = Field(..., description="List of identified CVE trends")
 
 
 class ComplianceSignal(SQLModel, table=True):
