@@ -37,4 +37,3 @@ WithSecure will provide:
 - Required: lightweight local cache (JSON/SQLite), snapshot mode, deterministic parameters.
 
 Example data: [here](https://files.hackjunction.app/events/junction-2025/challenges/withsecure/WithSecure_sample_data.cvs)
-

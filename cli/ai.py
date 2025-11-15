@@ -30,7 +30,8 @@ from pathlib import Path
 from pydantic import BaseModel
 from langchain_core.messages import ToolMessage  
 from langchain_core.tools import BaseTool  
-from models.assessment import ComplianceSignal
+from models.assessment import ComplianceSignal, Assessment, CVETrend, CVETrendList
+from models.llm_models import LLMComplianceSignal, LLMComplianceSignalList
 from tools.web_tool import search_scrape_tool
 try:
     from langchain_google_genai import ChatGoogleGenerativeAI
@@ -262,16 +263,3 @@ class AI:
         structured_llm = self.llm.with_structured_output(output_model)
         final_msg = structured_llm.invoke(messages + [("human", "Return ONLY the structured object.")])
         return final_msg
-
-ai = AI(model="gemini-2.5-flash", temperature=0.2)
-
-summary = ai.generate_structured_with_tools(
-    prompt=(
-        "Use the provided tool to search and scrape relevant pages. "
-        "Then provide a structured compliance signal overview."
-    ),
-    input_text="1Password",
-    tools=[search_scrape_tool],
-    output_model=ComplianceSignal
-)
-print(summary)

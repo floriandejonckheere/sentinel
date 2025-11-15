@@ -4,6 +4,7 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import Home from './components/Home'
 import AssessmentWorkflow from './components/AssessmentWorkflow'
+import AssessmentDetails from './components/AssessmentDetails'
 
 function App() {
   const navigate = useNavigate()
@@ -42,9 +43,11 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-800">
-      <Header onClearRole={handleReset} currentRole={currentRole} onRoleChange={handleDropdownRoleChange} />
+      {!isHomePage && (
+        <Header onClearRole={handleReset} currentRole={currentRole} onRoleChange={handleDropdownRoleChange} />
+      )}
 
-      <main className={`flex items-center justify-center px-4 ${isHomePage ? 'h-[calc(100vh-5rem)] -mt-32' : 'h-[calc(100vh-5rem)] -mt-32'}`}>
+      <main className={`flex items-center justify-center px-4 ${isHomePage ? 'min-h-screen -mt-0' : 'h-[calc(100vh-5rem)] -mt-32'}`}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/name" element={<AssessmentWorkflow onRoleChange={handleWorkflowRoleChange} />} />
@@ -52,10 +55,11 @@ function App() {
           <Route path="/size" element={<AssessmentWorkflow onRoleChange={handleWorkflowRoleChange} />} />
           <Route path="/risk" element={<AssessmentWorkflow onRoleChange={handleWorkflowRoleChange} />} />
           <Route path="/complete" element={<AssessmentWorkflow onRoleChange={handleWorkflowRoleChange} />} />
+          <Route path="/assessments/:id" element={<AssessmentDetails />} />
         </Routes>
       </main>
 
-      <Footer />
+      {!isHomePage && <Footer />}
     </div>
   )
 }
