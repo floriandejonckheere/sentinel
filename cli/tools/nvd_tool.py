@@ -4,10 +4,7 @@ import requests
 
 from langchain.tools import tool
 
-# --- Date range helper ---
-
 NVD_BASE_URL = "https://services.nvd.nist.gov/rest/json/cves/2.0"
-# Match your working example (no trailing Z, still ISO-8601)
 DATE_FORMAT = "%Y-%m-%dT%H:%M:%S.000"
 
 
@@ -26,8 +23,6 @@ def get_120_day_range(end: Optional[datetime] = None) -> Tuple[str, str]:
     pub_end = end.strftime(DATE_FORMAT)
     return pub_start, pub_end
 
-
-# --- Small helpers to extract only what you need from NVD's JSON ---
 
 
 def _extract_description(cve_obj: Dict[str, Any]) -> str:
@@ -93,7 +88,6 @@ def _extract_severity(cve_obj: Dict[str, Any]) -> Optional[str]:
         if sev_norm in mapping:
             return mapping[sev_norm]
 
-    # No usable severity
     return None
 
 
@@ -148,8 +142,6 @@ def _extract_sources(cve_obj: Dict[str, Any]) -> List[str]:
     return unique_urls
 
 
-# --- LangChain tool: returns only minimal CVE data for your models ---
-
 
 @tool
 def nvd_keyword_search_minimal_120d(
@@ -197,7 +189,7 @@ def nvd_keyword_search_minimal_120d(
 
         cve_id = cve_obj.get("id")
         if not cve_id:
-            continue  # skip malformed entries
+            continue  
 
         description = _extract_description(cve_obj)
         severity = _extract_severity(cve_obj)

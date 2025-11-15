@@ -24,7 +24,7 @@ class State(TypedDict, total=False):
 ai = AI(model="gemini-2.5-flash", temperature=0.2)
 
 # ---- Agent node helpers ----
-def _tools():  # keep tools centralized; easy to add more later
+def _tools(): 
     return [search_scrape_tool]
 
 def _cve_tools():
@@ -127,9 +127,9 @@ def cve_node(state: State) -> State:
     result = ai.generate_structured_with_tools(
         prompt=prompt,
         input_text=state["query"],
-        tools=_cve_tools(),   # should include the new `search_nvd_cves` minimal tool
+        tools=_cve_tools(),   
         output_model=CVESection,
-        max_steps=4,          # fewer steps needed now
+        max_steps=4,          
     )
     return {"cve": result}
 
