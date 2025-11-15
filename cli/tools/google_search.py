@@ -26,20 +26,23 @@ def serpapi_search(query: str, api_key: str, **kwargs):
     return results
 
 
-if __name__ == "__main__":
-    # Example usage
+def google_search(app, loc):
     MY_API_KEY = os.getenv("SERPAPI_KEY")
 
     if not MY_API_KEY:
         raise ValueError("SERPAPI_KEY not set!")
 
     response = serpapi_search(
-        "1Password",
+        #"1password",
+        app,
         api_key=MY_API_KEY,
-        location="Austin, Texas, United States",
+        #location="Austin, Texas, United States",
+        location = loc,
         num=3 #Top num results from google
     )
 
-    # Print the top organic results
+     # Print the top organic results
     for item in response.get("organic_results", []):
         print(f"- {item.get('title')}: {item.get('link')}")
+
+    return
