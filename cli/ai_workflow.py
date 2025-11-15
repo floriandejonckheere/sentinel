@@ -138,6 +138,8 @@ def compliance_node(state: State) -> State:
         "You are a Compliance & Certification analyst. Find third-party validations and claims. "
         "Return a list of structured ComplianceCert objects—one per certification found—"
         "and an overall_summary across frameworks."
+        "Focus on major frameworks like SOC2, ISO27001, GDPR, HIPAA, FedRAMP, etc."
+        "GDPR status should always be included."
     )
     result = ai.generate_structured_with_tools(
         prompt=prompt,
