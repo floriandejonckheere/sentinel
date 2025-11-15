@@ -5,6 +5,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    volumes:
+      - ./sentinel.sqlite3:/data/sentinel.sqlite3
     environment:
       - PORT=8080
     restart: unless-stopped
