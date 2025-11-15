@@ -1,18 +1,30 @@
 """Assessment API routes."""
-import uuid
 import os
-from datetime import datetime
+import json
+import re
 
 from flask import Blueprint, jsonify, request
 
 from sentinel.constants.roles import VALID_ROLE_IDS
 from sentinel.constants.sizes import VALID_SIZE_IDS
 from sentinel.constants.risk import VALID_RISK_KEYS
+from cli.application_info import get_application_info
 
 assessments_bp = Blueprint('assessments', __name__, url_prefix='/api')
 
 # In-memory storage for assessments (replace with database later)
 assessments_store = {}
+
+
+def parameterize(text: str) -> str:
+    """Convert text to a URL-friendly slug (lowercase, hyphenated)."""
+    # Convert to lowercase
+    text = text.lower()
+    # Replace spaces and special characters with hyphens
+    text = re.sub(r'[^a-z0-9]+', '-', text)
+    # Remove leading/trailing hyphens
+    text = text.strip('-')
+    return text
 
 
 @assessments_bp.route("/assessments", methods=["GET"])
@@ -49,17 +61,21 @@ def create_assessment():
     if risk not in VALID_RISK_KEYS:
         return jsonify({"error": f"Invalid risk. Must be one of: {', '.join(sorted(VALID_RISK_KEYS))}"}), 400
 
-    # Generate unique ID for this assessment
-    assessment_id = str(uuid.uuid4())
+    # Get application information
+    input_text = name if name else url
+    app_info = get_application_info(input_text)
 
-    # TODO: Use CLI assessor to perform actual assessment (after merge)
-    # from cli.assessor import Assessor
-    # from cli.database import Database
-    # from cli.ai import AI
-    # db = Database("sqlite:///data/sentinel.sqlite3")
-    # ai = AI()
-    # assessor = Assessor(database=db, ai=ai)
-    # assessment = assessor.assess(name=name, url=url)
+    # Generate deterministic ID based on parameterized app info
+    parameterized_name = parameterize(app_info.name)
+    parameterized_vendor = parameterize(app_info.vendor_name)
+    assessment_id = f"{parameterized_name}_{parameterized_vendor}"
+
+    # Fetch the cached assessment if it exists
+    cache_path = os.path.join("/data", f"{assessment_id}.json")
+    if os.path.exists(cache_path):
+        return jsonify({"id": assessment_id}), 201
+
+    # TODO: Run the full assessment process here (omitted for brevity)
 
     # Return just the ID
     return jsonify({"id": assessment_id}), 201
@@ -68,4 +84,12 @@ def create_assessment():
 @assessments_bp.route("/assessments/<assessment_id>", methods=["GET"])
 def get_assessment(assessment_id):
     """Get a specific assessment by ID."""
-    return open(os.path.join(os.path.dirname(__file__), "example_assessment.json")).read(), 200
+    # Check cache first
+    cache_path = os.path.join("/data", f"{assessment_id}.json")
+    if os.path.exists(cache_path):
+        with open(cache_path, "r") as f:
+            assessment = json.load(f)
+        return jsonify(assessment), 200
+
+    # Return 404 if not found
+    return jsonify({"error": "Assessment not found"}), 404
