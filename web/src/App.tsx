@@ -52,7 +52,7 @@ function App() {
         isHomePage
           ? 'min-h-screen -mt-0'
           : isAssessmentDetailsPage
-            ? 'min-h-[calc(100vh-5rem)] py-8 -mt-32'
+            ? 'min-h-[calc(100vh-5rem)] pt-24 pb-16'
             : 'h-[calc(100vh-5rem)] -mt-32'
       }`}>
         <Routes>
