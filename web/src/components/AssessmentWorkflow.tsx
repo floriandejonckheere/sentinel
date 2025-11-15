@@ -89,7 +89,7 @@ export default function AssessmentWorkflow({ onRoleChange }: AssessmentWorkflowP
 
     const interval = setInterval(() => {
       setLoadingMessageIndex((prevIndex) => (prevIndex + 1) % LOADING_MESSAGES.length)
-    }, 10000) // 10 seconds
+    }, 5000) // 5 seconds
 
     return () => clearInterval(interval)
   }, [isLoading])

@@ -12,7 +12,7 @@ export interface Assessment {
     application: {
         application_intel: {
             name: string
-            vendorName: string
+            vendor_name: string
         }
         description: string
         url: string
