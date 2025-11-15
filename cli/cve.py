@@ -262,18 +262,3 @@ def search_cves_keyword(
 
     return all_cves
 
-
-if __name__ == "__main__":
-    cves = search_cves_keyword(
-        "facebook",
-        results_per_page=200,
-        max_pages=1,
-        # cvss_v3_severity="HIGH",
-        api_key=None,
-    )
-
-    print(f"Fetched {len(cves)} CVEs")
-    for c in cves:
-        info = c.best_cvss() or {}
-        desc = c.english_description() or ""
-        print(f"{c.id} | {info.get('severity')} {info.get('score')} | {desc[:90]}")
