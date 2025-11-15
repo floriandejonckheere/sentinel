@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react'
-import {useParams} from 'react-router-dom'
+import {useParams, useSearchParams} from 'react-router-dom'
 import {getAssessment, type Assessment} from '../services/api'
 import LoadingSpinner from './LoadingSpinner'
 import ApplicationVendorCard from './assessment/ApplicationVendorCard'
@@ -9,6 +9,8 @@ import SpiderChartCard from './assessment/SpiderChartCard'
 
 export default function AssessmentDetails() {
     const {id} = useParams<{ id: string }>()
+    const [searchParams] = useSearchParams()
+    const role = searchParams.get('role')
     const [isLoading, setIsLoading] = useState(true)
     const [assessment, setAssessment] = useState<Assessment | null>(null)
     const [error, setError] = useState<string | null>(null)
@@ -17,7 +19,7 @@ export default function AssessmentDetails() {
         if (id) {
             fetchAssessment(id)
         }
-    }, [id])
+    }, [id, role])
 
     const fetchAssessment = async (assessmentId: string) => {
         setIsLoading(true)
