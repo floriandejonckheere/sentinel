@@ -1,5 +1,3 @@
-import React from 'react'
-
 interface SpiderChartCardProps {
     data: {
         architecture: number
