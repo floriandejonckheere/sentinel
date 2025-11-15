@@ -5,6 +5,7 @@ from langgraph.graph import StateGraph, END, START
 from langgraph.checkpoint.memory import MemorySaver  # optional
 from ai import AI
 from tools.web_tool import search_scrape_tool  # your BaseTool
+from tools.nvd_tool import search_nvd_cves_tool
 from models.llm_models import (
     ALLOWED_SUBCATEGORIES,ALLOWED_CATEGORIES, VendorIntel, CVESection, ComplianceSection, IncidentSection, DocFeatures, ResearchReport,AppCategoryResult
 )
@@ -25,6 +26,9 @@ ai = AI(model="gemini-2.5-flash-lite", temperature=0.2)
 # ---- Agent node helpers ----
 def _tools():  # keep tools centralized; easy to add more later
     return [search_scrape_tool]
+
+def _cve_tools():
+    return [search_nvd_cves_tool]
 
 def vendor_node(state: State) -> State:
     prompt = (
@@ -69,15 +73,29 @@ def category_node(state: State) -> State:
 
 def cve_node(state: State) -> State:
     prompt = (
-        "You are a CVE & Vulnerability analyst. Research historical vulnerabilities related to the vendor/product. "
-        "Use multiple searches if needed (site:nvd.nist.gov, site:mitre.org, vendor advisories, trusted blogs). "
-        "Return CVESection with by_year_counts, 3–8 critical CVEItem entries, trend (improving/degrading/flat), "
-        "a 3–5 sentence summary, and sources."
+        "You are a CVE & Vulnerability analyst.\n\n"
+        "Use the `search_nvd_cves` tool to query the official NVD CVE 2.0 API. "
+        "The tool returns a list of CVEs as JSON objects containing fields like "
+        "`id`, `published`, `english_description`, `best_cvss`, and `affected_cpes`.\n\n"
+        "Your job is to transform the raw CVE list into a structured CVESection.\n\n"
+        "Steps:\n"
+        "1. Call search_nvd_cves with the vendor or product from the query.\n"
+        "2. Group all CVEs by publication year to populate by_year_counts.\n"
+        "3. Select 3–8 representative or critical CVEs (use highest severity or broad impact).\n"
+        "4. For each, build a CVEItem:\n"
+        "   - cve_id from c.id\n"
+        "   - severity from c.best_cvss['severity'] if available\n"
+        "   - description from c.english_description\n"
+        "   - year extracted from c.published\n"
+        "   - sources: include NVD detail link (https://nvd.nist.gov/vuln/detail/[cve_id])\n"
+        "5. Determine trend: Improving, Degrading, or Stable based on changes over years.\n"
+        "6. Write a concise 3–5 sentence summary.\n\n"
+        "Return a CVESection Pydantic object."
     )
     result = ai.generate_structured_with_tools(
         prompt=prompt,
         input_text=state["query"],
-        tools=_tools(),
+        tools=_cve_tools(),
         output_model=CVESection,
         max_steps=8,
     )
