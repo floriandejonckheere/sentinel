@@ -110,121 +110,148 @@ class TrustScoreEngine:
     #     return scores
     
     def _extract_category_scores(self, data):
-        """Robust, multi-signal scoring across all 8 trust model categories."""
+        """
+        Robust scoring engine with:
+        - Baseline 50 per category
+        - Additive scoring for strong indicators
+        - Soft penalty only for proven risks
+        - Normalization to 0-100
+        """
 
+        # Start with 50 baseline for every category
         scores = {
-            "architecture": 20,
-            "data_protection": 20,
-            "identity_access": 20,
-            "devsecops": 20,
-            "historical_security": 20,
-            "compliance": 20,
-            "platform_security": 20,
-            "risks_exposure": 20
+            "architecture": 50,
+            "data_protection": 50,
+            "identity_access": 50,
+            "devsecops": 50,
+            "historical_security": 50,
+            "compliance": 50,
+            "platform_security": 50,
+            "risks_exposure": 50
         }
 
-        # --- 1. ARCHITECTURE ---
-        arch = data.get("docs", {})
-        security_model = " ".join(arch.get("encryption", [])) + " ".join(arch.get("summary", []))
+        # Helper to normalize to 0–100
+        def clamp(x): return max(0, min(100, x))
 
-        if "end-to-end" in security_model.lower() or "zero-knowledge" in security_model.lower():
-            scores["architecture"] += 35
+        # ----------------------------
+        # 1. ARCHITECTURE
+        # ----------------------------
+        encryption_text = " ".join(data.get("docs", {}).get("encryption", []))
+        summary_text = data.get("docs", {}).get("summary", "")
 
-        if any(enc in security_model for enc in ["AES-256", "GCM", "PBKDF2", "Argon2", "SRP"]):
-            scores["architecture"] += 35
-
-        if "threat" in security_model.lower() or "modeling" in security_model.lower():
+        if any(k in encryption_text.lower() for k in ["zero-knowledge", "end-to-end"]):
             scores["architecture"] += 25
 
-        if "aws" in security_model.lower():
+        if "aes" in encryption_text.lower() or "gcm" in encryption_text.lower():
             scores["architecture"] += 10
 
-        # --- 2. DATA PROTECTION ---
+        if "pbkdf2" in encryption_text.lower() or "argon2" in encryption_text.lower():
+            scores["architecture"] += 10
+
+        if "aws" in summary_text.lower():
+            scores["architecture"] += 5
+
+        # ----------------------------
+        # 2. DATA PROTECTION
+        # ----------------------------
         dh = data.get("docs", {}).get("data_handling", [])
 
-        if any(x for x in dh if "residency" in x.lower()):
-            scores["data_protection"] += 30
+        if any("residency" in x.lower() for x in dh):
+            scores["data_protection"] += 15
 
-        if any(x for x in dh if "retention" in x.lower() or "backup" in x.lower()):
-            scores["data_protection"] += 20
+        if any("retention" in x.lower() for x in dh):
+            scores["data_protection"] += 10
 
-        if "encryption" in " ".join(arch.get("encryption", [])).lower():
-            scores["data_protection"] += 25
+        if "backup" in " ".join(dh).lower():
+            scores["data_protection"] += 10
 
-        # --- 3. IDENTITY & ACCESS ---
+        # ----------------------------
+        # 3. IDENTITY / ACCESS
+        # ----------------------------
         auth = data.get("docs", {}).get("authentication", [])
 
-        if any(x for x in auth if "mfa" in x.lower() or "2fa" in x.lower()):
-            scores["identity_access"] += 35
+        if any("mfa" in x.lower() for x in auth):
+            scores["identity_access"] += 15
 
-        if any(x for x in auth if "sso" in x.lower() or "scim" in x.lower()):
-            scores["identity_access"] += 35
+        if any("sso" in x.lower() for x in auth):
+            scores["identity_access"] += 15
 
-        # --- 4. DEVSECOPS / VULN MGMT ---
-        if "bug bounty" in json.dumps(data.get("compliance", {}), default=str).lower():
-            scores["devsecops"] += 25
+        if any("scim" in x.lower() for x in auth):
+            scores["identity_access"] += 15
 
-        if "penetration" in json.dumps(data.get("compliance", {}), default=str).lower():
-            scores["devsecops"] += 25
+        # ----------------------------
+        # 4. DEVSECOPS
+        # ----------------------------
+        comp = json.dumps(data.get("compliance", {})).lower()
 
-        cve = data.get("cve", {})
-        if "trend" in cve and cve["trend"].lower() == "stable":
+        if "bug bounty" in comp:
             scores["devsecops"] += 15
 
-        # --- 5. HISTORICAL SECURITY PERFORMANCE ---
-        critical_cves = [c for c in cve.get("critical", []) if c.get("severity") in ("High", "Critical")]
-        num_critical = len(critical_cves)
+        if "penetration" in comp:
+            scores["devsecops"] += 15
 
-        if num_critical == 0:
-            scores["historical_security"] += 35
-        elif num_critical == 1:
-            scores["historical_security"] += 25
-        elif num_critical == 2:
+        cve = data.get("cve", {})
+        if cve.get("trend", "").lower() == "stable":
+            scores["devsecops"] += 10
+
+        # ----------------------------
+        # 5. HISTORICAL SECURITY
+        # ----------------------------
+        critical = [c for c in cve.get("critical", []) if c.get("severity") in ("High", "Critical")]
+
+        if len(critical) == 0:
+            scores["historical_security"] += 20
+        elif len(critical) <= 2:
             scores["historical_security"] += 10
-        # else → 0
+        else:
+            scores["historical_security"] -= 10  # soft penalty
 
-        if "summary" in data.get("incidents", {}):
-            scores["historical_security"] += 15
+        if "incidents" in data and not data["incidents"].get("items", []):
+            scores["historical_security"] += 10
 
-        # --- 6. COMPLIANCE ---
+        # ----------------------------
+        # 6. COMPLIANCE
+        # ----------------------------
         certs = data.get("compliance", {}).get("certs", [])
 
+        if any("SOC 2" in c.get("framework", "") for c in certs):
+            scores["compliance"] += 20
+
         iso_count = sum(1 for c in certs if "ISO" in c.get("framework", ""))
-        soc2 = any("SOC 2" in c.get("framework", "") for c in certs)
+        scores["compliance"] += min(iso_count * 5, 25)
 
-        scores["compliance"] += min(iso_count * 10, 40)
-        if soc2:
-            scores["compliance"] += 30
-
-        # --- 7. PLATFORM SECURITY ---
+        # ----------------------------
+        # 7. PLATFORM SECURITY
+        # ----------------------------
         admin = data.get("docs", {}).get("admin_controls", [])
-        monitoring = data.get("docs", {}).get("summary", "")
 
-        if "audit" in " ".join(admin).lower():
-            scores["platform_security"] += 20
+        if any("audit" in x.lower() for x in admin):
+            scores["platform_security"] += 15
 
-        if "rbac" in " ".join(admin).lower():
-            scores["platform_security"] += 25
+        if any("rbac" in x.lower() for x in admin):
+            scores["platform_security"] += 15
 
-        if "monitor" in monitoring.lower():
-            scores["platform_security"] += 25
+        if "monitor" in summary_text.lower():
+            scores["platform_security"] += 10
 
-        # --- 8. RISKS & RESIDUAL EXPOSURE ---
-        risks = 0
+        # ----------------------------
+        # 8. RISKS / RESIDUAL EXPOSURE
+        # ----------------------------
+        risks = 50
 
-        if any("reserved" in c.get("description", "").lower() for c in cve.get("critical", [])):
-            risks += 10
+        # Only real risks reduce score
+        reserved_cves = [c for c in cve.get("critical", []) if "reserved" in c.get("description", "").lower()]
+        if reserved_cves:
+            risks -= 10
 
-        if "no self-hosted" in json.dumps(data, default=str).lower():
-            risks += 10
+        if "third-party" in summary_text.lower():
+            risks -= 5
 
-        if "third-party" in json.dumps(data, default=str).lower():
-            risks += 10
+        scores["risks_exposure"] = clamp(risks)
 
-        scores["risks_exposure"] = max(0, 100 - risks)
-
-        return scores
-    
+        # Normalize all
+        return {k: clamp(v) for k, v in scores.items()}
+       
     def _compute_trust(self, category_scores: Dict[str, float]) -> tuple[float, str]:
         trust_score = sum(category_scores.get(cat, 0) * w for cat, w in self.weights.items())
         missing = sum(1 for cat in self.weights if cat not in category_scores)
