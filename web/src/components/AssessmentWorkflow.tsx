@@ -13,7 +13,11 @@ interface AssessmentData {
   riskTolerance: number
 }
 
-export default function AssessmentWorkflow() {
+interface AssessmentWorkflowProps {
+  onRoleChange?: (role: string) => void
+}
+
+export default function AssessmentWorkflow({ onRoleChange }: AssessmentWorkflowProps) {
   const [currentStep, setCurrentStep] = useState<Step>('application')
   const [assessmentData, setAssessmentData] = useState<AssessmentData>({
     application: '',
@@ -29,6 +33,7 @@ export default function AssessmentWorkflow() {
 
   const handleRoleSelect = (role: string) => {
     setAssessmentData(prev => ({ ...prev, role }))
+    onRoleChange?.(role)
     setCurrentStep('size')
   }
 

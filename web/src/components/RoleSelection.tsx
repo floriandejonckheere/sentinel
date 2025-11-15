@@ -1,15 +1,9 @@
-import { ShieldCheckIcon, CogIcon, BriefcaseIcon, ClipboardDocumentCheckIcon } from '@heroicons/react/24/outline'
+import { roles } from '../constants/roles'
 
 interface RoleSelectionProps {
   onSelect: (role: string) => void
 }
 
-const roles = [
-  { id: 'executive', label: 'Executive', icon: BriefcaseIcon },
-  { id: 'security', label: 'Security', icon: ShieldCheckIcon },
-  { id: 'compliance', label: 'Compliance', icon: ClipboardDocumentCheckIcon },
-  { id: 'technical', label: 'Technical', icon: CogIcon },
-]
 
 export default function RoleSelection({ onSelect }: RoleSelectionProps) {
   return (
