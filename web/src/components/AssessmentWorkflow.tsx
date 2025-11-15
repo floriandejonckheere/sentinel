@@ -23,6 +23,15 @@ interface AssessmentWorkflowProps {
 
 const RISK_LABELS = ['Low', 'Medium', 'High']
 
+const LOADING_MESSAGES = [
+  "Creating your security assessment...",
+  "Analyzing vulnerability databases...",
+  "Reviewing compliance frameworks...",
+  "Scanning CVE repositories...",
+  "Evaluating security posture...",
+  "Generating trust brief...",
+]
+
 export default function AssessmentWorkflow({ onRoleChange }: AssessmentWorkflowProps) {
   const navigate = useNavigate()
   const location = useLocation()
@@ -55,6 +64,7 @@ export default function AssessmentWorkflow({ onRoleChange }: AssessmentWorkflowP
   const [assessmentData, setAssessmentData] = useState<AssessmentData>(loadDataFromQuery)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [loadingMessageIndex, setLoadingMessageIndex] = useState(0)
 
   // Sync step and data with URL changes
   useEffect(() => {
@@ -69,6 +79,20 @@ export default function AssessmentWorkflow({ onRoleChange }: AssessmentWorkflowP
       onRoleChange(assessmentData.role)
     }
   }, [assessmentData.role, onRoleChange])
+
+  // Rotate loading messages every 10 seconds
+  useEffect(() => {
+    if (!isLoading) {
+      setLoadingMessageIndex(0)
+      return
+    }
+
+    const interval = setInterval(() => {
+      setLoadingMessageIndex((prevIndex) => (prevIndex + 1) % LOADING_MESSAGES.length)
+    }, 10000) // 10 seconds
+
+    return () => clearInterval(interval)
+  }, [isLoading])
 
   const buildQueryString = (data: Partial<AssessmentData>): string => {
     const params = new URLSearchParams()
@@ -177,7 +201,7 @@ export default function AssessmentWorkflow({ onRoleChange }: AssessmentWorkflowP
 
       {currentStep === 'complete' && (
         <>
-          {isLoading && <LoadingSpinner message="Creating your security assessment..." />}
+          {isLoading && <LoadingSpinner message={LOADING_MESSAGES[loadingMessageIndex]} />}
 
           {error && (
             <div className="animate-fade-in text-center">
