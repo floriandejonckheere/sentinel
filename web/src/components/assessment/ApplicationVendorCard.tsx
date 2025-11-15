@@ -176,13 +176,11 @@ export default function ApplicationVendorCard({ application, vendor, assessedAt 
       </div>
 
       {vendor.sources && vendor.sources.length > 0 && (
-        <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-600">
+        <div>
           <div className="flex items-center gap-2 mb-4">
-            <div className="flex-shrink-0 w-1 h-1 rounded-full bg-blue-600 dark:bg-blue-400"></div>
             <h5 className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
               Sources & References
             </h5>
-            <div className="flex-1 h-px bg-gradient-to-r from-gray-200 dark:from-gray-600 to-transparent"></div>
           </div>
           <div className="grid grid-cols-1 gap-2">
             {vendor.sources.map((source, index) => {
