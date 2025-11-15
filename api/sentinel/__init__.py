@@ -36,7 +36,7 @@ def create_app():
         # from cli.assessor import Assessor
         # from cli.database import Database
         # from cli.ai import AI
-        # db = Database("sqlite:///sentinel.sqlite3")
+        # db = Database("sqlite:///data/sentinel.sqlite3")
         # ai = AI()
         # assessor = Assessor(database=db, ai=ai)
         # assessment = assessor.assess(name=name, url=url)

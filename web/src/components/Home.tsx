@@ -1,19 +1,53 @@
 import { useNavigate } from 'react-router-dom'
 import { ShieldCheckIcon, DocumentMagnifyingGlassIcon, ChartBarIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
+import { useEffect, useState } from 'react'
 
 export default function Home() {
   const navigate = useNavigate()
+  const [typedText, setTypedText] = useState('')
+  const brand = 'Sentinel AI'
+
+  useEffect(() => {
+    let i = 0
+    const interval = setInterval(() => {
+      setTypedText(brand.slice(0, i + 1))
+      i++
+      if (i === brand.length) {
+        clearInterval(interval)
+      }
+    }, 120)
+    return () => clearInterval(interval)
+  }, [])
 
   const handleGetStarted = () => {
     navigate('/name')
   }
 
   return (
-    <div className="animate-fade-in max-w-4xl mx-auto mt-32">
+    <div className="animate-fade-in max-w-4xl mx-auto mt-20">
+      {/* Branding Banner */}
+      <div className="flex flex-col items-center mb-20">
+        <div className="flex items-center gap-6">
+          <div className="relative">
+            <ShieldCheckIcon className="h-24 w-24 text-blue-600 dark:text-blue-400 drop-shadow-lg" />
+          </div>
+          <h1 className="text-7xl font-light tracking-tight text-gray-900 dark:text-white leading-none">
+            <span className="inline-block">
+              {typedText}
+              {/* Baseline-aligned blinking cursor (smaller, like lowercase 'l') */}
+              <span className="ml-1 inline-block w-[0.06em] h-[0.8em] bg-blue-600 dark:bg-blue-400 animate-pulse align-baseline" />
+            </span>
+          </h1>
+        </div>
+        <p className="mt-8 text-xl text-gray-600 dark:text-gray-300 max-w-2xl text-center">
+          AI-Powered Security Assessment Platform
+        </p>
+      </div>
+
       <div className="text-center mb-12">
-        <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-6">
+        <h2 className="text-5xl font-bold text-gray-900 dark:text-white mb-6">
           AI-Powered Security Assessment
-        </h1>
+        </h2>
         <p className="text-xl text-gray-700 dark:text-gray-300 mb-8">
           Transform business decisions into CISO-ready trust briefs in minutes
         </p>
@@ -63,10 +97,6 @@ export default function Home() {
           Start Assessment
           <ArrowRightIcon className="h-6 w-6" />
         </button>
-      </div>
-
-      <div className="mt-12 text-center text-sm text-gray-500 dark:text-gray-400">
-        <p>Helping security teams move from reactive firefighting to proactive enablement</p>
       </div>
     </div>
   )

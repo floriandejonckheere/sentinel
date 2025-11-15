@@ -1,17 +1,11 @@
 import { useState } from 'react'
 import { ChartBarIcon, ChevronLeftIcon } from '@heroicons/react/24/outline'
+import { riskLevels } from '../constants/risk'
 
 interface RiskToleranceProps {
   onSelect: (tolerance: number) => void
   onBack?: () => void
 }
-
-const toleranceLabels = ['Low', 'Medium', 'High']
-const toleranceColors = [
-  { bg: 'rgb(34, 197, 94)', text: 'text-green-600 dark:text-green-400' }, // Green
-  { bg: 'rgb(234, 179, 8)', text: 'text-yellow-600 dark:text-yellow-400' }, // Yellow
-  { bg: 'rgb(239, 68, 68)', text: 'text-red-600 dark:text-red-400' }, // Red
-]
 
 export default function RiskTolerance({ onSelect, onBack }: RiskToleranceProps) {
   const [value, setValue] = useState(1) // Default to Medium (index 1)
@@ -43,13 +37,13 @@ export default function RiskTolerance({ onSelect, onBack }: RiskToleranceProps) 
       </div>
       <div className="bg-white dark:bg-gray-700 rounded-2xl p-8 border border-gray-300 dark:border-gray-600 max-w-2xl mx-auto">
         <div className="flex justify-center mb-6">
-          <ChartBarIcon className={`h-12 w-12 ${toleranceColors[value].text}`} />
+          <ChartBarIcon className={`h-12 w-12 ${riskLevels[value].color.text}`} />
         </div>
 
         <div className="mb-8">
           <div className="text-center mb-6">
-            <span className={`text-3xl font-semibold ${toleranceColors[value].text}`}>
-              {toleranceLabels[value]}
+            <span className={`text-3xl font-semibold ${riskLevels[value].color.text}`}>
+              {riskLevels[value].name}
             </span>
           </div>
 
@@ -59,7 +53,7 @@ export default function RiskTolerance({ onSelect, onBack }: RiskToleranceProps) 
               width: 20px;
               height: 20px;
               border-radius: 50%;
-              background: ${toleranceColors[value].bg};
+              background: ${riskLevels[value].color.bg};
               cursor: pointer;
               border: 2px solid white;
               box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -68,7 +62,7 @@ export default function RiskTolerance({ onSelect, onBack }: RiskToleranceProps) 
               width: 20px;
               height: 20px;
               border-radius: 50%;
-              background: ${toleranceColors[value].bg};
+              background: ${riskLevels[value].color.bg};
               cursor: pointer;
               border: 2px solid white;
               box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -84,14 +78,14 @@ export default function RiskTolerance({ onSelect, onBack }: RiskToleranceProps) 
             onChange={handleChange}
             className={`w-full h-3 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer risk-slider-${value}`}
             style={{
-              background: `linear-gradient(to right, ${toleranceColors[value].bg} 0%, ${toleranceColors[value].bg} ${(value / 2) * 100}%, rgb(229, 231, 235) ${(value / 2) * 100}%, rgb(229, 231, 235) 100%)`
+              background: `linear-gradient(to right, ${riskLevels[value].color.bg} 0%, ${riskLevels[value].color.bg} ${(value / 2) * 100}%, rgb(229, 231, 235) ${(value / 2) * 100}%, rgb(229, 231, 235) 100%)`
             }}
           />
 
           <div className="flex justify-between mt-2 text-sm text-gray-600 dark:text-gray-400">
-            {toleranceLabels.map((label, index) => (
-              <span key={index} className={value === index ? `font-semibold ${toleranceColors[index].text}` : ''}>
-                {label}
+            {riskLevels.map((level, index) => (
+              <span key={index} className={value === index ? `font-semibold ${riskLevels[index].color.text}` : ''}>
+                {level.name}
               </span>
             ))}
           </div>
